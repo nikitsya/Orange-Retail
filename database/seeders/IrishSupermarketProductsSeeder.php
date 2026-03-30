@@ -14,7 +14,7 @@ class IrishSupermarketProductsSeeder extends Seeder
      */
     public function run(): void
     {
-        $path = database_path('data/irish_supermarket_products_db_ready.json');
+        $path = database_path('data/supermarket_products.json');
 
         if (! is_file($path)) {
             throw new RuntimeException("JSON file not found: {$path}");
