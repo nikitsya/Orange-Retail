@@ -6,19 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'sku',
+        'barcode',
+        'name',
+        'brand',
         'category',
-        'price',
-        'stock',
+        'subcategory',
         'description',
-        'is_active',
+        'image_url',
+        'unit_type',
+        'pack_size',
+        'weight_value',
+        'weight_unit',
     ];
 
     /**
@@ -29,9 +36,7 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
-            'stock' => 'integer',
-            'is_active' => 'boolean',
+            'weight_value' => 'decimal:2',
         ];
     }
 }

@@ -35,11 +35,6 @@
                 color: var(--ink);
             }
 
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
-
             .topbar {
                 position: sticky;
                 top: 0;
@@ -51,7 +46,7 @@
 
             .topbar-inner,
             .page {
-                width: min(calc(100% - 24px), 1180px);
+                width: min(calc(100% - 24px), 1240px);
                 margin: 0 auto;
             }
 
@@ -212,7 +207,8 @@
                 font-size: 0.9rem;
             }
 
-            .product-form {
+            .product-form,
+            .inline-form {
                 display: grid;
                 gap: 14px;
             }
@@ -220,6 +216,12 @@
             .field-grid {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .field-grid-wide {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 14px;
             }
 
@@ -246,18 +248,6 @@
                 resize: vertical;
             }
 
-            .checkbox-row {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                color: var(--muted);
-                font-size: 0.9rem;
-            }
-
-            .checkbox-row input {
-                width: auto;
-            }
-
             .field-error {
                 color: var(--danger);
                 font-size: 0.8rem;
@@ -278,7 +268,7 @@
 
             .product-item-header {
                 display: flex;
-                align-items: center;
+                align-items: start;
                 justify-content: space-between;
                 gap: 14px;
                 margin-bottom: 14px;
@@ -292,27 +282,16 @@
             .meta {
                 color: var(--muted);
                 font-size: 0.84rem;
+                line-height: 1.6;
             }
 
-            .badge {
+            .image-link {
                 display: inline-flex;
-                align-items: center;
-                padding: 0.35rem 0.7rem;
-                border-radius: 999px;
-                font-size: 0.74rem;
+                margin-top: 8px;
+                color: var(--brand);
+                font-size: 0.84rem;
                 font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.06em;
-            }
-
-            .badge-active {
-                background: #def2e3;
-                color: #1d6a38;
-            }
-
-            .badge-inactive {
-                background: #eceeed;
-                color: #677162;
+                text-decoration: none;
             }
 
             .item-actions {
@@ -323,11 +302,6 @@
 
             .delete-form {
                 margin-top: 12px;
-            }
-
-            .inline-form {
-                display: grid;
-                gap: 12px;
             }
 
             .empty-state {
@@ -348,6 +322,13 @@
                 }
             }
 
+            @media (max-width: 780px) {
+                .field-grid,
+                .field-grid-wide {
+                    grid-template-columns: 1fr;
+                }
+            }
+
             @media (max-width: 640px) {
                 .topbar-inner {
                     flex-direction: column;
@@ -356,18 +337,11 @@
                     padding: 12px 0;
                 }
 
-                .field-grid {
-                    grid-template-columns: 1fr;
-                }
-
                 .product-item-header,
-                .section-title {
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
-
+                .section-title,
                 .item-actions {
                     flex-direction: column;
+                    align-items: flex-start;
                 }
             }
         </style>
@@ -377,7 +351,7 @@
             <div class="topbar-inner">
                 <div class="brand-block">
                     <strong>Supermarket Management</strong>
-                    <span>Admin panel for full store product control</span>
+                    <span>Admin panel for product catalog metadata</span>
                 </div>
 
                 <form class="logout-form" method="POST" action="{{ route('logout') }}">
@@ -391,8 +365,8 @@
             <aside class="panel sidebar">
                 <h1>Products</h1>
                 <p>
-                    Review inventory, update pricing, maintain stock values, and keep the active
-                    store assortment current from one admin workspace.
+                    Maintain the exact catalog fields stored for each product record, including
+                    barcode, brand, hierarchy, packaging, and weight metadata.
                 </p>
 
                 <div class="stats">
@@ -402,13 +376,13 @@
                     </div>
 
                     <div class="stat-card">
-                        <strong>{{ $products->where('is_active', true)->count() }}</strong>
-                        <span>Products currently visible as active</span>
+                        <strong>{{ $products->pluck('brand')->filter()->unique()->count() }}</strong>
+                        <span>Unique brands tracked</span>
                     </div>
 
                     <div class="stat-card">
-                        <strong>{{ $products->sum('stock') }}</strong>
-                        <span>Total units tracked across all products</span>
+                        <strong>{{ $products->pluck('category')->filter()->unique()->count() }}</strong>
+                        <span>Unique categories tracked</span>
                     </div>
                 </div>
             </aside>
@@ -426,12 +400,30 @@
                     <div class="section-title">
                         <div>
                             <h2>Add product</h2>
-                            <p>Create a new store item directly from the manager page.</p>
+                            <p>Create a product record with the full catalog metadata schema.</p>
                         </div>
                     </div>
 
                     <form class="product-form" method="POST" action="{{ route('products.store') }}">
                         @csrf
+
+                        <div class="field-grid">
+                            <label for="sku">
+                                SKU
+                                <input id="sku" type="text" name="sku" value="{{ old('sku') }}" required>
+                                @error('sku')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label for="barcode">
+                                Barcode
+                                <input id="barcode" type="text" name="barcode" value="{{ old('barcode') }}" required>
+                                @error('barcode')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </label>
+                        </div>
 
                         <div class="field-grid">
                             <label for="name">
@@ -442,10 +434,10 @@
                                 @enderror
                             </label>
 
-                            <label for="sku">
-                                SKU
-                                <input id="sku" type="text" name="sku" value="{{ old('sku') }}" required>
-                                @error('sku')
+                            <label for="brand">
+                                Brand
+                                <input id="brand" type="text" name="brand" value="{{ old('brand') }}" required>
+                                @error('brand')
                                     <span class="field-error">{{ $message }}</span>
                                 @enderror
                             </label>
@@ -460,34 +452,61 @@
                                 @enderror
                             </label>
 
-                            <label for="price">
-                                Price
-                                <input id="price" type="number" step="0.01" min="0" name="price" value="{{ old('price') }}" required>
-                                @error('price')
+                            <label for="subcategory">
+                                Subcategory
+                                <input id="subcategory" type="text" name="subcategory" value="{{ old('subcategory') }}" required>
+                                @error('subcategory')
                                     <span class="field-error">{{ $message }}</span>
                                 @enderror
-                            </label>
-                        </div>
-
-                        <div class="field-grid">
-                            <label for="stock">
-                                Stock
-                                <input id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}" required>
-                                @error('stock')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label class="checkbox-row" for="is_active">
-                                <input id="is_active" type="checkbox" name="is_active" value="1" @checked(old('is_active', true))>
-                                Mark this product as active
                             </label>
                         </div>
 
                         <label for="description">
                             Description
-                            <textarea id="description" name="description">{{ old('description') }}</textarea>
+                            <textarea id="description" name="description" required>{{ old('description') }}</textarea>
                             @error('description')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label for="image_url">
+                            Image URL
+                            <input id="image_url" type="url" name="image_url" value="{{ old('image_url') }}" required>
+                            @error('image_url')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <div class="field-grid-wide">
+                            <label for="unit_type">
+                                Unit type
+                                <input id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}" required>
+                                @error('unit_type')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label for="pack_size">
+                                Pack size
+                                <input id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}" required>
+                                @error('pack_size')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </label>
+
+                            <label for="weight_unit">
+                                Weight unit
+                                <input id="weight_unit" type="text" name="weight_unit" value="{{ old('weight_unit') }}" required>
+                                @error('weight_unit')
+                                    <span class="field-error">{{ $message }}</span>
+                                @enderror
+                            </label>
+                        </div>
+
+                        <label for="weight_value">
+                            Weight value
+                            <input id="weight_value" type="number" step="0.01" min="0" name="weight_value" value="{{ old('weight_value') }}" required>
+                            @error('weight_value')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
@@ -500,7 +519,7 @@
                     <div class="section-title">
                         <div>
                             <h2>Inventory list</h2>
-                            <p>Update or remove items already stored in the catalog.</p>
+                            <p>Update or remove product records stored with the new schema.</p>
                         </div>
                     </div>
 
@@ -514,16 +533,12 @@
                                         <div>
                                             <h3>{{ $product->name }}</h3>
                                             <div class="meta">
-                                                SKU: {{ $product->sku }} |
-                                                Category: {{ $product->category }} |
-                                                Price: ${{ number_format((float) $product->price, 2) }} |
-                                                Stock: {{ $product->stock }}
+                                                SKU: {{ $product->sku }} | Barcode: {{ $product->barcode }}<br>
+                                                Brand: {{ $product->brand }} | Category: {{ $product->category }} / {{ $product->subcategory }}<br>
+                                                Unit: {{ $product->unit_type }} | Pack size: {{ $product->pack_size }} | Weight: {{ number_format((float) $product->weight_value, 2) }} {{ $product->weight_unit }}
                                             </div>
+                                            <a class="image-link" href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open product image</a>
                                         </div>
-
-                                        <span class="badge {{ $product->is_active ? 'badge-active' : 'badge-inactive' }}">
-                                            {{ $product->is_active ? 'Active' : 'Inactive' }}
-                                        </span>
                                     </div>
 
                                     <form class="inline-form" method="POST" action="{{ route('products.update', $product) }}">
@@ -532,13 +547,25 @@
 
                                         <div class="field-grid">
                                             <label>
+                                                SKU
+                                                <input type="text" name="sku" value="{{ $product->sku }}" required>
+                                            </label>
+
+                                            <label>
+                                                Barcode
+                                                <input type="text" name="barcode" value="{{ $product->barcode }}" required>
+                                            </label>
+                                        </div>
+
+                                        <div class="field-grid">
+                                            <label>
                                                 Product name
                                                 <input type="text" name="name" value="{{ $product->name }}" required>
                                             </label>
 
                                             <label>
-                                                SKU
-                                                <input type="text" name="sku" value="{{ $product->sku }}" required>
+                                                Brand
+                                                <input type="text" name="brand" value="{{ $product->brand }}" required>
                                             </label>
                                         </div>
 
@@ -549,26 +576,41 @@
                                             </label>
 
                                             <label>
-                                                Price
-                                                <input type="number" step="0.01" min="0" name="price" value="{{ number_format((float) $product->price, 2, '.', '') }}" required>
-                                            </label>
-                                        </div>
-
-                                        <div class="field-grid">
-                                            <label>
-                                                Stock
-                                                <input type="number" min="0" name="stock" value="{{ $product->stock }}" required>
-                                            </label>
-
-                                            <label class="checkbox-row">
-                                                <input type="checkbox" name="is_active" value="1" @checked($product->is_active)>
-                                                Active in catalog
+                                                Subcategory
+                                                <input type="text" name="subcategory" value="{{ $product->subcategory }}" required>
                                             </label>
                                         </div>
 
                                         <label>
                                             Description
-                                            <textarea name="description">{{ $product->description }}</textarea>
+                                            <textarea name="description" required>{{ $product->description }}</textarea>
+                                        </label>
+
+                                        <label>
+                                            Image URL
+                                            <input type="url" name="image_url" value="{{ $product->image_url }}" required>
+                                        </label>
+
+                                        <div class="field-grid-wide">
+                                            <label>
+                                                Unit type
+                                                <input type="text" name="unit_type" value="{{ $product->unit_type }}" required>
+                                            </label>
+
+                                            <label>
+                                                Pack size
+                                                <input type="text" name="pack_size" value="{{ $product->pack_size }}" required>
+                                            </label>
+
+                                            <label>
+                                                Weight unit
+                                                <input type="text" name="weight_unit" value="{{ $product->weight_unit }}" required>
+                                            </label>
+                                        </div>
+
+                                        <label>
+                                            Weight value
+                                            <input type="number" step="0.01" min="0" name="weight_value" value="{{ number_format((float) $product->weight_value, 2, '.', '') }}" required>
                                         </label>
 
                                         <div class="item-actions">

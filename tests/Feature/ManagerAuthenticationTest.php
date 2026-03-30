@@ -21,13 +21,18 @@ class ManagerAuthenticationTest extends TestCase
         ]);
 
         Product::query()->create([
-            'name' => 'Inventory Item',
             'sku' => 'INV-100',
-            'category' => 'General',
-            'price' => 14.50,
-            'stock' => 10,
+            'barcode' => '5391234567001',
+            'name' => 'Inventory Item',
+            'brand' => 'Tesco',
+            'category' => 'Fresh Fruit',
+            'subcategory' => 'Apples',
             'description' => 'Seed product',
-            'is_active' => true,
+            'image_url' => 'https://example.com/products/inventory-item.jpg',
+            'unit_type' => 'pack',
+            'pack_size' => '6 apples',
+            'weight_value' => 0.80,
+            'weight_unit' => 'kg',
         ]);
 
         $response = $this->post('/login', [
@@ -104,31 +109,42 @@ class ManagerAuthenticationTest extends TestCase
         $this->actingAs($admin);
 
         $this->post('/products', [
-            'name' => 'Store Cheese',
-            'sku' => 'DAI-501',
-            'category' => 'Dairy',
-            'price' => 7.25,
-            'stock' => 18,
-            'description' => 'Managed by the store team.',
-            'is_active' => '1',
+            'sku' => 'TESCO-APP-001',
+            'barcode' => '5391234567890',
+            'name' => 'Tesco Gala Apples 6 Pack',
+            'brand' => 'Tesco',
+            'category' => 'Fresh Fruit',
+            'subcategory' => 'Apples',
+            'description' => 'Fresh Gala apples pack of 6',
+            'image_url' => 'https://example.com/images/apples.jpg',
+            'unit_type' => 'pack',
+            'pack_size' => '6 apples',
+            'weight_value' => '0.80',
+            'weight_unit' => 'kg',
         ])->assertRedirect('/products');
 
-        $product = Product::query()->where('sku', 'DAI-501')->firstOrFail();
+        $product = Product::query()->where('sku', 'TESCO-APP-001')->firstOrFail();
 
         $this->put("/products/{$product->id}", [
-            'name' => 'Store Cheese Premium',
-            'sku' => 'DAI-501',
-            'category' => 'Dairy',
-            'price' => 8.10,
-            'stock' => 22,
-            'description' => 'Updated inventory record.',
-            'is_active' => '1',
+            'sku' => 'TESCO-APP-001',
+            'barcode' => '5391234567890',
+            'name' => 'Tesco Gala Apples 8 Pack',
+            'brand' => 'Tesco',
+            'category' => 'Fresh Fruit',
+            'subcategory' => 'Apples',
+            'description' => 'Fresh Gala apples pack of 8',
+            'image_url' => 'https://example.com/images/apples-8.jpg',
+            'unit_type' => 'pack',
+            'pack_size' => '8 apples',
+            'weight_value' => '1.00',
+            'weight_unit' => 'kg',
         ])->assertRedirect('/products');
 
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
-            'name' => 'Store Cheese Premium',
-            'stock' => 22,
+            'name' => 'Tesco Gala Apples 8 Pack',
+            'pack_size' => '8 apples',
+            'weight_unit' => 'kg',
         ]);
 
         $this->delete("/products/{$product->id}")

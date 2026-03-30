@@ -13,7 +13,10 @@ class ProductController extends Controller
     public function index(): View
     {
         return view('products.index', [
-            'products' => Product::query()->orderBy('name')->get(),
+            'products' => Product::query()
+                ->orderBy('brand')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -54,20 +57,28 @@ class ProductController extends Controller
     protected function validateProduct(Request $request, ?Product $product = null): array
     {
         return $request->validate([
-            'name' => ['required', 'string', 'max:255'],
             'sku' => [
                 'required',
                 'string',
                 'max:50',
                 Rule::unique('products', 'sku')->ignore($product),
             ],
+            'barcode' => [
+                'required',
+                'string',
+                'max:32',
+                Rule::unique('products', 'barcode')->ignore($product),
+            ],
+            'name' => ['required', 'string', 'max:255'],
+            'brand' => ['required', 'string', 'max:100'],
             'category' => ['required', 'string', 'max:100'],
-            'price' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:1000'],
-            'is_active' => ['nullable', 'boolean'],
-        ]) + [
-            'is_active' => $request->boolean('is_active'),
-        ];
+            'subcategory' => ['required', 'string', 'max:100'],
+            'description' => ['required', 'string', 'max:1000'],
+            'image_url' => ['required', 'url', 'max:2048'],
+            'unit_type' => ['required', 'string', 'max:50'],
+            'pack_size' => ['required', 'string', 'max:100'],
+            'weight_value' => ['required', 'numeric', 'min:0'],
+            'weight_unit' => ['required', 'string', 'max:20'],
+        ]);
     }
 }
