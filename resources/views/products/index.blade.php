@@ -75,7 +75,8 @@
             .logout-button,
             .primary-button,
             .secondary-button,
-            .danger-button {
+            .danger-button,
+            .ghost-button {
                 min-height: 42px;
                 padding: 0.75rem 1rem;
                 border-radius: 12px;
@@ -103,10 +104,15 @@
                 color: var(--danger);
             }
 
+            .ghost-button {
+                background: var(--surface-soft);
+                border: 1px solid var(--line);
+                color: var(--ink);
+            }
+
             .page {
-                display: grid;
-                grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
-                gap: 24px;
+                width: min(calc(100% - 24px), 1240px);
+                margin: 0 auto;
                 padding: 28px 0 40px;
             }
 
@@ -115,49 +121,6 @@
                 border: 1px solid var(--line);
                 border-radius: var(--radius);
                 box-shadow: var(--shadow);
-            }
-
-            .sidebar {
-                position: sticky;
-                top: 92px;
-                padding: 24px;
-                align-self: start;
-            }
-
-            .sidebar h1 {
-                margin: 0;
-                font-size: 2rem;
-                line-height: 1;
-                letter-spacing: -0.04em;
-            }
-
-            .sidebar p {
-                margin: 14px 0 0;
-                color: var(--muted);
-                line-height: 1.65;
-            }
-
-            .stats {
-                display: grid;
-                gap: 12px;
-                margin-top: 24px;
-            }
-
-            .stat-card {
-                padding: 14px 16px;
-                border: 1px solid var(--line);
-                border-radius: 16px;
-                background: var(--surface-soft);
-            }
-
-            .stat-card strong {
-                display: block;
-                font-size: 1.3rem;
-            }
-
-            .stat-card span {
-                color: var(--muted);
-                font-size: 0.84rem;
             }
 
             .content {
@@ -252,6 +215,29 @@
                 color: var(--danger);
                 font-size: 0.8rem;
                 font-weight: 400;
+            }
+
+            .search-form {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+
+            .section-title .search-form {
+                flex: 1 1 auto;
+                margin-bottom: 0;
+            }
+
+            .search-input {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .search-note {
+                margin: 0 0 18px;
+                color: var(--muted);
+                font-size: 0.9rem;
             }
 
             .product-list {
@@ -400,16 +386,6 @@
                 text-align: center;
             }
 
-            @media (max-width: 980px) {
-                .page {
-                    grid-template-columns: 1fr;
-                }
-
-                .sidebar {
-                    position: static;
-                }
-            }
-
             @media (max-width: 780px) {
                 .field-grid,
                 .field-grid-wide {
@@ -425,6 +401,7 @@
                     padding: 12px 0;
                 }
 
+                .search-form,
                 .modal-header,
                 .modal-meta,
                 .section-title,
@@ -451,31 +428,6 @@
         </header>
 
         <main class="page">
-            <aside class="panel sidebar">
-                <h1>Products</h1>
-                <p>
-                    Maintain the exact catalog fields stored for each product record, including
-                    barcode, brand, hierarchy, packaging, and weight metadata.
-                </p>
-
-                <div class="stats">
-                    <div class="stat-card">
-                        <strong>{{ $products->count() }}</strong>
-                        <span>Total products in the catalog</span>
-                    </div>
-
-                    <div class="stat-card">
-                        <strong>{{ $products->pluck('brand')->filter()->unique()->count() }}</strong>
-                        <span>Unique brands tracked</span>
-                    </div>
-
-                    <div class="stat-card">
-                        <strong>{{ $products->pluck('category')->filter()->unique()->count() }}</strong>
-                        <span>Unique categories tracked</span>
-                    </div>
-                </div>
-            </aside>
-
             <section class="content">
                 @if (session('status'))
                     <div class="flash">{{ session('status') }}</div>
@@ -487,121 +439,22 @@
 
                 <section class="panel form-panel">
                     <div class="section-title">
-                        <div>
-                            <h2>Add product</h2>
-                            <p>Create a product record with the full catalog metadata schema.</p>
-                        </div>
+                        <form class="search-form" method="GET" action="{{ route('products.index') }}">
+                            <input
+                                class="search-input"
+                                type="search"
+                                name="search"
+                                value="{{ $search }}"
+                                placeholder="Search by name or description"
+                            >
+                            <button class="secondary-button" type="submit">Search</button>
+                            @if ($search !== '')
+                                <a class="ghost-button" href="{{ route('products.index') }}">Clear</a>
+                            @endif
+                        </form>
+
+                        <button class="primary-button" type="button" data-open-modal="add-product-modal">Add product</button>
                     </div>
-
-                    <form class="product-form" method="POST" action="{{ route('products.store') }}">
-                        @csrf
-
-                        <div class="field-grid">
-                            <label for="sku">
-                                SKU
-                                <input id="sku" type="text" name="sku" value="{{ old('sku') }}" required>
-                                @error('sku')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label for="barcode">
-                                Barcode
-                                <input id="barcode" type="text" name="barcode" value="{{ old('barcode') }}">
-                                @error('barcode')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-                        </div>
-
-                        <div class="field-grid">
-                            <label for="name">
-                                Product name
-                                <input id="name" type="text" name="name" value="{{ old('name') }}" required>
-                                @error('name')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label for="brand">
-                                Brand
-                                <input id="brand" type="text" name="brand" value="{{ old('brand') }}" required>
-                                @error('brand')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-                        </div>
-
-                        <div class="field-grid">
-                            <label for="category">
-                                Category
-                                <input id="category" type="text" name="category" value="{{ old('category') }}" required>
-                                @error('category')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label for="subcategory">
-                                Subcategory
-                                <input id="subcategory" type="text" name="subcategory" value="{{ old('subcategory') }}" required>
-                                @error('subcategory')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-                        </div>
-
-                        <label for="description">
-                            Description
-                            <textarea id="description" name="description" required>{{ old('description') }}</textarea>
-                            @error('description')
-                                <span class="field-error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <label for="image_url">
-                            Image URL
-                            <input id="image_url" type="url" name="image_url" value="{{ old('image_url') }}">
-                            @error('image_url')
-                                <span class="field-error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <div class="field-grid-wide">
-                            <label for="unit_type">
-                                Unit type
-                                <input id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}" required>
-                                @error('unit_type')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label for="pack_size">
-                                Pack size
-                                <input id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}">
-                                @error('pack_size')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-
-                            <label for="weight_unit">
-                                Weight unit
-                                <input id="weight_unit" type="text" name="weight_unit" value="{{ old('weight_unit') }}">
-                                @error('weight_unit')
-                                    <span class="field-error">{{ $message }}</span>
-                                @enderror
-                            </label>
-                        </div>
-
-                        <label for="weight_value">
-                            Weight value
-                            <input id="weight_value" type="number" step="0.01" min="0" name="weight_value" value="{{ old('weight_value') }}">
-                            @error('weight_value')
-                                <span class="field-error">{{ $message }}</span>
-                            @enderror
-                        </label>
-
-                        <button class="primary-button" type="submit">Save product</button>
-                    </form>
                 </section>
 
                 <section class="panel table-panel">
@@ -612,8 +465,14 @@
                         </div>
                     </div>
 
+                    @if ($search !== '')
+                        <p class="search-note">Showing results for "{{ $search }}".</p>
+                    @endif
+
                     @if ($products->isEmpty())
-                        <div class="empty-state">No products are available yet. Add the first one above.</div>
+                        <div class="empty-state">
+                            {{ $search !== '' ? 'No products matched your search.' : 'No products are available yet. Add the first one above.' }}
+                        </div>
                     @else
                         <div class="product-list">
                             @foreach ($products as $product)
@@ -678,6 +537,7 @@
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="modal_product_id" value="{{ $product->id }}">
+                                            <input type="hidden" name="search" value="{{ $search }}">
 
                                             <div class="field-grid">
                                                 <label>
@@ -755,6 +615,7 @@
                                         <form class="delete-form" method="POST" action="{{ route('products.destroy', $product) }}">
                                             @csrf
                                             @method('DELETE')
+                                            <input type="hidden" name="search" value="{{ $search }}">
                                             <button class="danger-button" type="submit">Delete product</button>
                                         </form>
                                     </div>
@@ -765,6 +626,140 @@
                 </section>
             </section>
         </main>
+
+        <div
+            class="modal @if (old('modal_context') === 'create') is-open @endif"
+            id="add-product-modal"
+            data-modal
+        >
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <div>
+                        <h3>Add product</h3>
+                        <p>Create a product record with the full catalog metadata schema.</p>
+                    </div>
+
+                    <button class="close-button" type="button" data-close-modal aria-label="Close modal">
+                        ×
+                    </button>
+                </div>
+
+                <form class="product-form" method="POST" action="{{ route('products.store') }}">
+                    @csrf
+                    <input type="hidden" name="modal_context" value="create">
+                    <input type="hidden" name="search" value="{{ $search }}">
+
+                    <div class="field-grid">
+                        <label for="sku">
+                            SKU
+                            <input id="sku" type="text" name="sku" value="{{ old('sku') }}" required>
+                            @error('sku')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label for="barcode">
+                            Barcode
+                            <input id="barcode" type="text" name="barcode" value="{{ old('barcode') }}">
+                            @error('barcode')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    </div>
+
+                    <div class="field-grid">
+                        <label for="name">
+                            Product name
+                            <input id="name" type="text" name="name" value="{{ old('name') }}" required>
+                            @error('name')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label for="brand">
+                            Brand
+                            <input id="brand" type="text" name="brand" value="{{ old('brand') }}" required>
+                            @error('brand')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    </div>
+
+                    <div class="field-grid">
+                        <label for="category">
+                            Category
+                            <input id="category" type="text" name="category" value="{{ old('category') }}" required>
+                            @error('category')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label for="subcategory">
+                            Subcategory
+                            <input id="subcategory" type="text" name="subcategory" value="{{ old('subcategory') }}" required>
+                            @error('subcategory')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    </div>
+
+                    <label for="description">
+                        Description
+                        <textarea id="description" name="description" required>{{ old('description') }}</textarea>
+                        @error('description')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+
+                    <label for="image_url">
+                        Image URL
+                        <input id="image_url" type="url" name="image_url" value="{{ old('image_url') }}">
+                        @error('image_url')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+
+                    <div class="field-grid-wide">
+                        <label for="unit_type">
+                            Unit type
+                            <input id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}" required>
+                            @error('unit_type')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label for="pack_size">
+                            Pack size
+                            <input id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}">
+                            @error('pack_size')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label for="weight_unit">
+                            Weight unit
+                            <input id="weight_unit" type="text" name="weight_unit" value="{{ old('weight_unit') }}">
+                            @error('weight_unit')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    </div>
+
+                    <label for="weight_value">
+                        Weight value
+                        <input id="weight_value" type="number" step="0.01" min="0" name="weight_value" value="{{ old('weight_value') }}">
+                        @error('weight_value')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+
+                    <div class="item-actions">
+                        <button class="primary-button" type="submit">Save product</button>
+                        <button class="ghost-button" type="button" data-close-modal>Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <script>
             const toggleBodyScroll = () => {

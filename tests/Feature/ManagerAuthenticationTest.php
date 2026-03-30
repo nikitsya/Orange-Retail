@@ -154,4 +154,53 @@ class ManagerAuthenticationTest extends TestCase
             'id' => $product->id,
         ]);
     }
+
+    public function test_admin_can_search_products_by_name_and_description(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+        ]);
+
+        Product::query()->create([
+            'sku' => 'TES-APPLE-001',
+            'barcode' => '5391234567002',
+            'name' => 'Tesco Gala Apples 6 Pack',
+            'brand' => 'Tesco',
+            'category' => 'Fresh Fruit',
+            'subcategory' => 'Apples',
+            'description' => 'Sweet apples for everyday snacks.',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '6 apples',
+            'weight_value' => 0.80,
+            'weight_unit' => 'kg',
+        ]);
+
+        Product::query()->create([
+            'sku' => 'TES-BREAD-001',
+            'barcode' => '5391234567003',
+            'name' => 'Tesco Bakery Bread',
+            'brand' => 'Tesco',
+            'category' => 'Bakery',
+            'subcategory' => 'Bread',
+            'description' => 'Freshly baked sourdough loaf.',
+            'image_url' => null,
+            'unit_type' => 'each',
+            'pack_size' => null,
+            'weight_value' => null,
+            'weight_unit' => null,
+        ]);
+
+        $this->actingAs($admin)
+            ->get('/products?search=Apples')
+            ->assertOk()
+            ->assertSee('Tesco Gala Apples 6 Pack')
+            ->assertDontSee('Tesco Bakery Bread');
+
+        $this->actingAs($admin)
+            ->get('/products?search=sourdough')
+            ->assertOk()
+            ->assertSee('Tesco Bakery Bread')
+            ->assertDontSee('Tesco Gala Apples 6 Pack');
+    }
 }

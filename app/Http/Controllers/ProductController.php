@@ -10,13 +10,25 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = trim($request->string('search')->toString());
+
+        $products = Product::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($nestedQuery) use ($search) {
+                    $nestedQuery
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('brand')
+            ->orderBy('name')
+            ->get();
+
         return view('products.index', [
-            'products' => Product::query()
-                ->orderBy('brand')
-                ->orderBy('name')
-                ->get(),
+            'products' => $products,
+            'search' => $search,
         ]);
     }
 
@@ -27,7 +39,7 @@ class ProductController extends Controller
         Product::query()->create($validated);
 
         return redirect()
-            ->route('products.index')
+            ->route('products.index', $this->indexParameters($request))
             ->with('status', 'Product added successfully.');
     }
 
@@ -38,16 +50,16 @@ class ProductController extends Controller
         $product->update($validated);
 
         return redirect()
-            ->route('products.index')
+            ->route('products.index', $this->indexParameters($request))
             ->with('status', 'Product updated successfully.');
     }
 
-    public function destroy(Product $product): RedirectResponse
+    public function destroy(Request $request, Product $product): RedirectResponse
     {
         $product->delete();
 
         return redirect()
-            ->route('products.index')
+            ->route('products.index', $this->indexParameters($request))
             ->with('status', 'Product removed successfully.');
     }
 
@@ -88,5 +100,15 @@ class ProductController extends Controller
         }
 
         return $validated;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function indexParameters(Request $request): array
+    {
+        $search = trim($request->string('search')->toString());
+
+        return $search === '' ? [] : ['search' => $search];
     }
 }
