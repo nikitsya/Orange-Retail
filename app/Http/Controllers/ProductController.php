@@ -56,7 +56,7 @@ class ProductController extends Controller
      */
     protected function validateProduct(Request $request, ?Product $product = null): array
     {
-        return $request->validate([
+        $validated = $request->validate([
             'sku' => [
                 'required',
                 'string',
@@ -64,7 +64,7 @@ class ProductController extends Controller
                 Rule::unique('products', 'sku')->ignore($product),
             ],
             'barcode' => [
-                'required',
+                'nullable',
                 'string',
                 'max:32',
                 Rule::unique('products', 'barcode')->ignore($product),
@@ -74,11 +74,19 @@ class ProductController extends Controller
             'category' => ['required', 'string', 'max:100'],
             'subcategory' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:1000'],
-            'image_url' => ['required', 'url', 'max:2048'],
+            'image_url' => ['nullable', 'url', 'max:2048'],
             'unit_type' => ['required', 'string', 'max:50'],
-            'pack_size' => ['required', 'string', 'max:100'],
-            'weight_value' => ['required', 'numeric', 'min:0'],
-            'weight_unit' => ['required', 'string', 'max:20'],
+            'pack_size' => ['nullable', 'string', 'max:100'],
+            'weight_value' => ['nullable', 'numeric', 'min:0'],
+            'weight_unit' => ['nullable', 'string', 'max:20'],
         ]);
+
+        foreach (['barcode', 'image_url', 'pack_size', 'weight_value', 'weight_unit'] as $field) {
+            if (($validated[$field] ?? null) === '') {
+                $validated[$field] = null;
+            }
+        }
+
+        return $validated;
     }
 }
