@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login</title>
+        <title>Register</title>
         <style>
             :root {
                 color-scheme: light;
@@ -35,16 +35,24 @@
                 color: var(--ink);
             }
 
-            .login-shell {
-                width: min(100%, 420px);
+            .register-shell {
+                width: min(100%, 460px);
                 background: var(--surface);
                 border: 1px solid var(--line);
                 border-radius: var(--radius);
                 box-shadow: var(--shadow);
             }
 
-            .login-panel {
+            .register-panel {
                 padding: 32px 28px;
+            }
+
+            .eyebrow {
+                display: inline-flex;
+                margin-bottom: 16px;
+                font-size: 0.84rem;
+                font-weight: 700;
+                color: var(--brand);
             }
 
             h1 {
@@ -90,19 +98,6 @@
                 border-color: var(--brand);
             }
 
-            .remember-row {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 0.9rem;
-                color: var(--muted);
-            }
-
-            .remember-row input {
-                width: auto;
-                min-height: auto;
-            }
-
             .button {
                 min-height: 50px;
                 border: 0;
@@ -129,23 +124,35 @@
                 font-weight: 400;
             }
 
+            .footer-link {
+                margin-top: 18px;
+                color: var(--muted);
+                font-size: 0.9rem;
+            }
+
+            .footer-link a {
+                color: var(--brand);
+                font-weight: 700;
+            }
+
             @media (max-width: 600px) {
                 body {
                     padding: 16px;
                 }
 
-                .login-panel {
+                .register-panel {
                     padding: 24px 18px;
                 }
             }
         </style>
     </head>
     <body>
-        <main class="login-shell">
-            <section class="login-panel">
-                <a class="lead" href="{{ route('home') }}">Back to home</a>
-                <h1>Login</h1>
-                <p class="lead">Enter your email and password to continue.</p>
+        <main class="register-shell">
+            <section class="register-panel">
+                <a class="eyebrow" href="{{ route('home') }}">Back to home</a>
+
+                <h1>Register</h1>
+                <p class="lead">Create a new account to access the supermarket dashboard.</p>
 
                 @if ($errors->any())
                     <div class="error-box">
@@ -153,12 +160,20 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login.store') }}">
+                <form method="POST" action="{{ route('register.store') }}">
                     @csrf
+
+                    <label for="name">
+                        Full name
+                        <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus>
+                        @error('name')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
                     <label for="email">
                         Email
-                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required>
                         @error('email')
                             <span class="field-error">{{ $message }}</span>
                         @enderror
@@ -172,15 +187,18 @@
                         @enderror
                     </label>
 
-                    <label class="remember-row" for="remember">
-                        <input id="remember" type="checkbox" name="remember" value="1">
-                        Remember me
+                    <label for="password_confirmation">
+                        Confirm password
+                        <input id="password_confirmation" type="password" name="password_confirmation" required>
                     </label>
 
-                    <button class="button" type="submit">Login</button>
+                    <button class="button" type="submit">Create account</button>
                 </form>
 
-                <p class="lead">Need an account? <a href="{{ route('register') }}">Register</a></p>
+                <p class="footer-link">
+                    Already have an account?
+                    <a href="{{ route('login') }}">Login</a>
+                </p>
             </section>
         </main>
     </body>

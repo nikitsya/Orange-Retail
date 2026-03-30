@@ -6,18 +6,14 @@ use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (! auth()->check()) {
-        return redirect()->route('login');
-    }
-
-    return auth()->user()?->role === 'admin'
-        ? redirect()->route('products.index')
-        : redirect()->route('dashboard');
-});
+    return view('welcome');
+})->name('home');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [ManagerSessionController::class, 'create'])->name('login');
     Route::post('/login', [ManagerSessionController::class, 'store'])->name('login.store');
+    Route::get('/register', [ManagerSessionController::class, 'createRegistration'])->name('register');
+    Route::post('/register', [ManagerSessionController::class, 'storeRegistration'])->name('register.store');
 });
 
 Route::middleware('auth')->group(function (): void {

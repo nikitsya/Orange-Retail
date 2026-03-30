@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,11 @@ class ManagerSessionController extends Controller
     public function create(): View
     {
         return view('auth.login');
+    }
+
+    public function createRegistration(): View
+    {
+        return view('auth.register');
     }
 
     public function store(Request $request): RedirectResponse
@@ -37,6 +43,27 @@ class ManagerSessionController extends Controller
             : 'dashboard';
 
         return redirect()->intended(route($redirectRoute));
+    }
+
+    public function storeRegistration(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $user = User::query()->create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role' => 'user',
+        ]);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard');
     }
 
     public function destroy(Request $request): RedirectResponse

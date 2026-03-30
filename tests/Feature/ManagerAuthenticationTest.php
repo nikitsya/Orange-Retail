@@ -76,6 +76,25 @@ class ManagerAuthenticationTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_guest_can_register_from_the_register_page(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'New Customer',
+            'email' => 'customer@example.com',
+            'password' => 'secret123',
+            'password_confirmation' => 'secret123',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'New Customer',
+            'email' => 'customer@example.com',
+            'role' => 'user',
+        ]);
+    }
+
     public function test_admin_can_create_update_and_delete_products(): void
     {
         $admin = User::factory()->create([
