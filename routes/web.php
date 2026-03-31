@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\ManagerSessionController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function (): void {
         return view('dashboard');
     })->name('dashboard');
 
+    Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
     Route::post('/logout', [ManagerSessionController::class, 'destroy'])->name('logout');
 });
 

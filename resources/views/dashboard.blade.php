@@ -57,6 +57,14 @@
                 margin-top: 24px;
             }
 
+            .actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 24px;
+            }
+
+            a,
             button {
                 min-height: 44px;
                 padding: 0.8rem 1rem;
@@ -67,6 +75,13 @@
                 font: inherit;
                 font-weight: 700;
                 cursor: pointer;
+                text-decoration: none;
+            }
+
+            .secondary-link {
+                background: #eef4ef;
+                color: var(--ink);
+                border: 1px solid var(--line);
             }
         </style>
     </head>
@@ -74,11 +89,16 @@
         <main class="panel">
             <h1>User Dashboard</h1>
             <p>You are logged in as a regular user. This page is separate from the admin product management area.</p>
+            <p>From here, you can open the customer product catalog and browse the items available in the system.</p>
 
-            <form class="logout-form" method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit">Log out</button>
-            </form>
+            <div class="actions">
+                <a href="{{ route('catalog.index') }}">Browse Catalog</a>
+
+                <form class="logout-form" method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="secondary-link" type="submit">Log out</button>
+                </form>
+            </div>
         </main>
     </body>
 </html>
