@@ -140,20 +140,38 @@
 
             .image-card {
                 margin-top: 22px;
-                padding: 18px;
+                overflow: hidden;
                 border: 1px solid var(--line);
                 border-radius: 18px;
                 background: var(--surface-soft);
             }
 
-            .image-card strong {
+            .image-card img {
+                width: 100%;
+                max-height: 320px;
+                object-fit: cover;
+                display: block;
+            }
+
+            .image-caption,
+            .image-placeholder {
+                padding: 18px;
+            }
+
+            .image-caption strong,
+            .image-placeholder strong {
                 display: block;
                 margin-bottom: 8px;
             }
 
-            .image-card a {
+            .image-caption a {
                 color: var(--brand);
                 font-weight: 700;
+            }
+
+            .image-placeholder {
+                color: var(--muted);
+                line-height: 1.65;
             }
 
             .price-card {
@@ -253,12 +271,21 @@
                     <h1>{{ $product->name }}</h1>
                     <p class="lead">{{ $product->description }}</p>
 
-                    @if ($product->image_url)
-                        <div class="image-card">
-                            <strong>Product image</strong>
-                            <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
-                        </div>
-                    @endif
+                    <div class="image-card">
+                        @if ($product->image_url)
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+
+                            <div class="image-caption">
+                                <strong>Product image</strong>
+                                <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
+                            </div>
+                        @else
+                            <div class="image-placeholder">
+                                <strong>No image available</strong>
+                                This product is part of the imported catalog data, but no product image URL is currently stored for it.
+                            </div>
+                        @endif
+                    </div>
 
                     @if ($product->price_display || $product->unit_price_display)
                         <div class="price-card">

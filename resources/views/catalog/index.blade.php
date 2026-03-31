@@ -171,9 +171,47 @@
             }
 
             .product-card {
-                padding: 20px;
+                padding: 18px;
                 display: flex;
                 flex-direction: column;
+            }
+
+            .product-image {
+                display: grid;
+                place-items: center;
+                aspect-ratio: 16 / 9;
+                margin-top: 12px;
+                margin-bottom: 12px;
+                border: 1px solid var(--line);
+                border-radius: 16px;
+                overflow: hidden;
+                background: linear-gradient(135deg, #f7f9f4, #eef4ee);
+            }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+            .image-placeholder {
+                display: grid;
+                gap: 8px;
+                justify-items: center;
+                padding: 12px;
+                text-align: center;
+                color: var(--muted);
+            }
+
+            .image-placeholder strong {
+                font-size: 0.88rem;
+                color: var(--ink);
+            }
+
+            .image-placeholder span {
+                font-size: 0.78rem;
+                line-height: 1.5;
             }
 
             .eyebrow {
@@ -189,50 +227,45 @@
             }
 
             .product-card h2 {
-                margin: 14px 0 10px;
-                font-size: 1.16rem;
+                margin: 12px 0 8px;
+                font-size: 1.12rem;
                 line-height: 1.3;
+            }
+
+            .product-title-link {
+                color: var(--ink);
+                text-decoration: none;
+            }
+
+            .product-title-link:hover {
+                color: var(--brand-strong);
             }
 
             .brand-line {
                 margin: 0;
-                color: var(--ink);
-                font-size: 0.92rem;
-                font-weight: 700;
-            }
-
-            .product-card p {
-                margin: 12px 0 0;
                 color: var(--muted);
-                line-height: 1.65;
-            }
-
-            .description-snippet {
-                display: -webkit-box;
-                overflow: hidden;
-                -webkit-box-orient: vertical;
-                -webkit-line-clamp: 2;
-            }
-
-            .product-meta {
-                display: grid;
-                gap: 8px;
-                margin-top: 16px;
-                padding-top: 16px;
-                border-top: 1px solid var(--line);
-                font-size: 0.92rem;
+                font-size: 0.88rem;
+                font-weight: 600;
             }
 
             .price-block {
-                margin-top: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                margin-top: 14px;
                 padding: 14px 16px;
                 border-radius: 18px;
                 background: var(--surface-soft);
             }
 
+            .price-copy {
+                min-width: 0;
+            }
+
             .price-main {
                 display: block;
-                font-size: 1.3rem;
+                font-size: 1.18rem;
                 font-weight: 700;
                 letter-spacing: -0.03em;
                 color: var(--ink);
@@ -242,38 +275,26 @@
                 display: block;
                 margin-top: 4px;
                 color: var(--muted);
-                font-size: 0.86rem;
+                font-size: 0.8rem;
             }
 
-            .product-meta strong {
-                color: var(--ink);
+            .inline-cart-form {
+                margin: 0;
+                flex: 0 0 auto;
             }
 
-            .meta-pair {
-                display: flex;
-                align-items: start;
-                justify-content: space-between;
-                gap: 12px;
-            }
-
-            .meta-pair span:last-child {
-                text-align: right;
-                color: var(--muted);
-            }
-
-            .card-link {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 42px;
-                margin-top: auto;
-                padding-top: 18px;
-                padding: 0.72rem 1rem;
-                border-radius: 12px;
+            .inline-cart-button {
+                min-height: 38px;
+                padding: 0.6rem 0.85rem;
+                border: 0;
+                border-radius: 10px;
                 background: linear-gradient(135deg, var(--brand), var(--brand-strong));
                 color: #fff;
-                font-size: 0.88rem;
+                font: inherit;
+                font-size: 0.82rem;
                 font-weight: 700;
+                cursor: pointer;
+                white-space: nowrap;
             }
 
             .empty-state {
@@ -368,40 +389,42 @@
                     @foreach ($products as $product)
                         <article class="product-card">
                             <span class="eyebrow">{{ $product->category }}</span>
-                            <h2>{{ $product->name }}</h2>
+                            <h2>
+                                <a class="product-title-link" href="{{ route('catalog.show', $product) }}">
+                                    {{ $product->name }}
+                                </a>
+                            </h2>
                             <p class="brand-line">{{ $product->brand }}</p>
-                            <p class="description-snippet">{{ $product->description }}</p>
+
+                            <div class="product-image">
+                                @if ($product->image_url)
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                                @else
+                                    <div class="image-placeholder">
+                                        <strong>No image available</strong>
+                                        <span>Catalog data does not currently include a product photo.</span>
+                                    </div>
+                                @endif
+                            </div>
 
                             @if ($product->price_display || $product->unit_price_display)
                                 <div class="price-block">
-                                    @if ($product->price_display)
-                                        <span class="price-main">{{ $product->price_display }}</span>
-                                    @endif
+                                    <div class="price-copy">
+                                        @if ($product->price_display)
+                                            <span class="price-main">{{ $product->price_display }}</span>
+                                        @endif
 
-                                    @if ($product->unit_price_display)
-                                        <span class="price-unit">{{ $product->unit_price_display }}</span>
-                                    @endif
+                                        @if ($product->unit_price_display)
+                                            <span class="price-unit">{{ $product->unit_price_display }}</span>
+                                        @endif
+                                    </div>
+
+                                    <form class="inline-cart-form" method="POST" action="{{ route('cart.store', $product) }}">
+                                        @csrf
+                                        <button class="inline-cart-button" type="submit">Add to cart</button>
+                                    </form>
                                 </div>
                             @endif
-
-                            <div class="product-meta">
-                                <div class="meta-pair">
-                                    <span><strong>Subcategory</strong></span>
-                                    <span>{{ $product->subcategory }}</span>
-                                </div>
-
-                                <div class="meta-pair">
-                                    <span><strong>Unit</strong></span>
-                                    <span>{{ $product->unit_type }}</span>
-                                </div>
-
-                                <div class="meta-pair">
-                                    <span><strong>Pack size</strong></span>
-                                    <span>{{ $product->pack_size ?: 'Not specified' }}</span>
-                                </div>
-                            </div>
-
-                            <a class="card-link" href="{{ route('catalog.show', $product) }}">View details</a>
                         </article>
                     @endforeach
                 </section>
