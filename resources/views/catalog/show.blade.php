@@ -65,7 +65,8 @@
             }
 
             .top-link,
-            .logout-button {
+            .logout-button,
+            .primary-button {
                 min-height: 42px;
                 padding: 0.75rem 1rem;
                 border-radius: 12px;
@@ -78,13 +79,15 @@
                 cursor: pointer;
             }
 
-            .logout-button {
+            .logout-button,
+            .primary-button {
                 border-color: transparent;
                 background: linear-gradient(135deg, var(--brand), var(--brand-strong));
                 color: #fff;
             }
 
-            .logout-form {
+            .logout-form,
+            .cart-form {
                 margin: 0;
             }
 
@@ -153,6 +156,13 @@
                 font-weight: 700;
             }
 
+            .cta-row {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-top: 22px;
+            }
+
             .meta-grid {
                 display: grid;
                 gap: 12px;
@@ -218,6 +228,15 @@
                             <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
                         </div>
                     @endif
+
+                    <div class="cta-row">
+                        <form class="cart-form" method="POST" action="{{ route('cart.store', $product) }}">
+                            @csrf
+                            <button class="primary-button" type="submit">Add to cart</button>
+                        </form>
+
+                        <a class="top-link" href="{{ route('cart.index') }}">View cart</a>
+                    </div>
                 </article>
 
                 <aside class="panel meta-panel">

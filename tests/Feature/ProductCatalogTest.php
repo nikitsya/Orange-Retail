@@ -116,4 +116,72 @@ class ProductCatalogTest extends TestCase
             ->assertSee('Barilla')
             ->assertSee('Open image in a new tab');
     }
+
+    public function test_regular_user_can_add_product_to_cart(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'CART-SOUP-001',
+            'barcode' => '5391234567008',
+            'name' => 'Tomato Soup',
+            'brand' => 'Heinz',
+            'category' => 'Grocery',
+            'subcategory' => 'Soup',
+            'description' => 'Classic tomato soup.',
+            'image_url' => null,
+            'unit_type' => 'tin',
+            'pack_size' => '400g',
+            'weight_value' => 0.40,
+            'weight_unit' => 'kg',
+        ]);
+
+        $this->actingAs($user)
+            ->post("/cart/{$product->id}")
+            ->assertRedirect('/cart');
+
+        $this->actingAs($user)
+            ->get('/cart')
+            ->assertOk()
+            ->assertSee('Your cart')
+            ->assertSee('Tomato Soup')
+            ->assertSee('1');
+    }
+
+    public function test_regular_user_can_remove_product_from_cart(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'CART-TEA-001',
+            'barcode' => '5391234567009',
+            'name' => 'Breakfast Tea',
+            'brand' => 'Lyons',
+            'category' => 'Drinks',
+            'subcategory' => 'Tea',
+            'description' => 'Tea bags for breakfast.',
+            'image_url' => null,
+            'unit_type' => 'box',
+            'pack_size' => '80 bags',
+            'weight_value' => null,
+            'weight_unit' => null,
+        ]);
+
+        $this->actingAs($user)->withSession([
+            'cart' => [
+                (string) $product->id => ['quantity' => 1],
+            ],
+        ])->delete("/cart/{$product->id}")
+            ->assertRedirect('/cart');
+
+        $this->actingAs($user)
+            ->get('/cart')
+            ->assertOk()
+            ->assertSee('Your cart is empty')
+            ->assertDontSee('Breakfast Tea');
+    }
 }

@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
     Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+    Route::get('/cart', [CatalogController::class, 'cart'])->name('cart.index');
+    Route::post('/cart/{product}', [CatalogController::class, 'addToCart'])->name('cart.store');
+    Route::delete('/cart/{product}', [CatalogController::class, 'removeFromCart'])->name('cart.destroy');
     Route::post('/logout', [ManagerSessionController::class, 'destroy'])->name('logout');
 });
 
