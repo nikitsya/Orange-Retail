@@ -13,8 +13,19 @@ class CatalogController extends Controller
     public function index(Request $request): View
     {
         $search = trim($request->string('search')->toString());
+        $category = trim($request->string('category')->toString());
+
+        $categories = Product::query()
+            ->select('category')
+            ->whereNotNull('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
 
         $products = Product::query()
+            ->when($category !== '', function ($query) use ($category) {
+                $query->where('category', $category);
+            })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($nestedQuery) use ($search) {
                     $nestedQuery
@@ -24,13 +35,16 @@ class CatalogController extends Controller
                         ->orWhere('category', 'like', "%{$search}%");
                 });
             })
-            ->orderBy('brand')
+            ->orderBy('category')
+            ->orderBy('subcategory')
             ->orderBy('name')
             ->get();
 
         return view('catalog.index', [
             'products' => $products,
             'search' => $search,
+            'category' => $category,
+            'categories' => $categories,
         ]);
     }
 

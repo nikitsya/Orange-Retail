@@ -142,7 +142,8 @@
                 gap: 12px;
             }
 
-            .search-form input {
+            .search-form input,
+            .search-form select {
                 flex: 1 1 auto;
                 min-width: 0;
                 padding: 0.9rem 1rem;
@@ -151,6 +152,10 @@
                 font: inherit;
                 background: var(--surface-soft);
                 color: var(--ink);
+            }
+
+            .search-form select {
+                flex: 0 0 240px;
             }
 
             .search-note {
@@ -299,12 +304,21 @@
                 <h1>Browse supermarket products</h1>
                 <p>
                     Explore the product range as a customer. The catalog now focuses on quick scanning,
-                    clean product cards, and a clear path to the full product details page.
+                    clean product cards, category filtering, and a clear path to the full product details page.
                 </p>
             </section>
 
             <section class="search-panel">
                 <form class="search-form" method="GET" action="{{ route('catalog.index') }}">
+                    <select name="category" aria-label="Category filter">
+                        <option value="">All categories</option>
+                        @foreach ($categories as $catalogCategory)
+                            <option value="{{ $catalogCategory }}" @selected($category === $catalogCategory)>
+                                {{ $catalogCategory }}
+                            </option>
+                        @endforeach
+                    </select>
+
                     <input
                         type="search"
                         name="search"
@@ -319,9 +333,13 @@
                 <p class="search-note">Showing catalog results for "{{ $search }}".</p>
             @endif
 
+            @if ($category !== '')
+                <p class="search-note">Active category filter: "{{ $category }}".</p>
+            @endif
+
             @if ($products->isEmpty())
                 <section class="empty-state">
-                    {{ $search !== '' ? 'No products matched your search.' : 'No products are available in the catalog yet.' }}
+                    {{ $search !== '' || $category !== '' ? 'No products matched the current filters.' : 'No products are available in the catalog yet.' }}
                 </section>
             @else
                 <section class="product-grid">
