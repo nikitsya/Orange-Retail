@@ -223,6 +223,28 @@
                 font-size: 0.92rem;
             }
 
+            .price-block {
+                margin-top: 16px;
+                padding: 14px 16px;
+                border-radius: 18px;
+                background: var(--surface-soft);
+            }
+
+            .price-main {
+                display: block;
+                font-size: 1.3rem;
+                font-weight: 700;
+                letter-spacing: -0.03em;
+                color: var(--ink);
+            }
+
+            .price-unit {
+                display: block;
+                margin-top: 4px;
+                color: var(--muted);
+                font-size: 0.86rem;
+            }
+
             .product-meta strong {
                 color: var(--ink);
             }
@@ -349,6 +371,18 @@
                             <h2>{{ $product->name }}</h2>
                             <p class="brand-line">{{ $product->brand }}</p>
                             <p class="description-snippet">{{ $product->description }}</p>
+
+                            @if ($product->price_display || $product->unit_price_display)
+                                <div class="price-block">
+                                    @if ($product->price_display)
+                                        <span class="price-main">{{ $product->price_display }}</span>
+                                    @endif
+
+                                    @if ($product->unit_price_display)
+                                        <span class="price-unit">{{ $product->unit_price_display }}</span>
+                                    @endif
+                                </div>
+                            @endif
 
                             <div class="product-meta">
                                 <div class="meta-pair">

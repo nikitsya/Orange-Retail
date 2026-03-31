@@ -26,6 +26,10 @@ class Product extends Model
         'pack_size',
         'weight_value',
         'weight_unit',
+        'price_value',
+        'currency',
+        'price_display',
+        'unit_price_display',
     ];
 
     /**
@@ -37,6 +41,7 @@ class Product extends Model
     {
         return [
             'weight_value' => 'decimal:2',
+            'price_value' => 'decimal:2',
         ];
     }
 }

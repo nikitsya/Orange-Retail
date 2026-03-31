@@ -156,6 +156,37 @@
                 font-weight: 700;
             }
 
+            .price-card {
+                margin-top: 22px;
+                padding: 18px;
+                border: 1px solid var(--line);
+                border-radius: 18px;
+                background: var(--surface-soft);
+            }
+
+            .price-card strong {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 0.82rem;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                color: var(--muted);
+            }
+
+            .price-main {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                letter-spacing: -0.04em;
+            }
+
+            .price-unit {
+                display: block;
+                margin-top: 6px;
+                color: var(--muted);
+                font-size: 0.92rem;
+            }
+
             .cta-row {
                 display: flex;
                 align-items: center;
@@ -226,6 +257,20 @@
                         <div class="image-card">
                             <strong>Product image</strong>
                             <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
+                        </div>
+                    @endif
+
+                    @if ($product->price_display || $product->unit_price_display)
+                        <div class="price-card">
+                            <strong>Price</strong>
+
+                            @if ($product->price_display)
+                                <span class="price-main">{{ $product->price_display }}</span>
+                            @endif
+
+                            @if ($product->unit_price_display)
+                                <span class="price-unit">{{ $product->unit_price_display }}</span>
+                            @endif
                         </div>
                     @endif
 

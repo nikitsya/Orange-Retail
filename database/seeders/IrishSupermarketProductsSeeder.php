@@ -47,6 +47,12 @@ class IrishSupermarketProductsSeeder extends Seeder
                         ? (float) $product['weight_value']
                         : null,
                     'weight_unit' => $product['weight_unit'] ?: null,
+                    'price_value' => $product['price_value'] !== null
+                        ? (float) $product['price_value']
+                        : null,
+                    'currency' => $product['currency'] ?: null,
+                    'price_display' => $product['price_display'] ?: null,
+                    'unit_price_display' => $product['unit_price_display'] ?: null,
                 ];
             })
             ->values();
@@ -67,6 +73,10 @@ class IrishSupermarketProductsSeeder extends Seeder
                     'pack_size',
                     'weight_value',
                     'weight_unit',
+                    'price_value',
+                    'currency',
+                    'price_display',
+                    'unit_price_display',
                 ],
             );
         }
