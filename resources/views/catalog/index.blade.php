@@ -115,19 +115,19 @@
             }
 
             .hero {
-                padding: 26px;
+                padding: 22px 24px;
                 margin-bottom: 20px;
             }
 
             .hero h1 {
                 margin: 0;
-                font-size: clamp(2rem, 4vw, 3.2rem);
+                font-size: clamp(1.8rem, 4vw, 2.8rem);
                 letter-spacing: -0.04em;
             }
 
             .hero p {
-                max-width: 680px;
-                margin: 14px 0 0;
+                max-width: 620px;
+                margin: 12px 0 0;
                 color: var(--muted);
                 line-height: 1.7;
             }
@@ -167,6 +167,8 @@
 
             .product-card {
                 padding: 20px;
+                display: flex;
+                flex-direction: column;
             }
 
             .eyebrow {
@@ -187,16 +189,30 @@
                 line-height: 1.3;
             }
 
-            .product-card p {
+            .brand-line {
                 margin: 0;
+                color: var(--ink);
+                font-size: 0.92rem;
+                font-weight: 700;
+            }
+
+            .product-card p {
+                margin: 12px 0 0;
                 color: var(--muted);
                 line-height: 1.65;
             }
 
+            .description-snippet {
+                display: -webkit-box;
+                overflow: hidden;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+            }
+
             .product-meta {
                 display: grid;
-                gap: 10px;
-                margin-top: 18px;
+                gap: 8px;
+                margin-top: 16px;
                 padding-top: 16px;
                 border-top: 1px solid var(--line);
                 font-size: 0.92rem;
@@ -206,12 +222,25 @@
                 color: var(--ink);
             }
 
+            .meta-pair {
+                display: flex;
+                align-items: start;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .meta-pair span:last-child {
+                text-align: right;
+                color: var(--muted);
+            }
+
             .card-link {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 min-height: 42px;
-                margin-top: 18px;
+                margin-top: auto;
+                padding-top: 18px;
                 padding: 0.72rem 1rem;
                 border-radius: 12px;
                 background: linear-gradient(135deg, var(--brand), var(--brand-strong));
@@ -269,8 +298,8 @@
             <section class="hero">
                 <h1>Browse supermarket products</h1>
                 <p>
-                    This catalog lets regular users explore the available product data without entering the
-                    admin management area. It is the start of the customer-facing side of the platform.
+                    Explore the product range as a customer. The catalog now focuses on quick scanning,
+                    clean product cards, and a clear path to the full product details page.
                 </p>
             </section>
 
@@ -300,13 +329,24 @@
                         <article class="product-card">
                             <span class="eyebrow">{{ $product->category }}</span>
                             <h2>{{ $product->name }}</h2>
-                            <p>{{ $product->description }}</p>
+                            <p class="brand-line">{{ $product->brand }}</p>
+                            <p class="description-snippet">{{ $product->description }}</p>
 
                             <div class="product-meta">
-                                <div><strong>Brand:</strong> {{ $product->brand }}</div>
-                                <div><strong>Subcategory:</strong> {{ $product->subcategory }}</div>
-                                <div><strong>Unit:</strong> {{ $product->unit_type }}</div>
-                                <div><strong>Pack size:</strong> {{ $product->pack_size ?: 'Not specified' }}</div>
+                                <div class="meta-pair">
+                                    <span><strong>Subcategory</strong></span>
+                                    <span>{{ $product->subcategory }}</span>
+                                </div>
+
+                                <div class="meta-pair">
+                                    <span><strong>Unit</strong></span>
+                                    <span>{{ $product->unit_type }}</span>
+                                </div>
+
+                                <div class="meta-pair">
+                                    <span><strong>Pack size</strong></span>
+                                    <span>{{ $product->pack_size ?: 'Not specified' }}</span>
+                                </div>
                             </div>
 
                             <a class="card-link" href="{{ route('catalog.show', $product) }}">View details</a>
