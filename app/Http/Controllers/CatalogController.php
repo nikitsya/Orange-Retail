@@ -31,4 +31,11 @@ class CatalogController extends Controller
             'search' => $search,
         ]);
     }
+
+    public function show(Product $product): View
+    {
+        return view('catalog.show', [
+            'product' => $product,
+        ]);
+    }
 }

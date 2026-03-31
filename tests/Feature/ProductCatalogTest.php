@@ -87,4 +87,33 @@ class ProductCatalogTest extends TestCase
             ->assertSee('Fresh Milk')
             ->assertDontSee('Brown Bread');
     }
+
+    public function test_regular_user_can_open_product_details_page(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'CAT-PASTA-001',
+            'barcode' => '5391234567007',
+            'name' => 'Italian Pasta',
+            'brand' => 'Barilla',
+            'category' => 'Grocery',
+            'subcategory' => 'Pasta',
+            'description' => 'Durum wheat pasta for family meals.',
+            'image_url' => 'https://example.com/images/pasta.jpg',
+            'unit_type' => 'pack',
+            'pack_size' => '500g',
+            'weight_value' => 0.50,
+            'weight_unit' => 'kg',
+        ]);
+
+        $this->actingAs($user)
+            ->get("/catalog/{$product->id}")
+            ->assertOk()
+            ->assertSee('Italian Pasta')
+            ->assertSee('Barilla')
+            ->assertSee('Open image in a new tab');
+    }
 }

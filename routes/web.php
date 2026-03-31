@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function (): void {
     })->name('dashboard');
 
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+    Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
     Route::post('/logout', [ManagerSessionController::class, 'destroy'])->name('logout');
 });
 

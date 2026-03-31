@@ -206,6 +206,20 @@
                 color: var(--ink);
             }
 
+            .card-link {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 42px;
+                margin-top: 18px;
+                padding: 0.72rem 1rem;
+                border-radius: 12px;
+                background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+                color: #fff;
+                font-size: 0.88rem;
+                font-weight: 700;
+            }
+
             .empty-state {
                 padding: 28px;
                 text-align: center;
@@ -294,6 +308,8 @@
                                 <div><strong>Unit:</strong> {{ $product->unit_type }}</div>
                                 <div><strong>Pack size:</strong> {{ $product->pack_size ?: 'Not specified' }}</div>
                             </div>
+
+                            <a class="card-link" href="{{ route('catalog.show', $product) }}">View details</a>
                         </article>
                     @endforeach
                 </section>
