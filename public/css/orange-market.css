@@ -33,6 +33,7 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
 body {
@@ -43,6 +44,7 @@ body {
         radial-gradient(circle at top left, rgba(255, 196, 120, 0.28), transparent 26%),
         linear-gradient(180deg, #fffdf9 0%, var(--bg) 58%, #fff7ef 100%);
     color: var(--ink);
+    overflow-x: hidden;
 }
 
 .sr-only {
@@ -300,6 +302,8 @@ textarea {
 }
 
 .catalog-nav-scroll {
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 18px 0 22px;
