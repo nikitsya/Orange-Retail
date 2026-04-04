@@ -6,9 +6,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [CatalogController::class, 'index'])->name('home');
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [ManagerSessionController::class, 'create'])->name('login');
@@ -22,8 +22,6 @@ Route::middleware('auth')->group(function (): void {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
-    Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
     Route::get('/cart', [CatalogController::class, 'cart'])->name('cart.index');
     Route::post('/cart/{product}', [CatalogController::class, 'addToCart'])->name('cart.store');
     Route::delete('/cart/{product}', [CatalogController::class, 'removeFromCart'])->name('cart.destroy');

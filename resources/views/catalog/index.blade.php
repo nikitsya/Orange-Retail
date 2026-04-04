@@ -75,6 +75,7 @@
             }
 
             .top-link,
+            .auth-link,
             .logout-button,
             .search-button {
                 min-height: 42px;
@@ -89,8 +90,15 @@
                 cursor: pointer;
             }
 
+            .auth-link {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .logout-button,
-            .search-button {
+            .search-button,
+            .auth-link--primary {
                 border-color: transparent;
                 background: linear-gradient(135deg, var(--brand), var(--brand-strong));
                 color: #fff;
@@ -130,6 +138,13 @@
                 margin: 12px 0 0;
                 color: var(--muted);
                 line-height: 1.7;
+            }
+
+            .hero-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 18px;
             }
 
             .search-panel {
@@ -332,12 +347,22 @@
                 </div>
 
                 <div class="topbar-actions">
-                    <a class="top-link" href="{{ route('dashboard') }}">Dashboard</a>
+                    @auth
+                        @if (auth()->user()->role === 'admin')
+                            <a class="top-link" href="{{ route('products.index') }}">Inventory</a>
+                        @else
+                            <a class="top-link" href="{{ route('dashboard') }}">Dashboard</a>
+                            <a class="top-link" href="{{ route('cart.index') }}">Cart</a>
+                        @endif
 
-                    <form class="logout-form" method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="logout-button" type="submit">Log out</button>
-                    </form>
+                        <form class="logout-form" method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="logout-button" type="submit">Log out</button>
+                        </form>
+                    @else
+                        <a class="auth-link" href="{{ route('login') }}">Login</a>
+                        <a class="auth-link auth-link--primary" href="{{ route('register') }}">Register</a>
+                    @endauth
                 </div>
             </div>
         </header>
@@ -346,9 +371,16 @@
             <section class="hero">
                 <h1>Browse supermarket products</h1>
                 <p>
-                    Explore the product range as a customer. The catalog now focuses on quick scanning,
-                    clean product cards, category filtering, and a clear path to the full product details page.
+                    Explore the live supermarket catalog from the home page. Guests can browse products and
+                    product details, while signed-in customers can continue to the cart flow.
                 </p>
+
+                @guest
+                    <div class="hero-actions">
+                        <a class="auth-link auth-link--primary" href="{{ route('register') }}">Create customer account</a>
+                        <a class="auth-link" href="{{ route('login') }}">Sign in to use the cart</a>
+                    </div>
+                @endguest
             </section>
 
             <section class="search-panel">
@@ -419,10 +451,14 @@
                                         @endif
                                     </div>
 
-                                    <form class="inline-cart-form" method="POST" action="{{ route('cart.store', $product) }}">
-                                        @csrf
-                                        <button class="inline-cart-button" type="submit">Add to cart</button>
-                                    </form>
+                                    @auth
+                                        <form class="inline-cart-form" method="POST" action="{{ route('cart.store', $product) }}">
+                                            @csrf
+                                            <button class="inline-cart-button" type="submit">Add to cart</button>
+                                        </form>
+                                    @else
+                                        <a class="auth-link auth-link--primary" href="{{ route('login') }}">Login to add</a>
+                                    @endauth
                                 </div>
                             @endif
                         </article>

@@ -107,7 +107,7 @@ class CatalogController extends Controller
 
         return redirect()
             ->route('cart.index')
-            ->with('status', "{$product->name} was removed from your cart.");
+            ->with('status', 'The item was removed from your cart.');
     }
 
     protected function cartItemCount(Collection $items): int
