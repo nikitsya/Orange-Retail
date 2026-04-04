@@ -118,38 +118,40 @@
 
         <div class="catalog-nav-shell">
             <div class="page-shell">
-                <nav class="section-nav" aria-label="Catalog categories">
-                    <a
-                        class="nav-chip @if ($category === '') is-active @endif"
-                        href="{{ route('catalog.index', ['search' => $search]) }}"
-                        aria-label="All departments"
-                    >
-                        <span class="nav-chip-media">
-                            <img src="{{ asset('images/departments/' . $departmentImages['']) }}" alt="All departments">
-                        </span>
-                        <span class="sr-only">All departments</span>
-                    </a>
-
-                    @foreach ($navCategories as $catalogCategory)
+                <div class="catalog-nav-scroll">
+                    <nav class="section-nav" aria-label="Catalog categories">
                         <a
-                            class="nav-chip @if ($category === $catalogCategory) is-active @endif"
-                            href="{{ route('catalog.index', array_filter(['category' => $catalogCategory, 'search' => $search !== '' ? $search : null])) }}"
-                            aria-label="{{ $catalogCategory }}"
+                            class="nav-chip @if ($category === '') is-active @endif"
+                            href="{{ route('catalog.index', ['search' => $search]) }}"
+                            aria-label="All departments"
                         >
                             <span class="nav-chip-media">
-                                @if (isset($departmentImages[$catalogCategory]))
-                                    <img
-                                        src="{{ asset('images/departments/' . $departmentImages[$catalogCategory]) }}"
-                                        alt="{{ $catalogCategory }}"
-                                    >
-                                @else
-                                    <span class="nav-chip-fallback">{{ strtoupper(substr($catalogCategory, 0, 1)) }}</span>
-                                @endif
+                                <img src="{{ asset('images/departments/' . $departmentImages['']) }}" alt="All departments">
                             </span>
-                            <span class="sr-only">{{ $catalogCategory }}</span>
+                            <span class="sr-only">All departments</span>
                         </a>
-                    @endforeach
-                </nav>
+
+                        @foreach ($navCategories as $catalogCategory)
+                            <a
+                                class="nav-chip @if ($category === $catalogCategory) is-active @endif"
+                                href="{{ route('catalog.index', array_filter(['category' => $catalogCategory, 'search' => $search !== '' ? $search : null])) }}"
+                                aria-label="{{ $catalogCategory }}"
+                            >
+                                <span class="nav-chip-media">
+                                    @if (isset($departmentImages[$catalogCategory]))
+                                        <img
+                                            src="{{ asset('images/departments/' . $departmentImages[$catalogCategory]) }}"
+                                            alt="{{ $catalogCategory }}"
+                                        >
+                                    @else
+                                        <span class="nav-chip-fallback">{{ strtoupper(substr($catalogCategory, 0, 1)) }}</span>
+                                    @endif
+                                </span>
+                                <span class="sr-only">{{ $catalogCategory }}</span>
+                            </a>
+                        @endforeach
+                    </nav>
+                </div>
             </div>
         </div>
 
