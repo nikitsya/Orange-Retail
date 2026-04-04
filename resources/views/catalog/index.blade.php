@@ -91,7 +91,11 @@
                         @endauth
                     </div>
                 </div>
+            </div>
+        </header>
 
+        <div class="catalog-nav-shell">
+            <div class="page-shell">
                 <nav class="section-nav" aria-label="Catalog categories">
                     <a class="nav-chip @if ($category === '') is-active @endif" href="{{ route('catalog.index', ['search' => $search]) }}">
                         All departments
@@ -107,7 +111,7 @@
                     @endforeach
                 </nav>
             </div>
-        </header>
+        </div>
 
         <main class="page-shell page-main stack">
             <section class="hero-grid">
