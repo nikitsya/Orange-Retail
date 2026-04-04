@@ -9,7 +9,6 @@
     <body>
         @php
             $navCategories = $categories->take(8);
-            $spotlightCategories = $categories->take(6);
             $productCount = $products->count();
         @endphp
 
@@ -114,78 +113,6 @@
         </div>
 
         <main class="page-shell page-main stack">
-            <section class="hero-grid">
-                <article class="hero-panel">
-                    <div class="hero-copy">
-                        <span class="section-kicker">Browse supermarket products</span>
-                        <h1>Browse supermarket products</h1>
-                        <p>Search products, filter by department, and open the product detail page.</p>
-                    </div>
-
-                    <div class="hero-actions">
-                        <a class="button-primary" href="{{ route('catalog.index') }}">View all products</a>
-                        @auth
-                            @if (auth()->user()->role !== 'admin')
-                                <a class="button-secondary" href="{{ route('cart.index') }}">Open cart</a>
-                            @else
-                                <a class="button-secondary" href="{{ route('products.index') }}">Open inventory</a>
-                            @endif
-                        @else
-                            <a class="button-secondary" href="{{ route('register') }}">Create account</a>
-                        @endauth
-                    </div>
-
-                    <div class="hero-notes">
-                        <div class="hero-note">
-                            <strong>{{ $productCount }}</strong>
-                            <span>Products in the current view</span>
-                        </div>
-                        <div class="hero-note">
-                            <strong>{{ $categories->count() }}</strong>
-                            <span>Departments available</span>
-                        </div>
-                        <div class="hero-note">
-                            <strong>{{ $search !== '' ? 'Filtered' : 'All products' }}</strong>
-                            <span>{{ $search !== '' ? 'The results are filtered by your search.' : 'Use search or choose a department.' }}</span>
-                        </div>
-                    </div>
-                </article>
-
-                <div class="promo-column">
-                    <article class="promo-panel">
-                        <span class="section-kicker">Current view</span>
-                        <h2>Products loaded</h2>
-                        <p class="section-copy">The catalog updates immediately when you change the search or selected department.</p>
-                    </article>
-
-                    <article class="promo-panel">
-                        <span class="section-kicker">Departments</span>
-                        <h2>Open a category</h2>
-                        <p class="section-copy">Use the department tabs or the filter form to move between product groups.</p>
-                    </article>
-                </div>
-            </section>
-
-            @if ($spotlightCategories->isNotEmpty())
-                <section class="section-panel">
-                    <div class="section-actions">
-                        <div>
-                            <span class="section-kicker">Departments</span>
-                            <h2 class="section-heading">Open a department</h2>
-                        </div>
-                    </div>
-
-                    <div class="circle-strip">
-                        @foreach ($spotlightCategories as $spotlightCategory)
-                            <a class="circle-link" href="{{ route('catalog.index', ['category' => $spotlightCategory]) }}">
-                                <span class="circle-badge">{{ strtoupper(substr($spotlightCategory, 0, 1)) }}</span>
-                                <span>{{ $spotlightCategory }}</span>
-                            </a>
-                        @endforeach
-                    </div>
-                </section>
-            @endif
-
             <section class="section-panel">
                 <div>
                     <span class="section-kicker">Filters</span>
