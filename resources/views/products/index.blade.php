@@ -3,627 +3,278 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Product Management</title>
-        <style>
-            :root {
-                color-scheme: light;
-                --bg: #eff3ee;
-                --surface: #ffffff;
-                --surface-soft: #f6f8f5;
-                --ink: #182119;
-                --muted: #677162;
-                --line: #d7dfd5;
-                --brand: #2d6b45;
-                --brand-strong: #1f5234;
-                --danger: #b33b3b;
-                --danger-soft: #f5e4e4;
-                --success-soft: #e6f4ea;
-                --success-ink: #1d6a38;
-                --shadow: 0 18px 42px rgba(18, 31, 20, 0.08);
-                --radius: 22px;
-            }
-
-            * {
-                box-sizing: border-box;
-            }
-
-            body {
-                margin: 0;
-                min-height: 100vh;
-                font-family: Arial, Helvetica, sans-serif;
-                background: var(--bg);
-                color: var(--ink);
-            }
-
-            .topbar {
-                position: sticky;
-                top: 0;
-                z-index: 20;
-                background: rgba(239, 243, 238, 0.92);
-                backdrop-filter: blur(10px);
-                border-bottom: 1px solid rgba(24, 33, 25, 0.08);
-            }
-
-            .topbar-inner,
-            .page {
-                width: min(calc(100% - 24px), 1240px);
-                margin: 0 auto;
-            }
-
-            .topbar-inner {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 16px;
-                min-height: 68px;
-            }
-
-            .brand-block strong {
-                display: block;
-                font-size: 1rem;
-            }
-
-            .brand-block span {
-                color: var(--muted);
-                font-size: 0.86rem;
-            }
-
-            .logout-form {
-                margin: 0;
-            }
-
-            .logout-button,
-            .primary-button,
-            .secondary-button,
-            .danger-button,
-            .ghost-button {
-                min-height: 42px;
-                padding: 0.75rem 1rem;
-                border-radius: 12px;
-                border: 0;
-                font: inherit;
-                font-size: 0.86rem;
-                font-weight: 700;
-                cursor: pointer;
-            }
-
-            .logout-button,
-            .primary-button {
-                background: linear-gradient(135deg, var(--brand), var(--brand-strong));
-                color: #fff;
-            }
-
-            .secondary-button {
-                background: var(--surface-soft);
-                border: 1px solid var(--line);
-                color: var(--ink);
-            }
-
-            .danger-button {
-                background: var(--danger-soft);
-                color: var(--danger);
-            }
-
-            .ghost-button {
-                background: var(--surface-soft);
-                border: 1px solid var(--line);
-                color: var(--ink);
-            }
-
-            .page {
-                width: min(calc(100% - 24px), 1240px);
-                margin: 0 auto;
-                padding: 28px 0 40px;
-            }
-
-            .panel {
-                background: var(--surface);
-                border: 1px solid var(--line);
-                border-radius: var(--radius);
-                box-shadow: var(--shadow);
-            }
-
-            .content {
-                display: grid;
-                gap: 20px;
-            }
-
-            .flash,
-            .error-box {
-                padding: 14px 16px;
-                border-radius: 16px;
-                font-size: 0.92rem;
-                line-height: 1.55;
-            }
-
-            .flash {
-                background: var(--success-soft);
-                color: var(--success-ink);
-            }
-
-            .error-box {
-                background: var(--danger-soft);
-                color: var(--danger);
-            }
-
-            .form-panel,
-            .table-panel {
-                padding: 22px;
-            }
-
-            .section-title {
-                display: flex;
-                align-items: end;
-                justify-content: space-between;
-                gap: 14px;
-                margin-bottom: 18px;
-            }
-
-            .section-title h2 {
-                margin: 0;
-                font-size: 1.35rem;
-            }
-
-            .section-title p {
-                margin: 6px 0 0;
-                color: var(--muted);
-                font-size: 0.9rem;
-            }
-
-            .product-form,
-            .inline-form {
-                display: grid;
-                gap: 14px;
-            }
-
-            .field-grid {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 14px;
-            }
-
-            .field-grid-wide {
-                display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 14px;
-            }
-
-            label {
-                display: grid;
-                gap: 8px;
-                font-size: 0.85rem;
-                font-weight: 700;
-            }
-
-            input,
-            textarea {
-                width: 100%;
-                padding: 0.85rem 0.95rem;
-                border: 1px solid var(--line);
-                border-radius: 14px;
-                font: inherit;
-                color: var(--ink);
-                background: #fff;
-            }
-
-            textarea {
-                min-height: 96px;
-                resize: vertical;
-            }
-
-            .field-error {
-                color: var(--danger);
-                font-size: 0.8rem;
-                font-weight: 400;
-            }
-
-            .search-form {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 18px;
-            }
-
-            .section-title .search-form {
-                flex: 1 1 auto;
-                margin-bottom: 0;
-            }
-
-            .search-input {
-                flex: 1 1 auto;
-                min-width: 0;
-            }
-
-            .search-note {
-                margin: 0 0 18px;
-                color: var(--muted);
-                font-size: 0.9rem;
-            }
-
-            .product-list {
-                display: grid;
-                gap: 12px;
-            }
-
-            .product-item {
-                padding: 0;
-                border: 1px solid var(--line);
-                border-radius: 16px;
-                background: var(--surface);
-            }
-
-            .product-name-button {
-                width: 100%;
-                padding: 16px 18px;
-                border: 0;
-                border-radius: 16px;
-                background: transparent;
-                color: var(--ink);
-                font: inherit;
-                font-size: 0.98rem;
-                font-weight: 700;
-                text-align: left;
-                cursor: pointer;
-                transition: background 0.2s ease, transform 0.2s ease;
-            }
-
-            .product-name-button:hover {
-                background: var(--surface-soft);
-                transform: translateY(-1px);
-            }
-
-            .modal {
-                position: fixed;
-                inset: 0;
-                z-index: 40;
-                display: none;
-                align-items: center;
-                justify-content: center;
-                padding: 24px;
-                background: rgba(24, 33, 25, 0.48);
-            }
-
-            .modal.is-open {
-                display: flex;
-            }
-
-            .modal-dialog {
-                width: min(100%, 860px);
-                max-height: calc(100vh - 48px);
-                overflow: auto;
-                padding: 22px;
-                border: 1px solid var(--line);
-                border-radius: 22px;
-                background: var(--surface);
-                box-shadow: 0 24px 60px rgba(18, 31, 20, 0.24);
-            }
-
-            .modal-header {
-                display: flex;
-                align-items: start;
-                justify-content: space-between;
-                gap: 16px;
-                margin-bottom: 18px;
-            }
-
-            .modal-header h3 {
-                margin: 0;
-                font-size: 1.35rem;
-                line-height: 1.2;
-            }
-
-            .modal-header p {
-                margin: 8px 0 0;
-                color: var(--muted);
-                font-size: 0.9rem;
-            }
-
-            .close-button {
-                min-width: 42px;
-                min-height: 42px;
-                border: 1px solid var(--line);
-                border-radius: 12px;
-                background: var(--surface-soft);
-                color: var(--ink);
-                font: inherit;
-                font-size: 1.1rem;
-                font-weight: 700;
-                cursor: pointer;
-            }
-
-            .modal-meta {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 12px;
-                margin-bottom: 18px;
-            }
-
-            .meta-card {
-                padding: 14px 16px;
-                border: 1px solid var(--line);
-                border-radius: 16px;
-                background: var(--surface-soft);
-            }
-
-            .meta-card strong {
-                display: block;
-                margin-bottom: 6px;
-                font-size: 0.82rem;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                color: var(--muted);
-            }
-
-            .meta {
-                font-size: 0.92rem;
-                line-height: 1.55;
-            }
-
-            .image-link {
-                display: inline-flex;
-                margin-bottom: 18px;
-                color: var(--brand);
-                font-size: 0.84rem;
-                font-weight: 700;
-                text-decoration: none;
-            }
-
-            .item-actions {
-                display: flex;
-                gap: 10px;
-                margin-top: 12px;
-            }
-
-            .delete-form {
-                margin-top: 12px;
-            }
-
-            .empty-state {
-                padding: 24px;
-                border: 1px dashed var(--line);
-                border-radius: 18px;
-                color: var(--muted);
-                text-align: center;
-            }
-
-            @media (max-width: 780px) {
-                .field-grid,
-                .field-grid-wide {
-                    grid-template-columns: 1fr;
-                }
-            }
-
-            @media (max-width: 640px) {
-                .topbar-inner {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    justify-content: center;
-                    padding: 12px 0;
-                }
-
-                .search-form,
-                .modal-header,
-                .modal-meta,
-                .section-title,
-                .item-actions {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-            }
-        </style>
+        <title>Orange Retail | Inventory</title>
+        <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
     </head>
     <body>
-        <header class="topbar">
-            <div class="topbar-inner">
-                <div class="brand-block">
-                    <strong>Supermarket Management</strong>
-                    <span>Admin panel for product catalog metadata</span>
+        <div class="utility-bar">
+            <div class="page-shell utility-bar-inner">
+                <div class="utility-links">
+                    <a href="{{ route('home') }}">Home</a>
+                    <a href="{{ route('catalog.index') }}">Catalog</a>
+                    <a href="{{ route('products.index') }}">Inventory</a>
                 </div>
 
-                <form class="logout-form" method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="logout-button" type="submit">Log out</button>
-                </form>
+                <div class="utility-actions">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit">Sign out</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <header class="masthead">
+            <div class="page-shell">
+                <div class="masthead-main">
+                    <a class="brand-lockup" href="{{ route('products.index') }}">
+                        <span class="brand-tag">Orange Retail</span>
+                        <span class="brand-title">Orange Retail</span>
+                        <span class="brand-subtitle">Manage products stored in the catalog.</span>
+                    </a>
+
+                    <form class="search-shell" method="GET" action="{{ route('products.index') }}">
+                        <input
+                            type="search"
+                            name="search"
+                            value="{{ $search }}"
+                            placeholder="Search by name or description"
+                            aria-label="Search inventory"
+                        >
+                        <button type="submit">Search</button>
+                    </form>
+
+                    <div class="masthead-actions">
+                        <a class="account-pill" href="{{ route('catalog.index') }}">
+                            <div>
+                                <strong>{{ $products->count() }} products</strong>
+                                <span>Visible in the current inventory view</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <main class="page">
-            <section class="content">
-                @if (session('status'))
-                    <div class="flash">{{ session('status') }}</div>
+        <main class="page-shell page-main admin-grid">
+            <section class="admin-hero stack">
+                <div>
+                    <span class="section-kicker">Admin</span>
+                    <h1>Inventory list</h1>
+                    <p class="muted-copy">Update or remove product records stored with the current schema.</p>
+                </div>
+
+                <div class="hero-notes">
+                    <div class="hero-note">
+                        <strong>{{ $products->count() }}</strong>
+                        <span>Products in the current result</span>
+                    </div>
+                    <div class="hero-note">
+                        <strong>{{ $search !== '' ? 'Filtered' : 'All records' }}</strong>
+                        <span>{{ $search !== '' ? 'Search is active for the inventory list.' : 'No search filter is active.' }}</span>
+                    </div>
+                    <div class="hero-note">
+                        <strong>Products</strong>
+                        <span>Create, edit, and delete catalog items.</span>
+                    </div>
+                </div>
+            </section>
+
+            @if (session('status'))
+                <div class="flash-message">{{ session('status') }}</div>
+            @endif
+
+            @if ($errors->any())
+                <div class="error-message">{{ $errors->first() }}</div>
+            @endif
+
+            <section class="admin-surface stack">
+                <div class="admin-toolbar">
+                    <form class="toolbar-search" method="GET" action="{{ route('products.index') }}">
+                        <input
+                            type="search"
+                            name="search"
+                            value="{{ $search }}"
+                            placeholder="Search by name or description"
+                        >
+                        <button type="submit">Search</button>
+                    </form>
+
+                    <div class="toolbar">
+                        @if ($search !== '')
+                            <a class="button-secondary" href="{{ route('products.index') }}">Clear</a>
+                        @endif
+
+                        <button class="button-primary" type="button" data-open-modal="add-product-modal">Add product</button>
+                    </div>
+                </div>
+
+                @if ($search !== '')
+                    <p class="muted-copy">Showing results for "{{ $search }}".</p>
                 @endif
 
-                @if ($errors->any())
-                    <div class="error-box">{{ $errors->first() }}</div>
-                @endif
-
-                <section class="panel form-panel">
-                    <div class="section-title">
-                        <form class="search-form" method="GET" action="{{ route('products.index') }}">
-                            <input
-                                class="search-input"
-                                type="search"
-                                name="search"
-                                value="{{ $search }}"
-                                placeholder="Search by name or description"
-                            >
-                            <button class="secondary-button" type="submit">Search</button>
-                            @if ($search !== '')
-                                <a class="ghost-button" href="{{ route('products.index') }}">Clear</a>
-                            @endif
-                        </form>
-
-                        <button class="primary-button" type="button" data-open-modal="add-product-modal">Add product</button>
-                    </div>
-                </section>
-
-                <section class="panel table-panel">
-                    <div class="section-title">
-                        <div>
-                            <h2>Inventory list</h2>
-                            <p>Update or remove product records stored with the new schema.</p>
-                        </div>
-                    </div>
-
-                    @if ($search !== '')
-                        <p class="search-note">Showing results for "{{ $search }}".</p>
-                    @endif
-
-                    @if ($products->isEmpty())
-                        <div class="empty-state">
+                @if ($products->isEmpty())
+                    <section class="empty-panel">
+                        <h2 class="section-heading">No products found</h2>
+                        <p class="muted-copy">
                             {{ $search !== '' ? 'No products matched your search.' : 'No products are available yet. Add the first one above.' }}
-                        </div>
-                    @else
-                        <div class="product-list">
-                            @foreach ($products as $product)
-                                <article class="product-item">
-                                    <button
-                                        class="product-name-button"
-                                        type="button"
-                                        data-open-modal="product-modal-{{ $product->id }}"
-                                    >
-                                        {{ $product->name }}
-                                    </button>
-                                </article>
-
-                                <div
-                                    class="modal @if ((string) old('modal_product_id') === (string) $product->id) is-open @endif"
-                                    id="product-modal-{{ $product->id }}"
-                                    data-modal
+                        </p>
+                    </section>
+                @else
+                    <section class="inventory-list">
+                        @foreach ($products as $product)
+                            <article>
+                                <button
+                                    class="inventory-row"
+                                    type="button"
+                                    data-open-modal="product-modal-{{ $product->id }}"
                                 >
-                                    <div class="modal-dialog">
-                                        <div class="modal-header">
+                                    <span class="inventory-tag">{{ $product->category }}</span>
+                                    <strong>{{ $product->name }}</strong>
+                                    <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }}</span>
+                                </button>
+                            </article>
+
+                            <div
+                                class="modal @if ((string) old('modal_product_id') === (string) $product->id) is-open @endif"
+                                id="product-modal-{{ $product->id }}"
+                                data-modal
+                            >
+                                <div class="modal-dialog">
+                                    <div class="modal-head">
+                                        <div>
+                                            <span class="section-kicker">Product</span>
+                                            <h2>{{ $product->name }}</h2>
+                                            <p class="muted-copy">Edit product fields or remove the record from the inventory list.</p>
+                                        </div>
+
+                                        <button class="modal-close" type="button" data-close-modal aria-label="Close modal">×</button>
+                                    </div>
+
+                                    <div class="meta-grid">
+                                        <div class="meta-card">
+                                            <strong>SKU</strong>
+                                            <div>{{ $product->sku }}</div>
+                                        </div>
+
+                                        <div class="meta-card">
+                                            <strong>Barcode</strong>
+                                            <div>{{ $product->barcode ?: 'Not available' }}</div>
+                                        </div>
+
+                                        <div class="meta-card">
+                                            <strong>Brand and category</strong>
+                                            <div>{{ $product->brand }} | {{ $product->category }} / {{ $product->subcategory }}</div>
+                                        </div>
+
+                                        <div class="meta-card">
+                                            <strong>Packaging</strong>
                                             <div>
-                                                <h3>{{ $product->name }}</h3>
-                                                <p>Full product metadata, editing, and deletion are available here.</p>
-                                            </div>
-
-                                            <button class="close-button" type="button" data-close-modal aria-label="Close modal">
-                                                ×
-                                            </button>
-                                        </div>
-
-                                        <div class="modal-meta">
-                                            <div class="meta-card">
-                                                <strong>SKU</strong>
-                                                <div class="meta">{{ $product->sku }}</div>
-                                            </div>
-
-                                            <div class="meta-card">
-                                                <strong>Barcode</strong>
-                                                <div class="meta">{{ $product->barcode ?: 'Not available' }}</div>
-                                            </div>
-
-                                            <div class="meta-card">
-                                                <strong>Brand and category</strong>
-                                                <div class="meta">{{ $product->brand }} | {{ $product->category }} / {{ $product->subcategory }}</div>
-                                            </div>
-
-                                            <div class="meta-card">
-                                                <strong>Packaging</strong>
-                                                <div class="meta">
-                                                    {{ $product->unit_type }} |
-                                                    {{ $product->pack_size ?: 'No pack size' }} |
-                                                    {{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'No weight data' }}
-                                                </div>
+                                                {{ $product->unit_type }} |
+                                                {{ $product->pack_size ?: 'No pack size' }} |
+                                                {{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'No weight data' }}
                                             </div>
                                         </div>
+                                    </div>
 
-                                        @if ($product->image_url)
-                                            <a class="image-link" href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open product image</a>
-                                        @endif
+                                    @if ($product->image_url)
+                                        <div class="tile-actions">
+                                            <a class="button-secondary" href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open product image</a>
+                                        </div>
+                                    @endif
 
-                                        <form class="inline-form" method="POST" action="{{ route('products.update', $product) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="modal_product_id" value="{{ $product->id }}">
-                                            <input type="hidden" name="search" value="{{ $search }}">
+                                    <form class="stack" method="POST" action="{{ route('products.update', $product) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="modal_product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="search" value="{{ $search }}">
 
-                                            <div class="field-grid">
-                                                <label>
-                                                    SKU
-                                                    <input type="text" name="sku" value="{{ old('modal_product_id') == $product->id ? old('sku', $product->sku) : $product->sku }}" required>
-                                                </label>
-
-                                                <label>
-                                                    Barcode
-                                                    <input type="text" name="barcode" value="{{ old('modal_product_id') == $product->id ? old('barcode', $product->barcode) : $product->barcode }}">
-                                                </label>
-                                            </div>
-
-                                            <div class="field-grid">
-                                                <label>
-                                                    Product name
-                                                    <input type="text" name="name" value="{{ old('modal_product_id') == $product->id ? old('name', $product->name) : $product->name }}" required>
-                                                </label>
-
-                                                <label>
-                                                    Brand
-                                                    <input type="text" name="brand" value="{{ old('modal_product_id') == $product->id ? old('brand', $product->brand) : $product->brand }}" required>
-                                                </label>
-                                            </div>
-
-                                            <div class="field-grid">
-                                                <label>
-                                                    Category
-                                                    <input type="text" name="category" value="{{ old('modal_product_id') == $product->id ? old('category', $product->category) : $product->category }}" required>
-                                                </label>
-
-                                                <label>
-                                                    Subcategory
-                                                    <input type="text" name="subcategory" value="{{ old('modal_product_id') == $product->id ? old('subcategory', $product->subcategory) : $product->subcategory }}" required>
-                                                </label>
-                                            </div>
-
-                                            <label>
-                                                Description
-                                                <textarea name="description" required>{{ old('modal_product_id') == $product->id ? old('description', $product->description) : $product->description }}</textarea>
+                                        <div class="form-grid-2">
+                                            <label class="field-label">
+                                                SKU
+                                                <input class="field" type="text" name="sku" value="{{ old('modal_product_id') == $product->id ? old('sku', $product->sku) : $product->sku }}" required>
                                             </label>
 
-                                            <label>
-                                                Image URL
-                                                <input type="url" name="image_url" value="{{ old('modal_product_id') == $product->id ? old('image_url', $product->image_url) : $product->image_url }}">
+                                            <label class="field-label">
+                                                Barcode
+                                                <input class="field" type="text" name="barcode" value="{{ old('modal_product_id') == $product->id ? old('barcode', $product->barcode) : $product->barcode }}">
+                                            </label>
+                                        </div>
+
+                                        <div class="form-grid-2">
+                                            <label class="field-label">
+                                                Product name
+                                                <input class="field" type="text" name="name" value="{{ old('modal_product_id') == $product->id ? old('name', $product->name) : $product->name }}" required>
                                             </label>
 
-                                            <div class="field-grid-wide">
-                                                <label>
-                                                    Unit type
-                                                    <input type="text" name="unit_type" value="{{ old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type }}" required>
-                                                </label>
+                                            <label class="field-label">
+                                                Brand
+                                                <input class="field" type="text" name="brand" value="{{ old('modal_product_id') == $product->id ? old('brand', $product->brand) : $product->brand }}" required>
+                                            </label>
+                                        </div>
 
-                                                <label>
-                                                    Pack size
-                                                    <input type="text" name="pack_size" value="{{ old('modal_product_id') == $product->id ? old('pack_size', $product->pack_size) : $product->pack_size }}">
-                                                </label>
-
-                                                <label>
-                                                    Weight unit
-                                                    <input type="text" name="weight_unit" value="{{ old('modal_product_id') == $product->id ? old('weight_unit', $product->weight_unit) : $product->weight_unit }}">
-                                                </label>
-                                            </div>
-
-                                            <label>
-                                                Weight value
-                                                <input type="number" step="0.01" min="0" name="weight_value" value="{{ old('modal_product_id') == $product->id ? old('weight_value', $product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') : ($product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') }}">
+                                        <div class="form-grid-2">
+                                            <label class="field-label">
+                                                Category
+                                                <input class="field" type="text" name="category" value="{{ old('modal_product_id') == $product->id ? old('category', $product->category) : $product->category }}" required>
                                             </label>
 
-                                            <div class="item-actions">
-                                                <button class="secondary-button" type="submit">Update product</button>
-                                            </div>
-                                        </form>
+                                            <label class="field-label">
+                                                Subcategory
+                                                <input class="field" type="text" name="subcategory" value="{{ old('modal_product_id') == $product->id ? old('subcategory', $product->subcategory) : $product->subcategory }}" required>
+                                            </label>
+                                        </div>
 
-                                        <form class="delete-form" method="POST" action="{{ route('products.destroy', $product) }}">
+                                        <label class="field-label">
+                                            Description
+                                            <textarea class="field-area" name="description" required>{{ old('modal_product_id') == $product->id ? old('description', $product->description) : $product->description }}</textarea>
+                                        </label>
+
+                                        <label class="field-label">
+                                            Image URL
+                                            <input class="field" type="url" name="image_url" value="{{ old('modal_product_id') == $product->id ? old('image_url', $product->image_url) : $product->image_url }}">
+                                        </label>
+
+                                        <div class="form-grid-3">
+                                            <label class="field-label">
+                                                Unit type
+                                                <input class="field" type="text" name="unit_type" value="{{ old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type }}" required>
+                                            </label>
+
+                                            <label class="field-label">
+                                                Pack size
+                                                <input class="field" type="text" name="pack_size" value="{{ old('modal_product_id') == $product->id ? old('pack_size', $product->pack_size) : $product->pack_size }}">
+                                            </label>
+
+                                            <label class="field-label">
+                                                Weight unit
+                                                <input class="field" type="text" name="weight_unit" value="{{ old('modal_product_id') == $product->id ? old('weight_unit', $product->weight_unit) : $product->weight_unit }}">
+                                            </label>
+                                        </div>
+
+                                        <label class="field-label">
+                                            Weight value
+                                            <input class="field" type="number" step="0.01" min="0" name="weight_value" value="{{ old('modal_product_id') == $product->id ? old('weight_value', $product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') : ($product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') }}">
+                                        </label>
+
+                                        <div class="tile-actions">
+                                            <button class="button-primary" type="submit">Update product</button>
+                                        </div>
+                                    </form>
+
+                                    <div class="tile-actions" style="margin-top: 16px;">
+                                        <form method="POST" action="{{ route('products.destroy', $product) }}">
                                             @csrf
                                             @method('DELETE')
                                             <input type="hidden" name="search" value="{{ $search }}">
-                                            <button class="danger-button" type="submit">Delete product</button>
+                                            <button class="button-danger" type="submit">Delete product</button>
                                         </form>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-                    @endif
-                </section>
+                            </div>
+                        @endforeach
+                    </section>
+                @endif
             </section>
         </main>
 
@@ -633,129 +284,128 @@
             data-modal
         >
             <div class="modal-dialog">
-                <div class="modal-header">
+                <div class="modal-head">
                     <div>
-                        <h3>Add product</h3>
-                        <p>Create a product record with the full catalog metadata schema.</p>
+                        <span class="section-kicker">New product</span>
+                        <h2>Add product</h2>
+                        <p class="muted-copy">Create a product record with the current catalog metadata fields.</p>
                     </div>
 
-                    <button class="close-button" type="button" data-close-modal aria-label="Close modal">
-                        ×
-                    </button>
+                    <button class="modal-close" type="button" data-close-modal aria-label="Close modal">×</button>
                 </div>
 
-                <form class="product-form" method="POST" action="{{ route('products.store') }}">
+                <form class="stack" method="POST" action="{{ route('products.store') }}">
                     @csrf
                     <input type="hidden" name="modal_context" value="create">
                     <input type="hidden" name="search" value="{{ $search }}">
 
-                    <div class="field-grid">
-                        <label for="sku">
+                    <div class="form-grid-2">
+                        <label class="field-label" for="sku">
                             SKU
-                            <input id="sku" type="text" name="sku" value="{{ old('sku') }}" required>
+                            <input class="field" id="sku" type="text" name="sku" value="{{ old('sku') }}" required>
                             @error('sku')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
 
-                        <label for="barcode">
+                        <label class="field-label" for="barcode">
                             Barcode
-                            <input id="barcode" type="text" name="barcode" value="{{ old('barcode') }}">
+                            <input class="field" id="barcode" type="text" name="barcode" value="{{ old('barcode') }}">
                             @error('barcode')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
                     </div>
 
-                    <div class="field-grid">
-                        <label for="name">
+                    <div class="form-grid-2">
+                        <label class="field-label" for="name">
                             Product name
-                            <input id="name" type="text" name="name" value="{{ old('name') }}" required>
+                            <input class="field" id="name" type="text" name="name" value="{{ old('name') }}" required>
                             @error('name')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
 
-                        <label for="brand">
+                        <label class="field-label" for="brand">
                             Brand
-                            <input id="brand" type="text" name="brand" value="{{ old('brand') }}" required>
+                            <input class="field" id="brand" type="text" name="brand" value="{{ old('brand') }}" required>
                             @error('brand')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
                     </div>
 
-                    <div class="field-grid">
-                        <label for="category">
+                    <div class="form-grid-2">
+                        <label class="field-label" for="category">
                             Category
-                            <input id="category" type="text" name="category" value="{{ old('category') }}" required>
+                            <input class="field" id="category" type="text" name="category" value="{{ old('category') }}" required>
                             @error('category')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
 
-                        <label for="subcategory">
+                        <label class="field-label" for="subcategory">
                             Subcategory
-                            <input id="subcategory" type="text" name="subcategory" value="{{ old('subcategory') }}" required>
+                            <input class="field" id="subcategory" type="text" name="subcategory" value="{{ old('subcategory') }}" required>
                             @error('subcategory')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
                     </div>
 
-                    <label for="description">
+                    <label class="field-label" for="description">
                         Description
-                        <textarea id="description" name="description" required>{{ old('description') }}</textarea>
+                        <textarea class="field-area" id="description" name="description" required>{{ old('description') }}</textarea>
                         @error('description')
                             <span class="field-error">{{ $message }}</span>
                         @enderror
                     </label>
 
-                    <label for="image_url">
+                    <label class="field-label" for="image_url">
                         Image URL
-                        <input id="image_url" type="url" name="image_url" value="{{ old('image_url') }}">
+                        <input class="field" id="image_url" type="url" name="image_url" value="{{ old('image_url') }}">
                         @error('image_url')
                             <span class="field-error">{{ $message }}</span>
                         @enderror
                     </label>
 
-                    <div class="field-grid-wide">
-                        <label for="unit_type">
+                    <div class="form-grid-3">
+                        <label class="field-label" for="unit_type">
                             Unit type
-                            <input id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}" required>
+                            <input class="field" id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}" required>
                             @error('unit_type')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
 
-                        <label for="pack_size">
+                        <label class="field-label" for="pack_size">
                             Pack size
-                            <input id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}">
+                            <input class="field" id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}">
                             @error('pack_size')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
 
-                        <label for="weight_unit">
+                        <label class="field-label" for="weight_unit">
                             Weight unit
-                            <input id="weight_unit" type="text" name="weight_unit" value="{{ old('weight_unit') }}">
+                            <input class="field" id="weight_unit" type="text" name="weight_unit" value="{{ old('weight_unit') }}">
                             @error('weight_unit')
                                 <span class="field-error">{{ $message }}</span>
                             @enderror
                         </label>
                     </div>
 
-                    <label for="weight_value">
+                    <label class="field-label" for="weight_value">
                         Weight value
-                        <input id="weight_value" type="number" step="0.01" min="0" name="weight_value" value="{{ old('weight_value') }}">
+                        <input class="field" id="weight_value" type="number" step="0.01" min="0" name="weight_value" value="{{ old('weight_value') }}">
                         @error('weight_value')
                             <span class="field-error">{{ $message }}</span>
                         @enderror
                     </label>
 
-                    <div class="item-actions">
-                        <button class="primary-button" type="submit">Save product</button>
-                        <button class="ghost-button" type="button" data-close-modal>Cancel</button>
+                    <div class="tile-actions">
+                        <button class="button-primary" type="submit">Save product</button>
+                        <button class="button-secondary" type="button" data-close-modal>Cancel</button>
                     </div>
                 </form>
             </div>

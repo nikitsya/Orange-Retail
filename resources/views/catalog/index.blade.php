@@ -3,389 +3,193 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Product Catalog</title>
-        <style>
-            :root {
-                color-scheme: light;
-                --bg: #f2f5ef;
-                --surface: #ffffff;
-                --surface-soft: #f7f9f4;
-                --ink: #182119;
-                --muted: #667062;
-                --line: #d8e0d4;
-                --brand: #2d6b45;
-                --brand-strong: #1f5234;
-                --shadow: 0 16px 38px rgba(18, 31, 20, 0.08);
-                --radius: 22px;
-            }
-
-            * {
-                box-sizing: border-box;
-            }
-
-            body {
-                margin: 0;
-                min-height: 100vh;
-                font-family: Arial, Helvetica, sans-serif;
-                background: var(--bg);
-                color: var(--ink);
-            }
-
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
-
-            .topbar {
-                position: sticky;
-                top: 0;
-                z-index: 20;
-                background: rgba(242, 245, 239, 0.94);
-                backdrop-filter: blur(12px);
-                border-bottom: 1px solid rgba(24, 33, 25, 0.08);
-            }
-
-            .shell {
-                width: min(calc(100% - 24px), 1160px);
-                margin: 0 auto;
-            }
-
-            .topbar-inner {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 16px;
-                min-height: 74px;
-            }
-
-            .brand-block strong {
-                display: block;
-                font-size: 1rem;
-            }
-
-            .brand-block span {
-                color: var(--muted);
-                font-size: 0.88rem;
-            }
-
-            .topbar-actions {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .top-link,
-            .auth-link,
-            .logout-button,
-            .search-button {
-                min-height: 42px;
-                padding: 0.75rem 1rem;
-                border-radius: 12px;
-                border: 1px solid var(--line);
-                background: var(--surface);
-                color: var(--ink);
-                font: inherit;
-                font-size: 0.9rem;
-                font-weight: 700;
-                cursor: pointer;
-            }
-
-            .auth-link {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .logout-button,
-            .search-button,
-            .auth-link--primary {
-                border-color: transparent;
-                background: linear-gradient(135deg, var(--brand), var(--brand-strong));
-                color: #fff;
-            }
-
-            .logout-form {
-                margin: 0;
-            }
-
-            main.shell {
-                padding: 28px 0 40px;
-            }
-
-            .hero,
-            .search-panel,
-            .empty-state,
-            .product-card {
-                background: var(--surface);
-                border: 1px solid var(--line);
-                border-radius: var(--radius);
-                box-shadow: var(--shadow);
-            }
-
-            .hero {
-                padding: 22px 24px;
-                margin-bottom: 20px;
-            }
-
-            .hero h1 {
-                margin: 0;
-                font-size: clamp(1.8rem, 4vw, 2.8rem);
-                letter-spacing: -0.04em;
-            }
-
-            .hero p {
-                max-width: 620px;
-                margin: 12px 0 0;
-                color: var(--muted);
-                line-height: 1.7;
-            }
-
-            .hero-actions {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                margin-top: 18px;
-            }
-
-            .search-panel {
-                padding: 18px;
-                margin-bottom: 20px;
-            }
-
-            .search-form {
-                display: flex;
-                gap: 12px;
-            }
-
-            .search-form input,
-            .search-form select {
-                flex: 1 1 auto;
-                min-width: 0;
-                padding: 0.9rem 1rem;
-                border: 1px solid var(--line);
-                border-radius: 14px;
-                font: inherit;
-                background: var(--surface-soft);
-                color: var(--ink);
-            }
-
-            .search-form select {
-                flex: 0 0 240px;
-            }
-
-            .search-note {
-                margin: 0 0 18px;
-                color: var(--muted);
-                font-size: 0.92rem;
-            }
-
-            .product-grid {
-                display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 18px;
-            }
-
-            .product-card {
-                padding: 18px;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .product-image {
-                display: grid;
-                place-items: center;
-                aspect-ratio: 16 / 9;
-                margin-top: 12px;
-                margin-bottom: 12px;
-                border: 1px solid var(--line);
-                border-radius: 16px;
-                overflow: hidden;
-                background: linear-gradient(135deg, #f7f9f4, #eef4ee);
-            }
-
-            .product-image img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                display: block;
-            }
-
-            .image-placeholder {
-                display: grid;
-                gap: 8px;
-                justify-items: center;
-                padding: 12px;
-                text-align: center;
-                color: var(--muted);
-            }
-
-            .image-placeholder strong {
-                font-size: 0.88rem;
-                color: var(--ink);
-            }
-
-            .image-placeholder span {
-                font-size: 0.78rem;
-                line-height: 1.5;
-            }
-
-            .eyebrow {
-                display: inline-flex;
-                padding: 0.36rem 0.62rem;
-                border-radius: 999px;
-                background: #edf5ee;
-                color: var(--brand-strong);
-                font-size: 0.76rem;
-                font-weight: 700;
-                letter-spacing: 0.03em;
-                text-transform: uppercase;
-            }
-
-            .product-card h2 {
-                margin: 12px 0 8px;
-                font-size: 1.12rem;
-                line-height: 1.3;
-            }
-
-            .product-title-link {
-                color: var(--ink);
-                text-decoration: none;
-            }
-
-            .product-title-link:hover {
-                color: var(--brand-strong);
-            }
-
-            .brand-line {
-                margin: 0;
-                color: var(--muted);
-                font-size: 0.88rem;
-                font-weight: 600;
-            }
-
-            .price-block {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 12px;
-                margin-top: 14px;
-                padding: 14px 16px;
-                border-radius: 18px;
-                background: var(--surface-soft);
-            }
-
-            .price-copy {
-                min-width: 0;
-            }
-
-            .price-main {
-                display: block;
-                font-size: 1.18rem;
-                font-weight: 700;
-                letter-spacing: -0.03em;
-                color: var(--ink);
-            }
-
-            .price-unit {
-                display: block;
-                margin-top: 4px;
-                color: var(--muted);
-                font-size: 0.8rem;
-            }
-
-            .inline-cart-form {
-                margin: 0;
-                flex: 0 0 auto;
-            }
-
-            .inline-cart-button {
-                min-height: 38px;
-                padding: 0.6rem 0.85rem;
-                border: 0;
-                border-radius: 10px;
-                background: linear-gradient(135deg, var(--brand), var(--brand-strong));
-                color: #fff;
-                font: inherit;
-                font-size: 0.82rem;
-                font-weight: 700;
-                cursor: pointer;
-                white-space: nowrap;
-            }
-
-            .empty-state {
-                padding: 28px;
-                text-align: center;
-                color: var(--muted);
-            }
-
-            @media (max-width: 900px) {
-                .product-grid {
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                }
-            }
-
-            @media (max-width: 640px) {
-                .topbar-inner,
-                .topbar-actions,
-                .search-form {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-
-                .product-grid {
-                    grid-template-columns: 1fr;
-                }
-            }
-        </style>
+        <title>Orange Retail | Catalog</title>
+        <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
     </head>
     <body>
-        <header class="topbar">
-            <div class="shell topbar-inner">
-                <div class="brand-block">
-                    <strong>Supermarket Catalog</strong>
-                    <span>Customer browsing area for the current product range</span>
-                </div>
+        @php
+            $navCategories = $categories->take(8);
+            $spotlightCategories = $categories->take(6);
+            $productCount = $products->count();
+        @endphp
 
-                <div class="topbar-actions">
+        <div class="utility-bar">
+            <div class="page-shell utility-bar-inner">
+                <div class="utility-links">
+                    <a href="{{ route('home') }}">Home</a>
+                    <a href="{{ route('catalog.index') }}">Catalog</a>
                     @auth
                         @if (auth()->user()->role === 'admin')
-                            <a class="top-link" href="{{ route('products.index') }}">Inventory</a>
+                            <a href="{{ route('products.index') }}">Inventory</a>
                         @else
-                            <a class="top-link" href="{{ route('dashboard') }}">Dashboard</a>
-                            <a class="top-link" href="{{ route('cart.index') }}">Cart</a>
+                            <a href="{{ route('dashboard') }}">Dashboard</a>
+                            <a href="{{ route('cart.index') }}">Cart</a>
                         @endif
+                    @else
+                        <a href="{{ route('register') }}">Create account</a>
+                    @endauth
+                </div>
 
-                        <form class="logout-form" method="POST" action="{{ route('logout') }}">
+                <div class="utility-actions">
+                    @auth
+                        <span>{{ auth()->user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="logout-button" type="submit">Log out</button>
+                            <button type="submit">Sign out</button>
                         </form>
                     @else
-                        <a class="auth-link" href="{{ route('login') }}">Login</a>
-                        <a class="auth-link auth-link--primary" href="{{ route('register') }}">Register</a>
+                        <a href="{{ route('login') }}">Sign in</a>
                     @endauth
                 </div>
             </div>
+        </div>
+
+        <header class="masthead">
+            <div class="page-shell">
+                <div class="masthead-main">
+                    <a class="brand-lockup" href="{{ route('home') }}">
+                        <span class="brand-tag">Orange Retail</span>
+                        <span class="brand-title">Orange Retail</span>
+                        <span class="brand-subtitle">Browse products, search by department, and open product details.</span>
+                    </a>
+
+                    <form class="search-shell" method="GET" action="{{ route('catalog.index') }}">
+                        @if ($category !== '')
+                            <input type="hidden" name="category" value="{{ $category }}">
+                        @endif
+
+                        <input
+                            type="search"
+                            name="search"
+                            value="{{ $search }}"
+                            placeholder="Search groceries, brands, or categories"
+                            aria-label="Search catalog"
+                        >
+                        <button type="submit">Search</button>
+                    </form>
+
+                    <div class="masthead-actions">
+                        @auth
+                            @if (auth()->user()->role === 'admin')
+                                <a class="account-pill" href="{{ route('products.index') }}">
+                                    <div>
+                                        <strong>Inventory</strong>
+                                        <span>Open product management</span>
+                                    </div>
+                                </a>
+                            @else
+                                <a class="account-pill" href="{{ route('cart.index') }}">
+                                    <div>
+                                        <strong>{{ $productCount }} products</strong>
+                                        <span>Open cart</span>
+                                    </div>
+                                </a>
+                            @endif
+                        @else
+                            <a class="button-secondary" href="{{ route('login') }}">Login</a>
+                            <a class="button-primary" href="{{ route('register') }}">Register</a>
+                        @endauth
+                    </div>
+                </div>
+
+                <nav class="section-nav" aria-label="Catalog categories">
+                    <a class="nav-chip @if ($category === '') is-active @endif" href="{{ route('catalog.index', ['search' => $search]) }}">
+                        All departments
+                    </a>
+
+                    @foreach ($navCategories as $catalogCategory)
+                        <a
+                            class="nav-chip @if ($category === $catalogCategory) is-active @endif"
+                            href="{{ route('catalog.index', array_filter(['category' => $catalogCategory, 'search' => $search !== '' ? $search : null])) }}"
+                        >
+                            {{ $catalogCategory }}
+                        </a>
+                    @endforeach
+                </nav>
+            </div>
         </header>
 
-        <main class="shell">
-            <section class="hero">
-                <h1>Browse supermarket products</h1>
-                <p>
-                    Explore the live supermarket catalog from the home page. Guests can browse products and
-                    product details, while signed-in customers can continue to the cart flow.
-                </p>
-
-                @guest
-                    <div class="hero-actions">
-                        <a class="auth-link auth-link--primary" href="{{ route('register') }}">Create customer account</a>
-                        <a class="auth-link" href="{{ route('login') }}">Sign in to use the cart</a>
+        <main class="page-shell page-main stack">
+            <section class="hero-grid">
+                <article class="hero-panel">
+                    <div class="hero-copy">
+                        <span class="section-kicker">Browse supermarket products</span>
+                        <h1>Browse supermarket products</h1>
+                        <p>Search products, filter by department, and open the product detail page.</p>
                     </div>
-                @endguest
+
+                    <div class="hero-actions">
+                        <a class="button-primary" href="{{ route('catalog.index') }}">View all products</a>
+                        @auth
+                            @if (auth()->user()->role !== 'admin')
+                                <a class="button-secondary" href="{{ route('cart.index') }}">Open cart</a>
+                            @else
+                                <a class="button-secondary" href="{{ route('products.index') }}">Open inventory</a>
+                            @endif
+                        @else
+                            <a class="button-secondary" href="{{ route('register') }}">Create account</a>
+                        @endauth
+                    </div>
+
+                    <div class="hero-notes">
+                        <div class="hero-note">
+                            <strong>{{ $productCount }}</strong>
+                            <span>Products in the current view</span>
+                        </div>
+                        <div class="hero-note">
+                            <strong>{{ $categories->count() }}</strong>
+                            <span>Departments available</span>
+                        </div>
+                        <div class="hero-note">
+                            <strong>{{ $search !== '' ? 'Filtered' : 'All products' }}</strong>
+                            <span>{{ $search !== '' ? 'The results are filtered by your search.' : 'Use search or choose a department.' }}</span>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="promo-column">
+                    <article class="promo-panel">
+                        <span class="section-kicker">Current view</span>
+                        <h2>Products loaded</h2>
+                        <p class="section-copy">The catalog updates immediately when you change the search or selected department.</p>
+                    </article>
+
+                    <article class="promo-panel">
+                        <span class="section-kicker">Departments</span>
+                        <h2>Open a category</h2>
+                        <p class="section-copy">Use the department tabs or the filter form to move between product groups.</p>
+                    </article>
+                </div>
             </section>
 
-            <section class="search-panel">
-                <form class="search-form" method="GET" action="{{ route('catalog.index') }}">
-                    <select name="category" aria-label="Category filter">
+            @if ($spotlightCategories->isNotEmpty())
+                <section class="section-panel">
+                    <div class="section-actions">
+                        <div>
+                            <span class="section-kicker">Departments</span>
+                            <h2 class="section-heading">Open a department</h2>
+                        </div>
+                    </div>
+
+                    <div class="circle-strip">
+                        @foreach ($spotlightCategories as $spotlightCategory)
+                            <a class="circle-link" href="{{ route('catalog.index', ['category' => $spotlightCategory]) }}">
+                                <span class="circle-badge">{{ strtoupper(substr($spotlightCategory, 0, 1)) }}</span>
+                                <span>{{ $spotlightCategory }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
+            <section class="section-panel">
+                <div>
+                    <span class="section-kicker">Filters</span>
+                    <h2 class="section-heading">Search and refine</h2>
+                </div>
+
+                <form class="filter-grid" method="GET" action="{{ route('catalog.index') }}">
+                    <select class="field-select" name="category" aria-label="Category filter">
                         <option value="">All categories</option>
                         @foreach ($categories as $catalogCategory)
                             <option value="{{ $catalogCategory }}" @selected($category === $catalogCategory)>
@@ -395,72 +199,90 @@
                     </select>
 
                     <input
+                        class="field"
                         type="search"
                         name="search"
                         value="{{ $search }}"
                         placeholder="Search by name, description, brand, or category"
                     >
-                    <button class="search-button" type="submit">Search</button>
+
+                    <div class="toolbar">
+                        <button class="button-primary" type="submit">Apply filters</button>
+                        @if ($search !== '' || $category !== '')
+                            <a class="button-secondary" href="{{ route('catalog.index') }}">Clear</a>
+                        @endif
+                    </div>
                 </form>
+
+                @if ($search !== '' || $category !== '')
+                    <div class="filter-notes">
+                        @if ($search !== '')
+                            <span class="filter-note">Search: {{ $search }}</span>
+                        @endif
+
+                        @if ($category !== '')
+                            <span class="filter-note">Department: {{ $category }}</span>
+                        @endif
+                    </div>
+                @endif
             </section>
 
-            @if ($search !== '')
-                <p class="search-note">Showing catalog results for "{{ $search }}".</p>
-            @endif
-
-            @if ($category !== '')
-                <p class="search-note">Active category filter: "{{ $category }}".</p>
-            @endif
-
             @if ($products->isEmpty())
-                <section class="empty-state">
-                    {{ $search !== '' || $category !== '' ? 'No products matched the current filters.' : 'No products are available in the catalog yet.' }}
+                <section class="empty-panel">
+                    <h2 class="section-heading">No products matched the current selection.</h2>
+                    <p class="muted-copy">
+                        {{ $search !== '' || $category !== '' ? 'Try clearing one filter or choosing a different department.' : 'The catalog is currently empty.' }}
+                    </p>
                 </section>
             @else
-                <section class="product-grid">
+                <section class="catalog-grid">
                     @foreach ($products as $product)
                         <article class="product-card">
-                            <span class="eyebrow">{{ $product->category }}</span>
-                            <h2>
-                                <a class="product-title-link" href="{{ route('catalog.show', $product) }}">
-                                    {{ $product->name }}
-                                </a>
-                            </h2>
-                            <p class="brand-line">{{ $product->brand }}</p>
-
-                            <div class="product-image">
+                            <a class="product-media" href="{{ route('catalog.show', $product) }}">
                                 @if ($product->image_url)
                                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                                 @else
-                                    <div class="image-placeholder">
-                                        <strong>No image available</strong>
-                                        <span>Catalog data does not currently include a product photo.</span>
-                                    </div>
+                                    <span class="placeholder-badge">{{ strtoupper(substr($product->category, 0, 1)) }}</span>
                                 @endif
-                            </div>
+                            </a>
 
-                            @if ($product->price_display || $product->unit_price_display)
+                            <span class="eyebrow-tag">{{ $product->category }}</span>
+                            <h3>
+                                <a href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
+                            </h3>
+                            <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
+                            <p class="muted-copy">{{ $product->description }}</p>
+
+                            <div class="price-row">
                                 <div class="price-block">
-                                    <div class="price-copy">
-                                        @if ($product->price_display)
-                                            <span class="price-main">{{ $product->price_display }}</span>
-                                        @endif
+                                    @if ($product->price_display)
+                                        <strong>{{ $product->price_display }}</strong>
+                                    @else
+                                        <strong>In store</strong>
+                                    @endif
 
-                                        @if ($product->unit_price_display)
-                                            <span class="price-unit">{{ $product->unit_price_display }}</span>
-                                        @endif
-                                    </div>
+                                    @if ($product->unit_price_display)
+                                        <span>{{ $product->unit_price_display }}</span>
+                                    @else
+                                        <span>{{ $product->unit_type }}{{ $product->pack_size ? ' | ' . $product->pack_size : '' }}</span>
+                                    @endif
+                                </div>
+
+                                <div class="tile-actions">
+                                    <a class="button-secondary" href="{{ route('catalog.show', $product) }}">View</a>
 
                                     @auth
-                                        <form class="inline-cart-form" method="POST" action="{{ route('cart.store', $product) }}">
-                                            @csrf
-                                            <button class="inline-cart-button" type="submit">Add to cart</button>
-                                        </form>
+                                        @if (auth()->user()->role !== 'admin')
+                                            <form method="POST" action="{{ route('cart.store', $product) }}">
+                                                @csrf
+                                                <button class="button-primary" type="submit">Add to cart</button>
+                                            </form>
+                                        @endif
                                     @else
-                                        <a class="auth-link auth-link--primary" href="{{ route('login') }}">Login to add</a>
+                                        <a class="button-primary" href="{{ route('login') }}">Login to add</a>
                                     @endauth
                                 </div>
-                            @endif
+                            </div>
                         </article>
                     @endforeach
                 </section>

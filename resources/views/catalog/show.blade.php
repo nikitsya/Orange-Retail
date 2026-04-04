@@ -3,351 +3,161 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ $product->name }}</title>
-        <style>
-            :root {
-                color-scheme: light;
-                --bg: #f3f6f1;
-                --surface: #ffffff;
-                --surface-soft: #f7f9f5;
-                --ink: #182119;
-                --muted: #657062;
-                --line: #d8e0d4;
-                --brand: #2d6b45;
-                --brand-strong: #1f5234;
-                --shadow: 0 18px 42px rgba(18, 31, 20, 0.08);
-                --radius: 24px;
-            }
-
-            * {
-                box-sizing: border-box;
-            }
-
-            body {
-                margin: 0;
-                min-height: 100vh;
-                font-family: Arial, Helvetica, sans-serif;
-                background: var(--bg);
-                color: var(--ink);
-            }
-
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
-
-            .shell {
-                width: min(calc(100% - 24px), 1040px);
-                margin: 0 auto;
-            }
-
-            .topbar {
-                position: sticky;
-                top: 0;
-                z-index: 20;
-                background: rgba(243, 246, 241, 0.94);
-                backdrop-filter: blur(12px);
-                border-bottom: 1px solid rgba(24, 33, 25, 0.08);
-            }
-
-            .topbar-inner {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 16px;
-                min-height: 74px;
-            }
-
-            .topbar-actions {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .top-link,
-            .logout-button,
-            .primary-button {
-                min-height: 42px;
-                padding: 0.75rem 1rem;
-                border-radius: 12px;
-                border: 1px solid var(--line);
-                background: var(--surface);
-                color: var(--ink);
-                font: inherit;
-                font-size: 0.9rem;
-                font-weight: 700;
-                cursor: pointer;
-            }
-
-            .logout-button,
-            .primary-button {
-                border-color: transparent;
-                background: linear-gradient(135deg, var(--brand), var(--brand-strong));
-                color: #fff;
-            }
-
-            .logout-form,
-            .cart-form {
-                margin: 0;
-            }
-
-            main.shell {
-                padding: 30px 0 42px;
-            }
-
-            .product-layout {
-                display: grid;
-                grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-                gap: 20px;
-            }
-
-            .panel {
-                background: var(--surface);
-                border: 1px solid var(--line);
-                border-radius: var(--radius);
-                box-shadow: var(--shadow);
-            }
-
-            .hero-panel,
-            .meta-panel {
-                padding: 24px;
-            }
-
-            .eyebrow {
-                display: inline-flex;
-                padding: 0.38rem 0.65rem;
-                border-radius: 999px;
-                background: #eef5ef;
-                color: var(--brand-strong);
-                font-size: 0.76rem;
-                font-weight: 700;
-                letter-spacing: 0.03em;
-                text-transform: uppercase;
-            }
-
-            h1 {
-                margin: 16px 0 10px;
-                font-size: clamp(2rem, 4vw, 3rem);
-                letter-spacing: -0.04em;
-                line-height: 1.05;
-            }
-
-            .lead {
-                margin: 0;
-                color: var(--muted);
-                line-height: 1.75;
-            }
-
-            .image-card {
-                margin-top: 22px;
-                overflow: hidden;
-                border: 1px solid var(--line);
-                border-radius: 18px;
-                background: var(--surface-soft);
-            }
-
-            .image-card img {
-                width: 100%;
-                max-height: 320px;
-                object-fit: cover;
-                display: block;
-            }
-
-            .image-caption,
-            .image-placeholder {
-                padding: 18px;
-            }
-
-            .image-caption strong,
-            .image-placeholder strong {
-                display: block;
-                margin-bottom: 8px;
-            }
-
-            .image-caption a {
-                color: var(--brand);
-                font-weight: 700;
-            }
-
-            .image-placeholder {
-                color: var(--muted);
-                line-height: 1.65;
-            }
-
-            .price-card {
-                margin-top: 22px;
-                padding: 18px;
-                border: 1px solid var(--line);
-                border-radius: 18px;
-                background: var(--surface-soft);
-            }
-
-            .price-card strong {
-                display: block;
-                margin-bottom: 8px;
-                font-size: 0.82rem;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                color: var(--muted);
-            }
-
-            .price-main {
-                display: block;
-                font-size: 1.5rem;
-                font-weight: 700;
-                letter-spacing: -0.04em;
-            }
-
-            .price-unit {
-                display: block;
-                margin-top: 6px;
-                color: var(--muted);
-                font-size: 0.92rem;
-            }
-
-            .cta-row {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-top: 22px;
-            }
-
-            .meta-grid {
-                display: grid;
-                gap: 12px;
-            }
-
-            .meta-card {
-                padding: 16px;
-                border: 1px solid var(--line);
-                border-radius: 18px;
-                background: var(--surface-soft);
-            }
-
-            .meta-card strong {
-                display: block;
-                margin-bottom: 6px;
-                font-size: 0.82rem;
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-                color: var(--muted);
-            }
-
-            .meta-card span {
-                line-height: 1.6;
-            }
-
-            @media (max-width: 780px) {
-                .topbar-inner,
-                .topbar-actions,
-                .product-layout {
-                    grid-template-columns: 1fr;
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-            }
-        </style>
+        <title>Orange Retail | {{ $product->name }}</title>
+        <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
     </head>
     <body>
-        <header class="topbar">
-            <div class="shell topbar-inner">
-                <a class="top-link" href="{{ route('catalog.index') }}">Back to catalog</a>
+        <div class="utility-bar">
+            <div class="page-shell utility-bar-inner">
+                <div class="utility-links">
+                    <a href="{{ route('catalog.index') }}">Back to catalog</a>
+                    <a href="{{ route('home') }}">Home</a>
+                    <a href="{{ route('catalog.index', ['category' => $product->category]) }}">{{ $product->category }}</a>
+                </div>
 
-                <div class="topbar-actions">
-                    <a class="top-link" href="{{ route('dashboard') }}">Dashboard</a>
+                <div class="utility-actions">
+                    @auth
+                        @if (auth()->user()->role === 'admin')
+                            <a href="{{ route('products.index') }}">Inventory</a>
+                        @else
+                            <a href="{{ route('cart.index') }}">Cart</a>
+                            <a href="{{ route('dashboard') }}">Dashboard</a>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}">Sign in</a>
+                    @endauth
+                </div>
+            </div>
+        </div>
 
-                    <form class="logout-form" method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="logout-button" type="submit">Log out</button>
+        <header class="masthead">
+            <div class="page-shell">
+                <div class="masthead-main">
+                    <a class="brand-lockup" href="{{ route('home') }}">
+                        <span class="brand-tag">Orange Retail</span>
+                        <span class="brand-title">Orange Retail</span>
+                        <span class="brand-subtitle">View product information, packaging, and catalog details.</span>
+                    </a>
+
+                    <form class="search-shell" method="GET" action="{{ route('catalog.index') }}">
+                        <input
+                            type="search"
+                            name="search"
+                            placeholder="Search for another product"
+                            aria-label="Search products"
+                        >
+                        <button type="submit">Search</button>
                     </form>
+
+                    <div class="masthead-actions">
+                        @auth
+                            @if (auth()->user()->role !== 'admin')
+                                <a class="account-pill" href="{{ route('cart.index') }}">
+                                    <div>
+                                        <strong>Cart</strong>
+                                        <span>Open cart</span>
+                                    </div>
+                                </a>
+                            @else
+                                <a class="account-pill" href="{{ route('products.index') }}">
+                                    <div>
+                                        <strong>Inventory</strong>
+                                        <span>Open product management</span>
+                                    </div>
+                                </a>
+                            @endif
+                        @else
+                            <a class="button-secondary" href="{{ route('login') }}">Login</a>
+                            <a class="button-primary" href="{{ route('register') }}">Register</a>
+                        @endauth
+                    </div>
                 </div>
             </div>
         </header>
 
-        <main class="shell">
-            <section class="product-layout">
-                <article class="panel hero-panel">
-                    <span class="eyebrow">{{ $product->category }}</span>
-                    <h1>{{ $product->name }}</h1>
-                    <p class="lead">{{ $product->description }}</p>
+        <main class="page-shell page-main stack">
+            <section class="detail-layout">
+                <article class="detail-panel">
+                    <span class="section-kicker">{{ $product->category }}</span>
+                    <h1 class="detail-heading">{{ $product->name }}</h1>
+                    <p class="lede">{{ $product->description }}</p>
 
-                    <div class="image-card">
+                    <div class="detail-gallery">
                         @if ($product->image_url)
                             <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-
-                            <div class="image-caption">
-                                <strong>Product image</strong>
-                                <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
-                            </div>
                         @else
-                            <div class="image-placeholder">
-                                <strong>No image available</strong>
-                                This product is part of the imported catalog data, but no product image URL is currently stored for it.
-                            </div>
+                            <div class="detail-gallery-empty">{{ strtoupper(substr($product->name, 0, 1)) }}</div>
                         @endif
                     </div>
 
-                    @if ($product->price_display || $product->unit_price_display)
-                        <div class="price-card">
-                            <strong>Price</strong>
-
-                            @if ($product->price_display)
-                                <span class="price-main">{{ $product->price_display }}</span>
-                            @endif
-
-                            @if ($product->unit_price_display)
-                                <span class="price-unit">{{ $product->unit_price_display }}</span>
-                            @endif
-                        </div>
+                    @if ($product->image_url)
+                        <p class="muted-copy">
+                            <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
+                        </p>
                     @endif
-
-                    <div class="cta-row">
-                        <form class="cart-form" method="POST" action="{{ route('cart.store', $product) }}">
-                            @csrf
-                            <button class="primary-button" type="submit">Add to cart</button>
-                        </form>
-
-                        <a class="top-link" href="{{ route('cart.index') }}">View cart</a>
-                    </div>
                 </article>
 
-                <aside class="panel meta-panel">
-                    <div class="meta-grid">
-                        <div class="meta-card">
-                            <strong>Brand</strong>
-                            <span>{{ $product->brand }}</span>
-                        </div>
+                <aside class="summary-panel">
+                    <span class="section-kicker">Product details</span>
+                    <h2>{{ $product->brand }}</h2>
+                    <p>Use this page to review packaging, price information, and the saved product metadata.</p>
 
-                        <div class="meta-card">
-                            <strong>Category path</strong>
-                            <span>{{ $product->category }} / {{ $product->subcategory }}</span>
+                    <div class="summary-stats">
+                        <div class="summary-stat">
+                            <strong>{{ $product->price_display ?: 'In store' }}</strong>
+                            <span>Price</span>
                         </div>
+                        <div class="summary-stat">
+                            <strong>{{ $product->unit_price_display ?: ($product->pack_size ?: $product->unit_type) }}</strong>
+                            <span>Unit</span>
+                        </div>
+                        <div class="summary-stat">
+                            <strong>{{ $product->subcategory }}</strong>
+                            <span>Subcategory</span>
+                        </div>
+                    </div>
 
-                        <div class="meta-card">
+                    <div class="detail-actions" style="margin-top: 18px;">
+                        @auth
+                            @if (auth()->user()->role !== 'admin')
+                                <form method="POST" action="{{ route('cart.store', $product) }}">
+                                    @csrf
+                                    <button class="button-primary" type="submit">Add to cart</button>
+                                </form>
+                            @else
+                                <a class="button-primary" href="{{ route('products.index') }}">Manage inventory</a>
+                            @endif
+                        @else
+                            <a class="button-primary" href="{{ route('login') }}">Login to add</a>
+                        @endauth
+
+                        <a class="button-secondary" href="{{ route('catalog.index', ['category' => $product->category]) }}">More in {{ $product->category }}</a>
+                    </div>
+
+                    <div class="detail-info-grid">
+                        <div class="detail-info-card">
                             <strong>SKU</strong>
-                            <span>{{ $product->sku }}</span>
+                            <div>{{ $product->sku }}</div>
                         </div>
-
-                        <div class="meta-card">
+                        <div class="detail-info-card">
                             <strong>Barcode</strong>
-                            <span>{{ $product->barcode ?: 'Not specified' }}</span>
+                            <div>{{ $product->barcode ?: 'Not specified' }}</div>
                         </div>
-
-                        <div class="meta-card">
+                        <div class="detail-info-card">
                             <strong>Unit type</strong>
-                            <span>{{ $product->unit_type }}</span>
+                            <div>{{ $product->unit_type }}</div>
                         </div>
-
-                        <div class="meta-card">
+                        <div class="detail-info-card">
                             <strong>Pack size</strong>
-                            <span>{{ $product->pack_size ?: 'Not specified' }}</span>
+                            <div>{{ $product->pack_size ?: 'Not specified' }}</div>
                         </div>
-
-                        <div class="meta-card">
+                        <div class="detail-info-card">
                             <strong>Weight</strong>
-                            <span>
-                                {{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'Not specified' }}
-                            </span>
+                            <div>{{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'Not specified' }}</div>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Category line</strong>
+                            <div>{{ $product->category }} / {{ $product->subcategory }}</div>
                         </div>
                     </div>
                 </aside>
