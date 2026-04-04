@@ -88,7 +88,10 @@
                 padding: 0.9rem 0.95rem;
                 border: 1px solid var(--line);
                 border-radius: 14px;
-                font: inherit;
+                font-family: inherit;
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
                 color: var(--ink);
                 background: #fff;
             }
