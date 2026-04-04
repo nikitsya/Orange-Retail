@@ -159,51 +159,6 @@
         <main class="page-shell page-main stack">
             <h1 class="sr-only">Browse supermarket products</h1>
 
-            <section class="section-panel">
-                <div>
-                    <span class="section-kicker">Filters</span>
-                    <h2 class="section-heading">Search and refine</h2>
-                </div>
-
-                <form class="filter-grid" method="GET" action="{{ route('catalog.index') }}">
-                    <select class="field-select" name="category" aria-label="Category filter">
-                        <option value="">All categories</option>
-                        @foreach ($categories as $catalogCategory)
-                            <option value="{{ $catalogCategory }}" @selected($category === $catalogCategory)>
-                                {{ $catalogCategory }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <input
-                        class="field"
-                        type="search"
-                        name="search"
-                        value="{{ $search }}"
-                        placeholder="Search by name, description, brand, or category"
-                    >
-
-                    <div class="toolbar">
-                        <button class="button-primary" type="submit">Apply filters</button>
-                        @if ($search !== '' || $category !== '')
-                            <a class="button-secondary" href="{{ route('catalog.index') }}">Clear</a>
-                        @endif
-                    </div>
-                </form>
-
-                @if ($search !== '' || $category !== '')
-                    <div class="filter-notes">
-                        @if ($search !== '')
-                            <span class="filter-note">Search: {{ $search }}</span>
-                        @endif
-
-                        @if ($category !== '')
-                            <span class="filter-note">Department: {{ $category }}</span>
-                        @endif
-                    </div>
-                @endif
-            </section>
-
             @if ($products->isEmpty())
                 <section class="empty-panel">
                     <h2 class="section-heading">No products matched the current selection.</h2>
