@@ -394,6 +394,10 @@ textarea {
     padding: 28px 0 56px;
 }
 
+.catalog-content {
+    background: #ffffff;
+}
+
 .hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);

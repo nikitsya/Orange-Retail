@@ -156,69 +156,71 @@
             </div>
         </div>
 
-        <main class="page-shell page-main stack">
-            <h1 class="sr-only">Browse supermarket products</h1>
+        <section class="catalog-content">
+            <main class="page-shell page-main stack">
+                <h1 class="sr-only">Browse supermarket products</h1>
 
-            @if ($products->isEmpty())
-                <section class="empty-panel">
-                    <h2 class="section-heading">No products matched the current selection.</h2>
-                    <p class="muted-copy">
-                        {{ $search !== '' || $category !== '' ? 'Try clearing one filter or choosing a different department.' : 'The catalog is currently empty.' }}
-                    </p>
-                </section>
-            @else
-                <section class="catalog-grid">
-                    @foreach ($products as $product)
-                        <article class="product-card">
-                            <a class="product-media" href="{{ route('catalog.show', $product) }}">
-                                @if ($product->image_url)
-                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-                                @else
-                                    <span class="placeholder-badge">{{ strtoupper(substr($product->category, 0, 1)) }}</span>
-                                @endif
-                            </a>
-
-                            <span class="eyebrow-tag">{{ $product->category }}</span>
-                            <h3>
-                                <a href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
-                            </h3>
-                            <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
-                            <p class="muted-copy">{{ $product->description }}</p>
-
-                            <div class="price-row">
-                                <div class="price-block">
-                                    @if ($product->price_display)
-                                        <strong>{{ $product->price_display }}</strong>
+                @if ($products->isEmpty())
+                    <section class="empty-panel">
+                        <h2 class="section-heading">No products matched the current selection.</h2>
+                        <p class="muted-copy">
+                            {{ $search !== '' || $category !== '' ? 'Try clearing one filter or choosing a different department.' : 'The catalog is currently empty.' }}
+                        </p>
+                    </section>
+                @else
+                    <section class="catalog-grid">
+                        @foreach ($products as $product)
+                            <article class="product-card">
+                                <a class="product-media" href="{{ route('catalog.show', $product) }}">
+                                    @if ($product->image_url)
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                                     @else
-                                        <strong>In store</strong>
+                                        <span class="placeholder-badge">{{ strtoupper(substr($product->category, 0, 1)) }}</span>
                                     @endif
+                                </a>
 
-                                    @if ($product->unit_price_display)
-                                        <span>{{ $product->unit_price_display }}</span>
-                                    @else
-                                        <span>{{ $product->unit_type }}{{ $product->pack_size ? ' | ' . $product->pack_size : '' }}</span>
-                                    @endif
-                                </div>
+                                <span class="eyebrow-tag">{{ $product->category }}</span>
+                                <h3>
+                                    <a href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
+                                </h3>
+                                <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
+                                <p class="muted-copy">{{ $product->description }}</p>
 
-                                <div class="tile-actions">
-                                    <a class="button-secondary" href="{{ route('catalog.show', $product) }}">View</a>
-
-                                    @auth
-                                        @if (auth()->user()->role !== 'admin')
-                                            <form method="POST" action="{{ route('cart.store', $product) }}">
-                                                @csrf
-                                                <button class="button-primary" type="submit">Add to cart</button>
-                                            </form>
+                                <div class="price-row">
+                                    <div class="price-block">
+                                        @if ($product->price_display)
+                                            <strong>{{ $product->price_display }}</strong>
+                                        @else
+                                            <strong>In store</strong>
                                         @endif
-                                    @else
-                                        <a class="button-primary" href="{{ route('login') }}">Login to add</a>
-                                    @endauth
+
+                                        @if ($product->unit_price_display)
+                                            <span>{{ $product->unit_price_display }}</span>
+                                        @else
+                                            <span>{{ $product->unit_type }}{{ $product->pack_size ? ' | ' . $product->pack_size : '' }}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="tile-actions">
+                                        <a class="button-secondary" href="{{ route('catalog.show', $product) }}">View</a>
+
+                                        @auth
+                                            @if (auth()->user()->role !== 'admin')
+                                                <form method="POST" action="{{ route('cart.store', $product) }}">
+                                                    @csrf
+                                                    <button class="button-primary" type="submit">Add to cart</button>
+                                                </form>
+                                            @endif
+                                        @else
+                                            <a class="button-primary" href="{{ route('login') }}">Login to add</a>
+                                        @endauth
+                                    </div>
                                 </div>
-                            </div>
-                        </article>
-                    @endforeach
-                </section>
-            @endif
-        </main>
+                            </article>
+                        @endforeach
+                    </section>
+                @endif
+            </main>
+        </section>
     </body>
 </html>
