@@ -10,6 +10,17 @@
         @php
             $navCategories = $categories->take(8);
             $productCount = $products->count();
+            $departmentImages = [
+                '' => 'all_dep.png',
+                'All departments' => 'all_dep.png',
+                'Baby & Toddler' => 'baby_toddler.png',
+                'Drinks' => 'drinks.png',
+                'Food Cupboard' => 'food_cupb.png',
+                'Fresh Food' => 'fresh_food.png',
+                'Health & Beauty' => 'health_beauty.png',
+                'Home & Furniture' => 'home_furniture.png',
+                'Household' => 'household.png',
+            ];
         @endphp
 
         <div class="utility-bar">
@@ -96,16 +107,34 @@
         <div class="catalog-nav-shell">
             <div class="page-shell">
                 <nav class="section-nav" aria-label="Catalog categories">
-                    <a class="nav-chip @if ($category === '') is-active @endif" href="{{ route('catalog.index', ['search' => $search]) }}">
-                        All departments
+                    <a
+                        class="nav-chip @if ($category === '') is-active @endif"
+                        href="{{ route('catalog.index', ['search' => $search]) }}"
+                        aria-label="All departments"
+                    >
+                        <span class="nav-chip-media">
+                            <img src="{{ asset('images/departments/' . $departmentImages['']) }}" alt="All departments">
+                        </span>
+                        <span class="sr-only">All departments</span>
                     </a>
 
                     @foreach ($navCategories as $catalogCategory)
                         <a
                             class="nav-chip @if ($category === $catalogCategory) is-active @endif"
                             href="{{ route('catalog.index', array_filter(['category' => $catalogCategory, 'search' => $search !== '' ? $search : null])) }}"
+                            aria-label="{{ $catalogCategory }}"
                         >
-                            {{ $catalogCategory }}
+                            <span class="nav-chip-media">
+                                @if (isset($departmentImages[$catalogCategory]))
+                                    <img
+                                        src="{{ asset('images/departments/' . $departmentImages[$catalogCategory]) }}"
+                                        alt="{{ $catalogCategory }}"
+                                    >
+                                @else
+                                    <span class="nav-chip-fallback">{{ strtoupper(substr($catalogCategory, 0, 1)) }}</span>
+                                @endif
+                            </span>
+                            <span class="sr-only">{{ $catalogCategory }}</span>
                         </a>
                     @endforeach
                 </nav>
@@ -113,6 +142,8 @@
         </div>
 
         <main class="page-shell page-main stack">
+            <h1 class="sr-only">Browse supermarket products</h1>
+
             <section class="section-panel">
                 <div>
                     <span class="section-kicker">Filters</span>
