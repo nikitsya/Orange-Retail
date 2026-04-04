@@ -8,8 +8,6 @@
     </head>
     <body>
         @php
-            $navCategories = $categories->take(8);
-            $productCount = $products->count();
             $departmentImages = [
                 '' => 'all_dep.png',
                 'All departments' => 'all_dep.png',
@@ -20,7 +18,21 @@
                 'Health & Beauty' => 'health_beauty.png',
                 'Home & Furniture' => 'home_furniture.png',
                 'Household' => 'household.png',
+                'Pets' => 'pets.png',
+                'Treats & Snacks' => 'treats_snacks.png',
             ];
+            $navCategories = collect([
+                'Baby & Toddler',
+                'Drinks',
+                'Food Cupboard',
+                'Fresh Food',
+                'Health & Beauty',
+                'Home & Furniture',
+                'Household',
+                'Pets',
+                'Treats & Snacks',
+            ])->filter(fn (string $catalogCategory) => $categories->contains($catalogCategory));
+            $productCount = $products->count();
         @endphp
 
         <div class="utility-bar">
