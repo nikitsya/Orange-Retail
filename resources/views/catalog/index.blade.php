@@ -189,7 +189,6 @@
                                     @endif
                                 </div>
 
-                                <span class="eyebrow-tag">{{ $product->category }}</span>
                                 <h3>
                                     <a class="product-title-link" href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
                                 </h3>
