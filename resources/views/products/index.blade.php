@@ -53,6 +53,8 @@
                                 <span>Visible in the current inventory view</span>
                             </div>
                         </a>
+
+                        <button class="button-primary" type="button" data-open-modal="add-product-modal">Add product</button>
                     </div>
                 </div>
             </div>
