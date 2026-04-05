@@ -225,7 +225,12 @@
                                     </div>
                                 @endif
 
-                                <form class="stack" method="POST" action="{{ route('products.update', $product) }}">
+                                <form
+                                    id="update-product-form-{{ $product->id }}"
+                                    class="stack"
+                                    method="POST"
+                                    action="{{ route('products.update', $product) }}"
+                                >
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="modal_product_id" value="{{ $product->id }}">
@@ -362,12 +367,13 @@
                                         Visible in the customer catalog
                                     </label>
 
-                                    <div class="tile-actions">
-                                        <button class="button-primary" type="submit">Update product</button>
-                                    </div>
                                 </form>
 
-                                <div class="tile-actions" style="margin-top: 16px;">
+                                <div class="modal-form-actions">
+                                    <button class="button-primary" type="submit" form="update-product-form-{{ $product->id }}">
+                                        Update product
+                                    </button>
+
                                     <form method="POST" action="{{ route('products.destroy', $product) }}">
                                         @csrf
                                         @method('DELETE')

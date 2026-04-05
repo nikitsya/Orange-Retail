@@ -894,6 +894,18 @@ textarea {
     margin-left: auto;
 }
 
+.modal-form-actions,
+.modal-form-actions form {
+    display: flex;
+    align-items: center;
+}
+
+.modal-form-actions {
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+}
+
 .price-block {
     display: flex;
     flex-direction: column;
