@@ -4,7 +4,6 @@
 
     $navLinks = match (true) {
         $isAdmin => [
-            ['label' => 'Home', 'route' => route('home')],
             ['label' => 'Catalog', 'route' => route('catalog.index')],
             ['label' => 'Admin Dashboard', 'route' => route('admin.dashboard')],
             ['label' => 'Inventory', 'route' => route('products.index')],
@@ -12,14 +11,12 @@
             ['label' => 'Orders', 'route' => route('admin.orders.index')],
         ],
         $isAuthenticated => [
-            ['label' => 'Home', 'route' => route('home')],
             ['label' => 'Catalog', 'route' => route('catalog.index')],
             ['label' => 'Dashboard', 'route' => route('dashboard')],
             ['label' => 'Orders', 'route' => route('orders.index')],
             ['label' => 'Cart', 'route' => route('cart.index')],
         ],
         default => [
-            ['label' => 'Home', 'route' => route('home')],
             ['label' => 'Catalog', 'route' => route('catalog.index')],
             ['label' => 'Login', 'route' => route('login')],
             ['label' => 'Register', 'route' => route('register')],
