@@ -350,7 +350,12 @@
                                         Stock
                                         <input class="field" type="number" min="0" name="stock"
                                                value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
+                                               readonly
+                                               aria-readonly="true"
                                                required>
+                                        <span class="field-help">
+                                            Stock is managed in <a href="{{ route('admin.stock.index') }}">Stock Center</a>.
+                                        </span>
                                     </label>
 
                                     <label class="remember-row">
