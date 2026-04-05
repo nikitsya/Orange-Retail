@@ -1133,6 +1133,10 @@ textarea {
     background: rgba(255, 251, 246, 0.98);
 }
 
+.admin-surface {
+    border: 0;
+}
+
 .admin-toolbar {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
