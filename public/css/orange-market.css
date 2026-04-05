@@ -1017,6 +1017,10 @@ textarea {
     padding: 34px;
 }
 
+.auth-panel {
+    border-radius: 0;
+}
+
 .auth-aside {
     background: var(--accent);
     color: #fff8f0;
