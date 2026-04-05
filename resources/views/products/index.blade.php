@@ -155,7 +155,6 @@
                                 type="button"
                                 data-open-modal="product-modal-{{ $product->id }}"
                             >
-                                <span class="inventory-tag">{{ $product->category }}</span>
                                 <strong>{{ $product->name }}</strong>
                                 <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }} | Stock: {{ $product->stock }} | {{ $product->is_active ? 'Active' : 'Inactive' }}</span>
                             </button>
