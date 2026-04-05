@@ -22,21 +22,6 @@
             <a class="brand-lockup" href="{{ route('admin.dashboard') }}">
                 @include('partials.brand-name', ['class' => 'brand-title'])
             </a>
-
-            <div class="toolbar">
-                <a class="button-secondary" href="{{ route('products.index') }}">Inventory</a>
-                <a class="button-secondary" href="{{ route('admin.stock.index') }}">Stock Center</a>
-                <a class="button-primary" href="{{ route('admin.orders.index') }}">Order Queue</a>
-            </div>
-
-            <div class="masthead-actions">
-                <a class="account-pill" href="{{ route('admin.stock.index') }}">
-                    <div>
-                        <strong>{{ $lowStockProducts }} low-stock products</strong>
-                        <span>{{ $incomingDeliveries }} deliveries due within 7 days</span>
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
 </header>
