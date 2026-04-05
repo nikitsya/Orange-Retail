@@ -14,6 +14,7 @@ class CatalogController extends Controller
     {
         $search = trim($request->string('search')->toString());
         $category = trim($request->string('category')->toString());
+        $subcategory = trim($request->string('subcategory')->toString());
 
         $categories = Product::query()
             ->select('category')
@@ -22,10 +23,25 @@ class CatalogController extends Controller
             ->orderBy('category')
             ->pluck('category');
 
+        $subcategoryOptions = Product::query()
+            ->where('is_active', true)
+            ->when($category !== '', function ($query) use ($category) {
+                $query->where('category', $category);
+            })
+            ->select('subcategory')
+            ->whereNotNull('subcategory')
+            ->where('subcategory', '!=', '')
+            ->distinct()
+            ->orderBy('subcategory')
+            ->pluck('subcategory');
+
         $products = Product::query()
             ->where('is_active', true)
             ->when($category !== '', function ($query) use ($category) {
                 $query->where('category', $category);
+            })
+            ->when($subcategory !== '', function ($query) use ($subcategory) {
+                $query->where('subcategory', $subcategory);
             })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($nestedQuery) use ($search) {
@@ -47,7 +63,9 @@ class CatalogController extends Controller
             'products' => $products,
             'search' => $search,
             'category' => $category,
+            'subcategory' => $subcategory,
             'categories' => $categories,
+            'subcategoryOptions' => $subcategoryOptions,
         ]);
     }
 

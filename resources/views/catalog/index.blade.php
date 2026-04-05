@@ -63,6 +63,9 @@
                 @if ($category !== '')
                     <input type="hidden" name="category" value="{{ $category }}">
                 @endif
+                @if ($subcategory !== '')
+                    <input type="hidden" name="subcategory" value="{{ $subcategory }}">
+                @endif
 
                 <input
                     type="search"
@@ -134,6 +137,28 @@
                 @endforeach
             </nav>
         </div>
+
+        @if ($category !== '' && $subcategoryOptions->isNotEmpty())
+            <div class="subcategory-filter-shell">
+                <div class="subcategory-filter-row" role="navigation" aria-label="{{ $category }} subcategories">
+                    <a
+                        class="subcategory-chip @if ($subcategory === '') is-active @endif"
+                        href="{{ route('catalog.index', array_filter(['category' => $category, 'search' => $search !== '' ? $search : null])) }}"
+                    >
+                        All {{ $category }}
+                    </a>
+
+                    @foreach ($subcategoryOptions as $subcategoryOption)
+                        <a
+                            class="subcategory-chip @if ($subcategory === $subcategoryOption) is-active @endif"
+                            href="{{ route('catalog.index', array_filter(['category' => $category, 'subcategory' => $subcategoryOption, 'search' => $search !== '' ? $search : null])) }}"
+                        >
+                            {{ $subcategoryOption }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 
@@ -153,7 +178,7 @@
             <section class="empty-panel">
                 <h2 class="section-heading">No products matched the current selection.</h2>
                 <p class="muted-copy">
-                    {{ $search !== '' || $category !== '' ? 'Try clearing one filter or choosing a different department.' : 'The catalog is currently empty.' }}
+                    {{ $search !== '' || $category !== '' || $subcategory !== '' ? 'Try clearing one filter or choosing a different department or subcategory.' : 'The catalog is currently empty.' }}
                 </p>
             </section>
         @else
