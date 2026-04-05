@@ -139,7 +139,7 @@ textarea {
     grid-template-columns: 240px minmax(0, 1fr) auto;
     align-items: center;
     gap: 24px;
-    padding: 18px 0;
+    padding: 12px 0;
 }
 
 .brand-lockup {
@@ -238,6 +238,12 @@ textarea {
     border-color: rgba(235, 109, 31, 0.75);
 }
 
+.masthead .search-shell input {
+    min-height: 48px;
+    padding-top: 0.78rem;
+    padding-bottom: 0.78rem;
+}
+
 .search-image-button {
     width: 24px;
     min-width: 24px;
@@ -333,6 +339,18 @@ textarea {
 
 .masthead-actions {
     justify-content: flex-end;
+}
+
+.masthead .button-primary,
+.masthead .button-secondary,
+.masthead .account-pill {
+    min-height: 44px;
+}
+
+.masthead .button-primary,
+.masthead .button-secondary {
+    padding-top: 0.72rem;
+    padding-bottom: 0.72rem;
 }
 
 .account-pill {
