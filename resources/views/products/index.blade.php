@@ -179,45 +179,6 @@
                                     </button>
                                 </div>
 
-                                <div class="meta-grid">
-                                    <div class="meta-card">
-                                        <strong>SKU</strong>
-                                        <div>{{ $product->sku }}</div>
-                                    </div>
-
-                                    <div class="meta-card">
-                                        <strong>Barcode</strong>
-                                        <div>{{ $product->barcode ?: 'Not available' }}</div>
-                                    </div>
-
-                                    <div class="meta-card">
-                                        <strong>Brand and category</strong>
-                                        <div>{{ $product->brand }} | {{ $product->category }}
-                                            / {{ $product->subcategory }}</div>
-                                    </div>
-
-                                    <div class="meta-card">
-                                        <strong>Packaging</strong>
-                                        <div>
-                                            {{ $product->unit_type }} |
-                                            {{ $product->pack_size ?: 'No pack size' }} |
-                                            {{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'No weight data' }}
-                                        </div>
-                                    </div>
-
-                                    <div class="meta-card">
-                                        <strong>Stock and status</strong>
-                                        <div>{{ $product->stock }} units
-                                            | {{ $product->is_active ? 'Active in catalog' : 'Hidden from catalog' }}</div>
-                                    </div>
-
-                                    <div class="meta-card">
-                                        <strong>Price</strong>
-                                        <div>{{ $product->price_display ?: 'No display price' }}
-                                            | {{ $product->unit_price_display ?: 'No unit price' }}</div>
-                                    </div>
-                                </div>
-
                                 @if ($product->image_url)
                                     <div class="tile-actions">
                                         <a class="button-secondary" href="{{ $product->image_url }}" target="_blank"

@@ -1237,34 +1237,11 @@ body.modal-open {
     color: var(--accent-deep);
 }
 
-.meta-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
-}
-
-.meta-card {
-    padding: 16px 18px;
-    border-radius: 0;
-    background: #fff;
-    border: 1px solid rgba(240, 210, 182, 0.86);
-}
-
 .modal-dialog .eyebrow-tag,
 .modal-dialog .field,
 .modal-dialog .field-select,
 .modal-dialog .field-area {
     border-radius: 0;
-}
-
-.meta-card strong {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
 }
 
 .form-grid-2,
@@ -1322,7 +1299,6 @@ body.modal-open {
     .stats-row,
     .mini-metrics,
     .summary-stats,
-    .meta-grid,
     .form-grid-2,
     .form-grid-3,
     .detail-info-grid {
