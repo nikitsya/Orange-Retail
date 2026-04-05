@@ -94,7 +94,7 @@ class CatalogController extends Controller
         $request->session()->put('cart', $cart);
 
         return redirect()
-            ->route('cart.index')
+            ->to(url()->previous() ?: route('catalog.index'))
             ->with('status', "{$product->name} was added to your cart.");
     }
 
