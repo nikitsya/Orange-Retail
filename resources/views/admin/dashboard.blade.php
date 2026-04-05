@@ -16,16 +16,6 @@
     </div>
 </div>
 
-<header class="masthead">
-    <div class="page-shell">
-        <div class="masthead-main">
-            <a class="brand-lockup" href="{{ route('admin.dashboard') }}">
-                @include('partials.brand-name', ['class' => 'brand-title'])
-            </a>
-        </div>
-    </div>
-</header>
-
 <main class="page-shell page-main stack">
     @if (session('status'))
         <div class="flash-message">{{ session('status') }}</div>
