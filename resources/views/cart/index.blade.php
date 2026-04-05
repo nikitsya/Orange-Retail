@@ -28,8 +28,8 @@
             <div class="page-shell">
                 <div class="masthead-main">
                     <a class="brand-lockup" href="{{ route('home') }}">
-                        <span class="brand-tag">Orange Retail</span>
-                        <span class="brand-title">Orange Retail</span>
+                        @include('partials.brand-name', ['class' => 'brand-tag'])
+                        @include('partials.brand-name', ['class' => 'brand-title'])
                         <span class="brand-subtitle">Review products currently stored in the session cart.</span>
                     </a>
 

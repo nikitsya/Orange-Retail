@@ -11,7 +11,7 @@
         <main class="auth-page">
             <div class="page-shell auth-layout">
                 <section class="auth-aside">
-                    <span class="brand-tag">Orange Retail</span>
+                    @include('partials.brand-name', ['class' => 'brand-tag'])
                     <h2>Access your account</h2>
                     <p>Sign in to open the customer dashboard or the admin inventory area.</p>
 

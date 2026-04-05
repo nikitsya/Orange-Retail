@@ -11,7 +11,7 @@
         <main class="auth-page">
             <div class="page-shell auth-layout">
                 <section class="auth-aside">
-                    <span class="brand-tag">Orange Retail</span>
+                    @include('partials.brand-name', ['class' => 'brand-tag'])
                     <h2>Create an account</h2>
                     <p>Register a customer account to open the dashboard and use the cart.</p>
 

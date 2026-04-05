@@ -29,8 +29,8 @@
             <div class="page-shell">
                 <div class="masthead-main">
                     <a class="brand-lockup" href="{{ route('products.index') }}">
-                        <span class="brand-tag">Orange Retail</span>
-                        <span class="brand-title">Orange Retail</span>
+                        @include('partials.brand-name', ['class' => 'brand-tag'])
+                        @include('partials.brand-name', ['class' => 'brand-title'])
                         <span class="brand-subtitle">Manage products stored in the catalog.</span>
                     </a>
 

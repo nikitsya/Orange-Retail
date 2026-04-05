@@ -156,6 +156,28 @@ textarea {
     background: linear-gradient(90deg, var(--accent-strong) 0 26%, #ffb06d 26% 52%, var(--accent) 52% 78%, #ffd5b1 78%);
 }
 
+.brand-mark,
+.brand-word {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+.brand-mark {
+    gap: 0.26em;
+}
+
+.brand-word {
+    gap: 0.03em;
+}
+
+.brand-word-icon {
+    width: 0.9em;
+    height: 0.9em;
+    object-fit: contain;
+    flex-shrink: 0;
+    transform: translateY(0.06em);
+}
+
 .brand-title {
     font-size: 1.7rem;
     font-weight: 900;
