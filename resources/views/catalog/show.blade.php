@@ -14,19 +14,7 @@
 
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
-                <div class="utility-links">
-                    <a href="{{ route('catalog.index') }}">Back to catalog</a>
-                    <a href="{{ route('home') }}">Home</a>
-                    <a href="{{ route('catalog.index', ['category' => $product->category]) }}">{{ $product->category }}</a>
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
-                        @else
-                            <a href="{{ route('dashboard') }}">Dashboard</a>
-                            <a href="{{ route('orders.index') }}">Orders</a>
-                        @endif
-                    @endauth
-                </div>
+                @include('partials.app-nav')
 
                 <div class="utility-actions">
                     @auth

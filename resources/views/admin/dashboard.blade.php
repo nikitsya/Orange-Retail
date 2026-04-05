@@ -10,13 +10,7 @@
     <body>
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
-                <div class="utility-links">
-                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                    <a href="{{ route('products.index') }}">Inventory</a>
-                    <a href="{{ route('admin.stock.index') }}">Stock Center</a>
-                    <a href="{{ route('admin.orders.index') }}">Orders</a>
-                    <a href="{{ route('catalog.index') }}">Catalog</a>
-                </div>
+                @include('partials.app-nav')
 
                 <div class="utility-actions">
                     <span>{{ auth()->user()->name }}</span>

@@ -120,6 +120,11 @@ textarea {
     opacity: 0.95;
 }
 
+.utility-links a.is-active {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+
 .utility-actions form {
     margin: 0;
 }

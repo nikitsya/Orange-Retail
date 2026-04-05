@@ -10,15 +10,7 @@
     <body>
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
-                <div class="utility-links">
-                    @if ($isAdmin)
-                        <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
-                        <a href="{{ route('admin.orders.index') }}">Orders</a>
-                    @else
-                        <a href="{{ route('dashboard') }}">Dashboard</a>
-                        <a href="{{ route('orders.index') }}">Orders</a>
-                    @endif
-                </div>
+                @include('partials.app-nav')
 
                 <div class="utility-actions">
                     <form method="POST" action="{{ route('logout') }}">
