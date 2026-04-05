@@ -1157,7 +1157,7 @@ textarea {
     width: 100%;
     padding: 18px 20px;
     border: 1px solid rgba(240, 210, 182, 0.86);
-    border-radius: 22px;
+    border-radius: 0;
     background: var(--surface-muted);
     color: var(--ink);
     text-align: left;
