@@ -20,7 +20,6 @@ class Product extends Model
         'brand',
         'category',
         'subcategory',
-        'description',
         'image_url',
         'unit_type',
         'pack_size',
@@ -60,5 +59,24 @@ class Product extends Model
             'last_restocked_at' => 'datetime',
             'next_delivery_due_at' => 'datetime',
         ];
+    }
+
+    public function getSummaryTextAttribute(): string
+    {
+        $parts = collect([
+            $this->name,
+            $this->brand,
+            $this->category,
+            $this->subcategory,
+            $this->pack_size ?: $this->unit_type,
+        ])
+            ->filter(fn ($value) => filled($value))
+            ->map(fn ($value) => trim((string) $value))
+            ->unique()
+            ->values();
+
+        return $parts->isEmpty()
+            ? 'Product information is available in the saved fields.'
+            : $parts->implode(', ') . '.';
     }
 }

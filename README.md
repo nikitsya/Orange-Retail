@@ -96,7 +96,7 @@ data relationships, and validated workflows.
 ### Product Catalog
 
 - Product list page with pagination.
-- Product details page with image, description, price, and stock state.
+- Product details page with image, generated product summary, price, and stock state.
 - Category-based filtering and keyword search.
 
 ### Shopping Cart and Checkout

@@ -27,7 +27,6 @@ class ManagerAuthenticationTest extends TestCase
             'brand' => 'Tesco',
             'category' => 'Fresh Fruit',
             'subcategory' => 'Apples',
-            'description' => 'Seed product',
             'image_url' => 'https://example.com/products/inventory-item.jpg',
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
@@ -119,7 +118,6 @@ class ManagerAuthenticationTest extends TestCase
             'brand' => 'Tesco',
             'category' => 'Fresh Fruit',
             'subcategory' => 'Apples',
-            'description' => 'Fresh Gala apples pack of 6',
             'image_url' => 'https://example.com/images/apples.jpg',
             'price_value' => '3.49',
             'currency' => 'EUR',
@@ -142,7 +140,6 @@ class ManagerAuthenticationTest extends TestCase
             'brand' => 'Tesco',
             'category' => 'Fresh Fruit',
             'subcategory' => 'Apples',
-            'description' => 'Fresh Gala apples pack of 8',
             'image_url' => 'https://example.com/images/apples-8.jpg',
             'price_value' => '4.29',
             'currency' => 'EUR',
@@ -172,7 +169,7 @@ class ManagerAuthenticationTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_search_products_by_name_and_description(): void
+    public function test_admin_can_search_products_by_name_and_saved_fields(): void
     {
         $admin = User::factory()->create([
             'role' => 'admin',
@@ -185,7 +182,6 @@ class ManagerAuthenticationTest extends TestCase
             'brand' => 'Tesco',
             'category' => 'Fresh Fruit',
             'subcategory' => 'Apples',
-            'description' => 'Sweet apples for everyday snacks.',
             'image_url' => null,
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
@@ -200,7 +196,6 @@ class ManagerAuthenticationTest extends TestCase
             'brand' => 'Tesco',
             'category' => 'Bakery',
             'subcategory' => 'Bread',
-            'description' => 'Freshly baked sourdough loaf.',
             'image_url' => null,
             'unit_type' => 'each',
             'pack_size' => null,
@@ -215,7 +210,7 @@ class ManagerAuthenticationTest extends TestCase
             ->assertDontSee('Tesco Bakery Bread');
 
         $this->actingAs($admin)
-            ->get('/products?search=sourdough')
+            ->get('/products?search=Bread')
             ->assertOk()
             ->assertSee('Tesco Bakery Bread')
             ->assertDontSee('Tesco Gala Apples 6 Pack');

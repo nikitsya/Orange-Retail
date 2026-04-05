@@ -64,7 +64,7 @@
         <article class="detail-panel">
             <span class="section-kicker">{{ $product->category }}</span>
             <h1 class="detail-heading">{{ $product->name }}</h1>
-            <p class="lede">{{ $product->description }}</p>
+            <p class="lede">{{ $product->summary_text }}</p>
 
             <div class="detail-gallery @if (! $product->image_url) has-fallback-image @endif">
                 @if ($product->image_url)

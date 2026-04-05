@@ -92,7 +92,7 @@
                                 <div>
                                     <span class="inventory-tag">{{ $item['product']->category }}</span>
                                     <h2>{{ $item['product']->name }}</h2>
-                                    <p>{{ $item['product']->description }}</p>
+                                    <p>{{ $item['product']->summary_text }}</p>
 
                                     <div class="filter-notes">
                                         <span class="filter-note">Brand: {{ $item['product']->brand }}</span>

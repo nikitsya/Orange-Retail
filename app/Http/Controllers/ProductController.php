@@ -30,7 +30,8 @@ class ProductController extends Controller
                 $query->where(function ($nestedQuery) use ($search) {
                     $nestedQuery
                         ->where('name', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%")
+                        ->orWhere('barcode', 'like', "%{$search}%")
                         ->orWhere('brand', 'like', "%{$search}%")
                         ->orWhere('category', 'like', "%{$search}%")
                         ->orWhere('subcategory', 'like', "%{$search}%");
@@ -86,7 +87,6 @@ class ProductController extends Controller
             'brand' => ['required', 'string', 'max:100'],
             'category' => ['required', 'string', 'max:100'],
             'subcategory' => ['required', 'string', 'max:100'],
-            'description' => ['required', 'string', 'max:1000'],
             'image_url' => ['nullable', 'url', 'max:2048'],
             'unit_type' => ['required', 'string', 'max:50'],
             'pack_size' => ['nullable', 'string', 'max:100'],

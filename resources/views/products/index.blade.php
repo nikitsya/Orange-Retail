@@ -69,7 +69,7 @@
                     type="search"
                     name="search"
                     value="{{ $search }}"
-                    placeholder="Search by name or description"
+                    placeholder="Search by name, brand, SKU, or category"
                     aria-label="Search inventory"
                 >
                 <button class="search-image-button" type="submit" aria-label="Search">
@@ -244,12 +244,6 @@
                                                    required>
                                         </label>
                                     </div>
-
-                                    <label class="field-label">
-                                        Description
-                                        <textarea class="field-area" name="description"
-                                                  required>{{ old('modal_product_id') == $product->id ? old('description', $product->description) : $product->description }}</textarea>
-                                    </label>
 
                                     <label class="field-label">
                                         Image URL
@@ -478,15 +472,6 @@
                     @enderror
                 </label>
             </div>
-
-            <label class="field-label" for="description">
-                Description
-                <textarea class="field-area" id="description" name="description"
-                          required>{{ old('description') }}</textarea>
-                @error('description')
-                <span class="field-error">{{ $message }}</span>
-                @enderror
-            </label>
 
             <label class="field-label" for="image_url">
                 Image URL

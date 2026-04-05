@@ -173,7 +173,7 @@
                                href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
                         </h3>
                         <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
-                        <p class="muted-copy">{{ $product->description }}</p>
+                        <p class="muted-copy">{{ $product->summary_text }}</p>
 
                         <div class="price-row">
                             <div class="price-block">
