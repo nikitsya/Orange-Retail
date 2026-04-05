@@ -111,8 +111,6 @@
                         @if ($search !== '')
                             <a class="button-secondary" href="{{ route('products.index') }}">Clear</a>
                         @endif
-
-                        <button class="button-primary" type="button" data-open-modal="add-product-modal">Add product</button>
                     </div>
                 </div>
 
