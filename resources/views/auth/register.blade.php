@@ -11,7 +11,9 @@
         <main class="auth-page">
             <div class="page-shell auth-layout">
                 <section class="auth-panel">
-                    <a class="button-secondary" href="{{ route('home') }}">Back to home</a>
+                    <a class="auth-back-link" href="{{ route('home') }}" aria-label="Back to home">
+                        <img src="{{ asset('images/ui/back.png') }}" alt="">
+                    </a>
                     <h1>Register</h1>
                     <p>Create a new account to access the supermarket dashboard.</p>
 
