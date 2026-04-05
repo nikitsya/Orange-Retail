@@ -11,7 +11,7 @@
         <main class="auth-page">
             <div class="page-shell auth-layout">
                 <section class="auth-aside">
-                    @include('partials.brand-name', ['class' => 'brand-tag'])
+                    @include('partials.brand-name', ['class' => 'brand-title'])
                     <h2>Create an account</h2>
                     <p>Register a customer account to open the dashboard and use the cart.</p>
 

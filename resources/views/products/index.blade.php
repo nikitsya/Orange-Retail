@@ -29,9 +29,7 @@
             <div class="page-shell">
                 <div class="masthead-main">
                     <a class="brand-lockup" href="{{ route('products.index') }}">
-                        @include('partials.brand-name', ['class' => 'brand-tag'])
                         @include('partials.brand-name', ['class' => 'brand-title'])
-                        <span class="brand-subtitle">Manage products stored in the catalog.</span>
                     </a>
 
                     <form class="search-shell" method="GET" action="{{ route('products.index') }}">

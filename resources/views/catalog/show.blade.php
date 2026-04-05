@@ -35,9 +35,7 @@
             <div class="page-shell">
                 <div class="masthead-main">
                     <a class="brand-lockup" href="{{ route('home') }}">
-                        @include('partials.brand-name', ['class' => 'brand-tag'])
                         @include('partials.brand-name', ['class' => 'brand-title'])
-                        <span class="brand-subtitle">View product information, packaging, and catalog details.</span>
                     </a>
 
                     <form class="search-shell" method="GET" action="{{ route('catalog.index') }}">

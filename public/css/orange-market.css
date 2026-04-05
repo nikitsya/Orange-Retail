@@ -133,7 +133,7 @@ textarea {
 
 .brand-lockup {
     display: inline-grid;
-    gap: 6px;
+    gap: 0;
     justify-items: start;
 }
 
