@@ -763,6 +763,12 @@ textarea {
     padding: 28px;
 }
 
+.admin-dashboard-page .hero-panel,
+.admin-dashboard-page > .dashboard-layout > .section-panel,
+.admin-dashboard-page > .dashboard-layout > .summary-panel {
+    border-radius: 0;
+}
+
 .filter-grid,
 .detail-grid,
 .cart-layout,

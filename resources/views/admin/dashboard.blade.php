@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<main class="page-shell page-main stack">
+<main class="page-shell page-main stack admin-dashboard-page">
     @if (session('status'))
         <div class="flash-message">{{ session('status') }}</div>
     @endif
