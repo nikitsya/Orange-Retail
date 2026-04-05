@@ -18,9 +18,7 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::redirect('/dashboard', '/catalog')->name('dashboard');
 
     Route::get('/cart', [CatalogController::class, 'cart'])->name('cart.index');
     Route::post('/cart/{product}', [CatalogController::class, 'addToCart'])->name('cart.store');

@@ -16,7 +16,6 @@
             <div class="page-shell utility-bar-inner">
                 <div class="utility-links">
                     <a href="{{ route('catalog.index') }}">Back to catalog</a>
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
                 </div>
 
                 <div class="utility-actions">
@@ -69,7 +68,7 @@
 
                 <div class="hero-actions">
                     <a class="button-primary" href="{{ route('catalog.index') }}">Continue shopping</a>
-                    <a class="button-secondary" href="{{ route('dashboard') }}">Back to dashboard</a>
+                    <a class="button-secondary" href="{{ route('catalog.index') }}">Back to catalog</a>
                 </div>
             </section>
 

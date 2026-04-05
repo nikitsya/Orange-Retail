@@ -15,7 +15,7 @@
                         <img src="{{ asset('images/ui/back.png') }}" alt="">
                     </a>
                     <h1>Register</h1>
-                    <p>Create a new account to access the supermarket dashboard.</p>
+                    <p>Create a new account to access the supermarket catalog.</p>
 
                     @if ($errors->any())
                         <div class="error-message">{{ $errors->first() }}</div>

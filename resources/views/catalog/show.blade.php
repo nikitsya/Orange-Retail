@@ -26,7 +26,6 @@
                             <a href="{{ route('products.index') }}">Inventory</a>
                         @else
                             <a href="{{ route('cart.index') }}">Cart</a>
-                            <a href="{{ route('dashboard') }}">Dashboard</a>
                         @endif
                     @else
                         <a href="{{ route('login') }}">Sign in</a>

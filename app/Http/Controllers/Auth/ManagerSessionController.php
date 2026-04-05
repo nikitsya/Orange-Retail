@@ -40,7 +40,7 @@ class ManagerSessionController extends Controller
 
         $redirectRoute = $request->user()?->role === 'admin'
             ? 'products.index'
-            : 'dashboard';
+            : 'catalog.index';
 
         return redirect()->intended(route($redirectRoute));
     }
@@ -63,7 +63,7 @@ class ManagerSessionController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard');
+        return redirect()->route('catalog.index');
     }
 
     public function destroy(Request $request): RedirectResponse

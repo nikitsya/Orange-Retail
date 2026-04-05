@@ -53,7 +53,6 @@
                         @if (auth()->user()->role === 'admin')
                             <a href="{{ route('products.index') }}">Inventory</a>
                         @else
-                            <a href="{{ route('dashboard') }}">Dashboard</a>
                             <a href="{{ route('cart.index') }}">Cart</a>
                         @endif
                     @else
