@@ -23,7 +23,6 @@
 
     <section class="hero-panel">
         <div class="hero-copy">
-            <span class="section-kicker">Admin Dashboard</span>
             <h1>Admin Dashboard</h1>
             <p>Monitor live inventory, pending orders, inactive products, and upcoming delivery dates from one control
                 surface.</p>
@@ -53,7 +52,6 @@
         <section class="section-panel stack">
             <div class="section-actions" style="justify-content: space-between;">
                 <div>
-                    <span class="section-kicker">Orders</span>
                     <h2>Recent orders</h2>
                 </div>
                 <a class="button-secondary" href="{{ route('admin.orders.index') }}">Open full order queue</a>
@@ -85,7 +83,6 @@
 
         <aside class="summary-panel stack">
             <div>
-                <span class="section-kicker">Stock Ops</span>
                 <h2>Latest stock movements</h2>
                 <p>Recent stock changes from manual restocks, order reservations, and cancellation returns.</p>
             </div>
