@@ -49,7 +49,10 @@
                             placeholder="Search for another product"
                             aria-label="Search products"
                         >
-                        <button type="submit">Search</button>
+                        <button class="search-image-button" type="submit" aria-label="Search">
+                            <img src="{{ asset('images/ui/search.png') }}" alt="">
+                            <span class="sr-only">Search</span>
+                        </button>
                     </form>
 
                     <div class="masthead-actions">
