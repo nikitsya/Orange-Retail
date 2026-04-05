@@ -60,53 +60,54 @@
             </div>
         </header>
 
-        <main class="page-shell page-main admin-grid">
-            @if (session('status'))
-                <div class="flash-message">{{ session('status') }}</div>
-            @endif
+        <section class="catalog-content">
+            <main class="page-shell page-main admin-grid">
+                @if (session('status'))
+                    <div class="flash-message">{{ session('status') }}</div>
+                @endif
 
-            @if ($errors->any())
-                <div class="error-message">{{ $errors->first() }}</div>
-            @endif
+                @if ($errors->any())
+                    <div class="error-message">{{ $errors->first() }}</div>
+                @endif
 
-            <section class="admin-surface stack">
-                @if ($products->isEmpty())
-                    <section class="empty-panel">
-                        <h2 class="section-heading">No products found</h2>
-                        <p class="muted-copy">
-                            {{ $search !== '' ? 'No products matched your search.' : 'No products are available yet. Add the first one above.' }}
-                        </p>
-                    </section>
-                @else
-                    <section class="inventory-list">
-                        @foreach ($products as $product)
-                            <article>
-                                <button
-                                    class="inventory-row"
-                                    type="button"
-                                    data-open-modal="product-modal-{{ $product->id }}"
+                <section class="admin-surface stack">
+                    @if ($products->isEmpty())
+                        <section class="empty-panel">
+                            <h2 class="section-heading">No products found</h2>
+                            <p class="muted-copy">
+                                {{ $search !== '' ? 'No products matched your search.' : 'No products are available yet. Add the first one above.' }}
+                            </p>
+                        </section>
+                    @else
+                        <section class="inventory-list">
+                            @foreach ($products as $product)
+                                <article>
+                                    <button
+                                        class="inventory-row"
+                                        type="button"
+                                        data-open-modal="product-modal-{{ $product->id }}"
+                                    >
+                                        <span class="inventory-tag">{{ $product->category }}</span>
+                                        <strong>{{ $product->name }}</strong>
+                                        <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }}</span>
+                                    </button>
+                                </article>
+
+                                <div
+                                    class="modal @if ((string) old('modal_product_id') === (string) $product->id) is-open @endif"
+                                    id="product-modal-{{ $product->id }}"
+                                    data-modal
                                 >
-                                    <span class="inventory-tag">{{ $product->category }}</span>
-                                    <strong>{{ $product->name }}</strong>
-                                    <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }}</span>
-                                </button>
-                            </article>
+                                    <div class="modal-dialog">
+                                        <div class="modal-head">
+                                            <div>
+                                                <span class="section-kicker">Product</span>
+                                                <h2>{{ $product->name }}</h2>
+                                                <p class="muted-copy">Edit product fields or remove the record from the inventory list.</p>
+                                            </div>
 
-                            <div
-                                class="modal @if ((string) old('modal_product_id') === (string) $product->id) is-open @endif"
-                                id="product-modal-{{ $product->id }}"
-                                data-modal
-                            >
-                                <div class="modal-dialog">
-                                    <div class="modal-head">
-                                        <div>
-                                            <span class="section-kicker">Product</span>
-                                            <h2>{{ $product->name }}</h2>
-                                            <p class="muted-copy">Edit product fields or remove the record from the inventory list.</p>
+                                            <button class="modal-close" type="button" data-close-modal aria-label="Close modal">×</button>
                                         </div>
-
-                                        <button class="modal-close" type="button" data-close-modal aria-label="Close modal">×</button>
-                                    </div>
 
                                     <div class="meta-grid">
                                         <div class="meta-card">
@@ -227,13 +228,14 @@
                                             <button class="button-danger" type="submit">Delete product</button>
                                         </form>
                                     </div>
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </section>
-                @endif
-            </section>
-        </main>
+                            @endforeach
+                        </section>
+                    @endif
+                </section>
+            </main>
+        </section>
 
         <div
             class="modal @if (old('modal_context') === 'create') is-open @endif"
