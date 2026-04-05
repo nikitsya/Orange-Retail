@@ -231,9 +231,16 @@
                                     <div class="form-grid-2">
                                         <label class="field-label">
                                             Category
-                                            <input class="field" type="text" name="category"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('category', $product->category) : $product->category }}"
-                                                   required>
+                                            <select class="field-select" name="category" required>
+                                                @foreach ($categoryOptions as $categoryOption)
+                                                    <option
+                                                        value="{{ $categoryOption }}"
+                                                        @selected((old('modal_product_id') == $product->id ? old('category', $product->category) : $product->category) === $categoryOption)
+                                                    >
+                                                        {{ $categoryOption }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </label>
 
                                         <label class="field-label">
@@ -439,8 +446,13 @@
             <div class="form-grid-2">
                 <label class="field-label" for="category">
                     Category
-                    <input class="field" id="category" type="text" name="category" value="{{ old('category') }}"
-                           required>
+                    <select class="field-select" id="category" name="category" required>
+                        @foreach ($categoryOptions as $categoryOption)
+                            <option value="{{ $categoryOption }}" @selected(old('category') === $categoryOption)>
+                                {{ $categoryOption }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('category')
                     <span class="field-error">{{ $message }}</span>
                     @enderror

@@ -19,6 +19,21 @@ class Product extends Model
     ];
 
     /**
+     * @var list<string>
+     */
+    public const CATEGORIES = [
+        'Fresh Food',
+        'Drinks',
+        'Food Cupboard',
+        'Treats & Snacks',
+        'Household',
+        'Pets',
+        'Health & Beauty',
+        'Baby & Toddler',
+        'Home & Furniture',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -59,6 +74,14 @@ class Product extends Model
     public static function unitTypes(): array
     {
         return self::UNIT_TYPES;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function categories(): array
+    {
+        return self::CATEGORIES;
     }
 
     /**

@@ -51,6 +51,7 @@ class ProductController extends Controller
             'search' => $search,
             'category' => $category,
             'categories' => $categories,
+            'categoryOptions' => Product::categories(),
             'unitTypes' => Product::unitTypes(),
         ]);
     }
@@ -86,7 +87,7 @@ class ProductController extends Controller
             ],
             'name' => ['required', 'string', 'max:255'],
             'brand' => ['required', 'string', 'max:100'],
-            'category' => ['required', 'string', 'max:100'],
+            'category' => ['required', 'string', Rule::in(Product::categories())],
             'subcategory' => ['required', 'string', 'max:100'],
             'image_url' => ['nullable', 'url', 'max:2048'],
             'unit_type' => ['required', 'string', Rule::in(Product::unitTypes())],
