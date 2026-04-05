@@ -168,7 +168,6 @@
                             <div class="modal-dialog">
                                 <div class="modal-head">
                                     <div>
-                                        <span class="section-kicker">Product</span>
                                         <h2>{{ $product->name }}</h2>
                                         <p class="muted-copy">Edit product fields or remove the record from the
                                             inventory list.</p>
