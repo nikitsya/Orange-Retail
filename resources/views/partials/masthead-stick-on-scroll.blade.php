@@ -3,7 +3,7 @@
         const utilityBar = document.querySelector('.utility-bar');
         const masthead = document.querySelector('.masthead');
 
-        if (! utilityBar || ! masthead) {
+        if (!utilityBar || !masthead) {
             return;
         }
 
@@ -18,7 +18,7 @@
 
             masthead.classList.toggle('is-fixed', shouldFix);
 
-            if (! shouldFix) {
+            if (!shouldFix) {
                 masthead.style.top = '';
                 spacer.style.height = '0px';
                 return;
@@ -29,7 +29,7 @@
         };
 
         syncMasthead();
-        window.addEventListener('scroll', syncMasthead, { passive: true });
+        window.addEventListener('scroll', syncMasthead, {passive: true});
         window.addEventListener('resize', syncMasthead);
     });
 </script>

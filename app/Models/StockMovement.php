@@ -19,16 +19,6 @@ class StockMovement extends Model
         'occurred_at',
     ];
 
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'occurred_at' => 'datetime',
-        ];
-    }
-
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -37,5 +27,15 @@ class StockMovement extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'occurred_at' => 'datetime',
+        ];
     }
 }

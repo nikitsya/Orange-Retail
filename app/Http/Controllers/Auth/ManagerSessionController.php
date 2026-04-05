@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,11 +11,6 @@ use Illuminate\View\View;
 
 class ManagerSessionController extends Controller
 {
-    public function create(): View
-    {
-        return view('auth.login');
-    }
-
     public function createRegistration(): View
     {
         return view('auth.register');
@@ -28,7 +23,7 @@ class ManagerSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()
                 ->withErrors([
                     'email' => 'The provided credentials do not match our records.',
@@ -64,6 +59,11 @@ class ManagerSessionController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route('dashboard');
+    }
+
+    public function create(): View
+    {
+        return view('auth.login');
     }
 
     public function destroy(Request $request): RedirectResponse

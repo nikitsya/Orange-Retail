@@ -2,20 +2,25 @@
 
 ## 1. Project Overview
 
-This project is a dynamic, data-driven supermarket management and shopping web application built with the Laravel framework using the MVC (Model-View-Controller) architecture.
+This project is a dynamic, data-driven supermarket management and shopping web application built with the Laravel
+framework using the MVC (Model-View-Controller) architecture.
 
-The system addresses common operational issues in small-to-medium supermarkets, where product data, stock visibility, customer orders, and user management are often handled through disconnected tools or manual workflows.
+The system addresses common operational issues in small-to-medium supermarkets, where product data, stock visibility,
+customer orders, and user management are often handled through disconnected tools or manual workflows.
 
 The platform provides one structured environment for both customers and staff:
 
 - Customers can register, log in, browse products, search by category, add items to a cart, and place orders.
-- Staff and administrators can securely manage products, categories, inventory, and user access through role-based permissions.
+- Staff and administrators can securely manage products, categories, inventory, and user access through role-based
+  permissions.
 
-The core objective is to demonstrate practical server-side development skills through a realistic business scenario while implementing reliable CRUD operations, authentication, authorization, database design, and validation.
+The core objective is to demonstrate practical server-side development skills through a realistic business scenario
+while implementing reliable CRUD operations, authentication, authorization, database design, and validation.
 
 ## 2. Problem Statement
 
-Many supermarkets need a simple but robust online platform that supports both public shopping features and internal management operations.
+Many supermarkets need a simple but robust online platform that supports both public shopping features and internal
+management operations.
 
 Common issues include:
 
@@ -25,7 +30,8 @@ Common issues include:
 - Weak access control where all users have identical permissions.
 - Poor data validation that causes inconsistent records.
 
-This project solves these issues with a Laravel-based platform featuring clear user roles, controlled access, structured data relationships, and validated workflows.
+This project solves these issues with a Laravel-based platform featuring clear user roles, controlled access, structured
+data relationships, and validated workflows.
 
 ## 3. Target Users and Roles
 

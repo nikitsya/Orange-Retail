@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -64,26 +64,6 @@ class ProductController extends Controller
             ->with('status', 'Product added successfully.');
     }
 
-    public function update(Request $request, Product $product): RedirectResponse
-    {
-        $validated = $this->validateProduct($request, $product);
-
-        $product->update($validated);
-
-        return redirect()
-            ->route('products.index', $this->indexParameters($request))
-            ->with('status', 'Product updated successfully.');
-    }
-
-    public function destroy(Request $request, Product $product): RedirectResponse
-    {
-        $product->delete();
-
-        return redirect()
-            ->route('products.index', $this->indexParameters($request))
-            ->with('status', 'Product removed successfully.');
-    }
-
     /**
      * @return array<string, mixed>
      */
@@ -129,10 +109,10 @@ class ProductController extends Controller
         $validated['currency'] = strtoupper($validated['currency']);
         $validated['is_active'] = $request->boolean('is_active');
 
-        if (! $validated['price_display']) {
+        if (!$validated['price_display']) {
             $validated['price_display'] = $validated['currency'] === 'EUR'
-                ? '€' . number_format((float) $validated['price_value'], 2)
-                : $validated['currency'] . ' ' . number_format((float) $validated['price_value'], 2);
+                ? '€' . number_format((float)$validated['price_value'], 2)
+                : $validated['currency'] . ' ' . number_format((float)$validated['price_value'], 2);
         }
 
         return $validated;
@@ -150,5 +130,25 @@ class ProductController extends Controller
             'search' => $search !== '' ? $search : null,
             'category' => $category !== '' ? $category : null,
         ]);
+    }
+
+    public function update(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $this->validateProduct($request, $product);
+
+        $product->update($validated);
+
+        return redirect()
+            ->route('products.index', $this->indexParameters($request))
+            ->with('status', 'Product updated successfully.');
+    }
+
+    public function destroy(Request $request, Product $product): RedirectResponse
+    {
+        $product->delete();
+
+        return redirect()
+            ->route('products.index', $this->indexParameters($request))
+            ->with('status', 'Product removed successfully.');
     }
 }

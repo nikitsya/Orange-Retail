@@ -16,7 +16,7 @@ class IrishSupermarketProductsSeeder extends Seeder
     {
         $path = database_path('data/supermarket_products.json');
 
-        if (! is_file($path)) {
+        if (!is_file($path)) {
             throw new RuntimeException("JSON file not found: {$path}");
         }
 
@@ -26,37 +26,37 @@ class IrishSupermarketProductsSeeder extends Seeder
             throw new RuntimeException('Unable to decode Irish supermarket products JSON.', 0, $exception);
         }
 
-        if (! is_array($payload) || ! isset($payload['products']) || ! is_array($payload['products'])) {
+        if (!is_array($payload) || !isset($payload['products']) || !is_array($payload['products'])) {
             throw new RuntimeException('Invalid JSON structure: expected a top-level "products" array.');
         }
 
         $products = collect($payload['products'])
             ->map(function (array $product): array {
                 return [
-                    'sku' => (string) $product['sku'],
+                    'sku' => (string)$product['sku'],
                     'barcode' => $product['barcode'] ?: null,
-                    'name' => (string) $product['name'],
-                    'brand' => (string) $product['brand'],
-                    'category' => (string) $product['category'],
-                    'subcategory' => (string) $product['subcategory'],
-                    'description' => (string) $product['description'],
+                    'name' => (string)$product['name'],
+                    'brand' => (string)$product['brand'],
+                    'category' => (string)$product['category'],
+                    'subcategory' => (string)$product['subcategory'],
+                    'description' => (string)$product['description'],
                     'image_url' => $product['image_url'] ?: null,
-                    'unit_type' => (string) $product['unit_type'],
+                    'unit_type' => (string)$product['unit_type'],
                     'pack_size' => $product['pack_size'] ?: null,
                     'weight_value' => $product['weight_value'] !== null
-                        ? (float) $product['weight_value']
+                        ? (float)$product['weight_value']
                         : null,
                     'weight_unit' => $product['weight_unit'] ?: null,
                     'price_value' => $product['price_value'] !== null
-                        ? (float) $product['price_value']
+                        ? (float)$product['price_value']
                         : null,
                     'currency' => $product['currency'] ?: null,
                     'price_display' => $product['price_display'] ?: null,
                     'unit_price_display' => $product['unit_price_display'] ?: null,
-                    'stock' => 18 + (((int) ($product['id'] ?? 0)) % 24),
+                    'stock' => 18 + (((int)($product['id'] ?? 0)) % 24),
                     'is_active' => true,
-                    'last_restocked_at' => now()->subDays((((int) ($product['id'] ?? 1)) % 5) + 1),
-                    'next_delivery_due_at' => now()->addDays((((int) ($product['id'] ?? 1)) % 6) + 2),
+                    'last_restocked_at' => now()->subDays((((int)($product['id'] ?? 1)) % 5) + 1),
+                    'next_delivery_due_at' => now()->addDays((((int)($product['id'] ?? 1)) % 6) + 2),
                 ];
             })
             ->values();

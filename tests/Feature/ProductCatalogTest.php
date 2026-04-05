@@ -173,7 +173,7 @@ class ProductCatalogTest extends TestCase
 
         $this->actingAs($user)->withSession([
             'cart' => [
-                (string) $product->id => ['quantity' => 1],
+                (string)$product->id => ['quantity' => 1],
             ],
         ])->delete("/cart/{$product->id}")
             ->assertRedirect('/cart');

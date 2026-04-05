@@ -36,18 +36,6 @@ class Order extends Model
     ];
 
     /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'placed_at' => 'datetime',
-            'subtotal' => 'decimal:2',
-            'total' => 'decimal:2',
-        ];
-    }
-
-    /**
      * @return list<string>
      */
     public static function statuses(): array
@@ -68,5 +56,17 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'placed_at' => 'datetime',
+            'subtotal' => 'decimal:2',
+            'total' => 'decimal:2',
+        ];
     }
 }

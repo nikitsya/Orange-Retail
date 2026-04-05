@@ -36,6 +36,16 @@ class Product extends Model
         'next_delivery_due_at',
     ];
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -50,15 +60,5 @@ class Product extends Model
             'last_restocked_at' => 'datetime',
             'next_delivery_due_at' => 'datetime',
         ];
-    }
-
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
-
-    public function stockMovements()
-    {
-        return $this->hasMany(StockMovement::class);
     }
 }

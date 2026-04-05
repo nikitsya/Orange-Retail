@@ -88,10 +88,10 @@ class StockController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            $previousStock = (int) $lockedProduct->stock;
-            $newStock = (int) $validated['stock'];
+            $previousStock = (int)$lockedProduct->stock;
+            $newStock = (int)$validated['stock'];
             $quantityChange = $newStock - $previousStock;
-            $newDeliveryDate = ! empty($validated['next_delivery_due_at'])
+            $newDeliveryDate = !empty($validated['next_delivery_due_at'])
                 ? Carbon::parse($validated['next_delivery_due_at'])
                 : null;
             $currentDeliveryDate = $lockedProduct->next_delivery_due_at?->format('Y-m-d H:i:s');

@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Support\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class CatalogController extends Controller
@@ -53,7 +52,7 @@ class CatalogController extends Controller
 
     public function show(Product $product): View
     {
-        if (! $product->is_active && request()->user()?->role !== 'admin') {
+        if (!$product->is_active && request()->user()?->role !== 'admin') {
             abort(404);
         }
 
@@ -75,14 +74,21 @@ class CatalogController extends Controller
         ]);
     }
 
+    protected function ensureCustomer(Request $request): void
+    {
+        if ($request->user()?->role === 'admin') {
+            abort(403);
+        }
+    }
+
     public function addToCart(Request $request, Product $product): RedirectResponse
     {
         $this->ensureCustomer($request);
         $this->ensurePurchasable($product);
 
         $cart = $request->session()->get('cart', []);
-        $productKey = (string) $product->id;
-        $currentQuantity = (int) ($cart[$productKey]['quantity'] ?? 0);
+        $productKey = (string)$product->id;
+        $currentQuantity = (int)($cart[$productKey]['quantity'] ?? 0);
 
         if ($currentQuantity >= $product->stock) {
             return redirect()
@@ -101,6 +107,19 @@ class CatalogController extends Controller
             ->with('status', "{$product->name} was added to your cart.");
     }
 
+    protected function ensurePurchasable(Product $product): void
+    {
+        if (!$product->is_active) {
+            abort(404);
+        }
+
+        if ($product->stock < 1) {
+            throw ValidationException::withMessages([
+                'cart' => "{$product->name} is currently out of stock.",
+            ]);
+        }
+    }
+
     public function updateCart(Request $request, Product $product): RedirectResponse
     {
         $this->ensureCustomer($request);
@@ -110,7 +129,7 @@ class CatalogController extends Controller
             'quantity' => ['required', 'integer', 'min:1'],
         ]);
 
-        $quantity = (int) $validated['quantity'];
+        $quantity = (int)$validated['quantity'];
 
         if ($quantity > $product->stock) {
             return redirect()
@@ -119,7 +138,7 @@ class CatalogController extends Controller
         }
 
         $cart = $request->session()->get('cart', []);
-        $cart[(string) $product->id] = [
+        $cart[(string)$product->id] = [
             'quantity' => $quantity,
         ];
 
@@ -136,32 +155,12 @@ class CatalogController extends Controller
 
         $cart = $request->session()->get('cart', []);
 
-        unset($cart[(string) $product->id]);
+        unset($cart[(string)$product->id]);
 
         $request->session()->put('cart', $cart);
 
         return redirect()
             ->route('cart.index')
             ->with('status', 'The item was removed from your cart.');
-    }
-
-    protected function ensureCustomer(Request $request): void
-    {
-        if ($request->user()?->role === 'admin') {
-            abort(403);
-        }
-    }
-
-    protected function ensurePurchasable(Product $product): void
-    {
-        if (! $product->is_active) {
-            abort(404);
-        }
-
-        if ($product->stock < 1) {
-            throw ValidationException::withMessages([
-                'cart' => "{$product->name} is currently out of stock.",
-            ]);
-        }
     }
 }

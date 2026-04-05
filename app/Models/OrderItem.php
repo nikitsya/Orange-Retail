@@ -21,6 +21,16 @@ class OrderItem extends Model
         'line_total',
     ];
 
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
     /**
      * @return array<string, string>
      */
@@ -30,15 +40,5 @@ class OrderItem extends Model
             'unit_price' => 'decimal:2',
             'line_total' => 'decimal:2',
         ];
-    }
-
-    public function order(): BelongsTo
-    {
-        return $this->belongsTo(Order::class);
-    }
-
-    public function product(): BelongsTo
-    {
-        return $this->belongsTo(Product::class);
     }
 }

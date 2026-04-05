@@ -16,25 +16,6 @@ use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function create(Request $request): View|RedirectResponse
-    {
-        $this->ensureCustomer($request);
-
-        $items = Cart::items($request->session()->get('cart', []));
-
-        if ($items->isEmpty()) {
-            return redirect()
-                ->route('cart.index')
-                ->withErrors(['cart' => 'Add products to your cart before checkout.']);
-        }
-
-        return view('checkout.create', [
-            'items' => $items,
-            'itemCount' => Cart::itemCount($items),
-            'subtotal' => Cart::subtotal($items),
-        ]);
-    }
-
     public function store(Request $request): RedirectResponse
     {
         $this->ensureCustomer($request);
@@ -68,9 +49,9 @@ class OrderController extends Controller
             $preparedItems = $items->map(function (array $item) use ($lockedProducts): array {
                 /** @var \App\Models\Product|null $product */
                 $product = $lockedProducts->get($item['product']->id);
-                $quantity = (int) $item['quantity'];
+                $quantity = (int)$item['quantity'];
 
-                if (! $product || ! $product->is_active) {
+                if (!$product || !$product->is_active) {
                     throw ValidationException::withMessages([
                         'cart' => 'One or more products are no longer available.',
                     ]);
@@ -82,7 +63,7 @@ class OrderController extends Controller
                     ]);
                 }
 
-                $unitPrice = round((float) ($product->price_value ?? 0), 2);
+                $unitPrice = round((float)($product->price_value ?? 0), 2);
                 $lineTotal = round($unitPrice * $quantity, 2);
 
                 return [
@@ -93,7 +74,7 @@ class OrderController extends Controller
                 ];
             });
 
-            $subtotal = round((float) $preparedItems->sum('line_total'), 2);
+            $subtotal = round((float)$preparedItems->sum('line_total'), 2);
 
             $order = Order::query()->create([
                 'user_id' => $request->user()->id,
@@ -107,7 +88,7 @@ class OrderController extends Controller
                 'shipping_county' => $validated['shipping_county'] ?: null,
                 'shipping_postal_code' => $validated['shipping_postal_code'],
                 'notes' => $validated['notes'] ?: null,
-                'item_count' => (int) $preparedItems->sum('quantity'),
+                'item_count' => (int)$preparedItems->sum('quantity'),
                 'subtotal' => $subtotal,
                 'total' => $subtotal,
                 'currency' => 'EUR',
@@ -152,6 +133,41 @@ class OrderController extends Controller
         return redirect()
             ->route('orders.show', $order)
             ->with('status', 'Order placed successfully.');
+    }
+
+    protected function ensureCustomer(Request $request): void
+    {
+        if ($request->user()?->role === 'admin') {
+            abort(403);
+        }
+    }
+
+    public function create(Request $request): View|RedirectResponse
+    {
+        $this->ensureCustomer($request);
+
+        $items = Cart::items($request->session()->get('cart', []));
+
+        if ($items->isEmpty()) {
+            return redirect()
+                ->route('cart.index')
+                ->withErrors(['cart' => 'Add products to your cart before checkout.']);
+        }
+
+        return view('checkout.create', [
+            'items' => $items,
+            'itemCount' => Cart::itemCount($items),
+            'subtotal' => Cart::subtotal($items),
+        ]);
+    }
+
+    protected function generateOrderNumber(): string
+    {
+        do {
+            $orderNumber = 'ORD-' . now()->format('Ymd') . '-' . Str::upper(Str::random(6));
+        } while (Order::query()->where('order_number', $orderNumber)->exists());
+
+        return $orderNumber;
     }
 
     public function index(Request $request): View|RedirectResponse
@@ -277,21 +293,5 @@ class OrderController extends Controller
         return redirect()
             ->route('admin.orders.index')
             ->with('status', 'Order status updated successfully.');
-    }
-
-    protected function ensureCustomer(Request $request): void
-    {
-        if ($request->user()?->role === 'admin') {
-            abort(403);
-        }
-    }
-
-    protected function generateOrderNumber(): string
-    {
-        do {
-            $orderNumber = 'ORD-' . now()->format('Ymd') . '-' . Str::upper(Str::random(6));
-        } while (Order::query()->where('order_number', $orderNumber)->exists());
-
-        return $orderNumber;
     }
 }
