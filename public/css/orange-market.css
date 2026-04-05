@@ -906,6 +906,22 @@ textarea {
     margin-top: 16px;
 }
 
+.picker-inline {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.picker-inline-button {
+    justify-content: center;
+    min-width: 92px;
+}
+
+.subcategory-add-input {
+    margin-top: 12px;
+}
+
 .price-block {
     display: flex;
     flex-direction: column;

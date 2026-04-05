@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -21,6 +22,23 @@ class ProductController extends Controller
             ->distinct()
             ->orderBy('category')
             ->pluck('category');
+
+        $subcategoryOptionsByCategory = Product::query()
+            ->select('category', 'subcategory')
+            ->whereNotNull('category')
+            ->whereNotNull('subcategory')
+            ->where('subcategory', '!=', '')
+            ->distinct()
+            ->orderBy('category')
+            ->orderBy('subcategory')
+            ->get()
+            ->groupBy('category')
+            ->map(fn ($rows) => $rows->pluck('subcategory')->values()->all())
+            ->all();
+
+        foreach (Product::categories() as $categoryOption) {
+            $subcategoryOptionsByCategory[$categoryOption] ??= [];
+        }
 
         $products = Product::query()
             ->when($category !== '', function ($query) use ($category) {
@@ -52,6 +70,7 @@ class ProductController extends Controller
             'category' => $category,
             'categories' => $categories,
             'categoryOptions' => Product::categories(),
+            'subcategoryOptionsByCategory' => $subcategoryOptionsByCategory,
             'unitTypes' => Product::unitTypes(),
         ]);
     }
@@ -88,7 +107,8 @@ class ProductController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'brand' => ['required', 'string', 'max:100'],
             'category' => ['required', 'string', Rule::in(Product::categories())],
-            'subcategory' => ['required', 'string', 'max:100'],
+            'subcategory' => ['nullable', 'string', 'max:100'],
+            'new_subcategory' => ['nullable', 'string', 'max:100'],
             'image_url' => ['nullable', 'url', 'max:2048'],
             'unit_type' => ['required', 'string', Rule::in(Product::unitTypes())],
             'pack_size' => ['nullable', 'string', 'max:100'],
@@ -100,12 +120,21 @@ class ProductController extends Controller
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        foreach (['barcode', 'image_url', 'pack_size', 'weight_value', 'weight_unit', 'unit_price_display'] as $field) {
+        foreach (['barcode', 'image_url', 'pack_size', 'weight_value', 'weight_unit', 'unit_price_display', 'subcategory', 'new_subcategory'] as $field) {
             if (($validated[$field] ?? null) === '') {
                 $validated[$field] = null;
             }
         }
 
+        $validated['subcategory'] = trim((string) ($validated['new_subcategory'] ?: $validated['subcategory']));
+
+        if ($validated['subcategory'] === '') {
+            throw ValidationException::withMessages([
+                'subcategory' => 'Choose or add a subcategory.',
+            ]);
+        }
+
+        unset($validated['new_subcategory']);
         $validated['is_active'] = $request->boolean('is_active');
 
         return $validated;

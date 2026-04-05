@@ -231,7 +231,7 @@
                                     <div class="form-grid-2">
                                         <label class="field-label">
                                             Category
-                                            <select class="field-select" name="category" required>
+                                            <select class="field-select" name="category" data-category-select required>
                                                 @foreach ($categoryOptions as $categoryOption)
                                                     <option
                                                         value="{{ $categoryOption }}"
@@ -245,9 +245,35 @@
 
                                         <label class="field-label">
                                             Subcategory
-                                            <input class="field" type="text" name="subcategory"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('subcategory', $product->subcategory) : $product->subcategory }}"
-                                                   required>
+                                            <div class="picker-inline">
+                                                <select
+                                                    class="field-select"
+                                                    name="subcategory"
+                                                    data-subcategory-select
+                                                    data-selected-subcategory="{{ old('modal_product_id') == $product->id ? old('subcategory', $product->subcategory) : $product->subcategory }}"
+                                                    data-new-subcategory-value="{{ old('modal_product_id') == $product->id ? old('new_subcategory') : '' }}"
+                                                ></select>
+                                                <button class="button-quiet picker-inline-button" type="button" data-toggle-subcategory-input>
+                                                    + New
+                                                </button>
+                                            </div>
+                                            <input
+                                                class="field subcategory-add-input"
+                                                type="text"
+                                                name="new_subcategory"
+                                                value="{{ old('modal_product_id') == $product->id ? old('new_subcategory') : '' }}"
+                                                placeholder="Add a new subcategory"
+                                                data-new-subcategory
+                                                hidden
+                                            >
+                                            @if (old('modal_product_id') == $product->id)
+                                                @error('subcategory')
+                                                <span class="field-error">{{ $message }}</span>
+                                                @enderror
+                                                @error('new_subcategory')
+                                                <span class="field-error">{{ $message }}</span>
+                                                @enderror
+                                            @endif
                                         </label>
                                     </div>
 
@@ -446,7 +472,7 @@
             <div class="form-grid-2">
                 <label class="field-label" for="category">
                     Category
-                    <select class="field-select" id="category" name="category" required>
+                    <select class="field-select" id="category" name="category" data-category-select required>
                         @foreach ($categoryOptions as $categoryOption)
                             <option value="{{ $categoryOption }}" @selected(old('category') === $categoryOption)>
                                 {{ $categoryOption }}
@@ -460,9 +486,32 @@
 
                 <label class="field-label" for="subcategory">
                     Subcategory
-                    <input class="field" id="subcategory" type="text" name="subcategory"
-                           value="{{ old('subcategory') }}" required>
+                    <div class="picker-inline">
+                        <select
+                            class="field-select"
+                            id="subcategory"
+                            name="subcategory"
+                            data-subcategory-select
+                            data-selected-subcategory="{{ old('subcategory') }}"
+                            data-new-subcategory-value="{{ old('new_subcategory') }}"
+                        ></select>
+                        <button class="button-quiet picker-inline-button" type="button" data-toggle-subcategory-input>
+                            + New
+                        </button>
+                    </div>
+                    <input
+                        class="field subcategory-add-input"
+                        type="text"
+                        name="new_subcategory"
+                        value="{{ old('new_subcategory') }}"
+                        placeholder="Add a new subcategory"
+                        data-new-subcategory
+                        hidden
+                    >
                     @error('subcategory')
+                    <span class="field-error">{{ $message }}</span>
+                    @enderror
+                    @error('new_subcategory')
                     <span class="field-error">{{ $message }}</span>
                     @enderror
                 </label>
@@ -552,7 +601,89 @@
 </div>
 
 <script>
+    const subcategoryOptionsByCategory = @json($subcategoryOptionsByCategory);
     let lockedScrollY = 0;
+
+    const populateSubcategoryOptions = (categorySelect, subcategorySelect, preferredValue = '') => {
+        const category = categorySelect.value;
+        const options = [...(subcategoryOptionsByCategory[category] ?? [])];
+        const nextValue = preferredValue || subcategorySelect.dataset.selectedSubcategory || '';
+
+        if (nextValue !== '' && !options.includes(nextValue)) {
+            options.push(nextValue);
+        }
+
+        subcategorySelect.innerHTML = '';
+
+        options.forEach((optionValue) => {
+            const option = document.createElement('option');
+            option.value = optionValue;
+            option.textContent = optionValue;
+            subcategorySelect.appendChild(option);
+        });
+
+        if (options.length === 0) {
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No saved subcategories';
+            subcategorySelect.appendChild(option);
+        }
+
+        subcategorySelect.value = nextValue !== '' ? nextValue : (options[0] ?? '');
+        subcategorySelect.dataset.selectedSubcategory = subcategorySelect.value;
+    };
+
+    const syncSubcategoryControls = (scope) => {
+        const categorySelect = scope.querySelector('[data-category-select]');
+        const subcategorySelect = scope.querySelector('[data-subcategory-select]');
+        const newSubcategoryInput = scope.querySelector('[data-new-subcategory]');
+        const toggleButton = scope.querySelector('[data-toggle-subcategory-input]');
+
+        if (!categorySelect || !subcategorySelect || !newSubcategoryInput || !toggleButton) {
+            return;
+        }
+
+        const updateToggleLabel = () => {
+            toggleButton.textContent = newSubcategoryInput.hidden ? '+ New' : 'Cancel';
+        };
+
+        populateSubcategoryOptions(
+            categorySelect,
+            subcategorySelect,
+            subcategorySelect.dataset.selectedSubcategory || subcategorySelect.dataset.newSubcategoryValue || '',
+        );
+
+        if ((newSubcategoryInput.value || '').trim() !== '') {
+            newSubcategoryInput.hidden = false;
+        }
+
+        updateToggleLabel();
+
+        categorySelect.addEventListener('change', () => {
+            populateSubcategoryOptions(categorySelect, subcategorySelect);
+        });
+
+        subcategorySelect.addEventListener('change', () => {
+            subcategorySelect.dataset.selectedSubcategory = subcategorySelect.value;
+        });
+
+        toggleButton.addEventListener('click', () => {
+            const willShow = newSubcategoryInput.hidden;
+            newSubcategoryInput.hidden = !willShow;
+
+            if (willShow) {
+                newSubcategoryInput.focus();
+            } else {
+                newSubcategoryInput.value = '';
+            }
+
+            updateToggleLabel();
+        });
+    };
+
+    document.querySelectorAll('form').forEach((form) => {
+        syncSubcategoryControls(form);
+    });
 
     const lockBodyScroll = () => {
         if (document.body.classList.contains('modal-open')) {
