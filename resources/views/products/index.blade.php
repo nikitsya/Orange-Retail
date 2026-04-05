@@ -268,9 +268,16 @@
                                     <div class="form-grid-3">
                                         <label class="field-label">
                                             Unit type
-                                            <input class="field" type="text" name="unit_type"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type }}"
-                                                   required>
+                                            <select class="field-select" name="unit_type" required>
+                                                @foreach ($unitTypes as $unitType)
+                                                    <option
+                                                        value="{{ $unitType }}"
+                                                        @selected((old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type) === $unitType)
+                                                    >
+                                                        {{ ucfirst($unitType) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </label>
 
                                         <label class="field-label">
@@ -469,8 +476,13 @@
 
                 <label class="field-label" for="unit_type">
                     Unit type
-                    <input class="field" id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}"
-                           required>
+                    <select class="field-select" id="unit_type" name="unit_type" required>
+                        @foreach ($unitTypes as $unitType)
+                            <option value="{{ $unitType }}" @selected(old('unit_type') === $unitType)>
+                                {{ ucfirst($unitType) }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('unit_type')
                     <span class="field-error">{{ $message }}</span>
                     @enderror

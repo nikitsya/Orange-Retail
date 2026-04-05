@@ -9,6 +9,16 @@ class Product extends Model
     public $timestamps = false;
 
     /**
+     * @var list<string>
+     */
+    public const UNIT_TYPES = [
+        'each',
+        'pack',
+        'volume',
+        'weight',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -41,6 +51,14 @@ class Product extends Model
     public function stockMovements()
     {
         return $this->hasMany(StockMovement::class);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function unitTypes(): array
+    {
+        return self::UNIT_TYPES;
     }
 
     /**

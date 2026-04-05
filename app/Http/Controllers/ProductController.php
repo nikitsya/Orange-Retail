@@ -51,6 +51,7 @@ class ProductController extends Controller
             'search' => $search,
             'category' => $category,
             'categories' => $categories,
+            'unitTypes' => Product::unitTypes(),
         ]);
     }
 
@@ -88,7 +89,7 @@ class ProductController extends Controller
             'category' => ['required', 'string', 'max:100'],
             'subcategory' => ['required', 'string', 'max:100'],
             'image_url' => ['nullable', 'url', 'max:2048'],
-            'unit_type' => ['required', 'string', 'max:50'],
+            'unit_type' => ['required', 'string', Rule::in(Product::unitTypes())],
             'pack_size' => ['nullable', 'string', 'max:100'],
             'weight_value' => ['nullable', 'numeric', 'min:0'],
             'weight_unit' => ['nullable', 'string', 'max:20'],
