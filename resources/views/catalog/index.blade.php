@@ -108,13 +108,6 @@
                                         <span>Open product management</span>
                                     </div>
                                 </a>
-                            @else
-                                <a class="account-pill" href="{{ route('cart.index') }}">
-                                    <div>
-                                        <strong>{{ $productCount }} products</strong>
-                                        <span>Open cart</span>
-                                    </div>
-                                </a>
                             @endif
                         @else
                             <a class="button-secondary" href="{{ route('login') }}">Login</a>

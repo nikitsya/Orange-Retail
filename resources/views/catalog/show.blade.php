@@ -56,14 +56,7 @@
 
                     <div class="masthead-actions">
                         @auth
-                            @if (auth()->user()->role !== 'admin')
-                                <a class="account-pill" href="{{ route('cart.index') }}">
-                                    <div>
-                                        <strong>Cart</strong>
-                                        <span>Open cart</span>
-                                    </div>
-                                </a>
-                            @else
+                            @if (auth()->user()->role === 'admin')
                                 <a class="account-pill" href="{{ route('products.index') }}">
                                     <div>
                                         <strong>Inventory</strong>
