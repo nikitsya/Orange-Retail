@@ -1264,6 +1264,7 @@ body.modal-open {
 .form-grid-3 {
     display: grid;
     gap: 14px;
+    align-items: start;
 }
 
 .form-grid-2 {
