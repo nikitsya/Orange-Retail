@@ -36,7 +36,7 @@ class ProductCatalogTest extends TestCase
             ->assertSee('Customer Apples');
     }
 
-    public function test_customer_catalog_search_matches_brand_and_category(): void
+    public function test_customer_catalog_search_matches_product_name_and_brand(): void
     {
         $user = User::factory()->create([
             'role' => 'user',
@@ -67,7 +67,7 @@ class ProductCatalogTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/catalog?search=Dairy')
+            ->get('/catalog?search=Milk')
             ->assertOk()
             ->assertSee('Fresh Milk')
             ->assertDontSee('Brown Bread');

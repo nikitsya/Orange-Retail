@@ -71,7 +71,7 @@
                     type="search"
                     name="search"
                     value="{{ $search }}"
-                    placeholder="Search groceries, brands, or categories"
+                    placeholder="Search groceries or brands"
                     aria-label="Search catalog"
                 >
                 <button class="search-image-button" type="submit" aria-label="Search">

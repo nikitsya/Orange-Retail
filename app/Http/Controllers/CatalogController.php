@@ -47,10 +47,7 @@ class CatalogController extends Controller
                 $query->where(function ($nestedQuery) use ($search) {
                     $nestedQuery
                         ->where('name', 'like', "%{$search}%")
-                        ->orWhere('sku', 'like', "%{$search}%")
-                        ->orWhere('brand', 'like', "%{$search}%")
-                        ->orWhere('category', 'like', "%{$search}%")
-                        ->orWhere('subcategory', 'like', "%{$search}%");
+                        ->orWhere('brand', 'like', "%{$search}%");
                 });
             })
             ->orderBy('category')
