@@ -181,17 +181,17 @@
                     <section class="catalog-grid">
                         @foreach ($products as $product)
                             <article class="product-card">
-                                <a class="product-media" href="{{ route('catalog.show', $product) }}">
+                                <div class="product-media">
                                     @if ($product->image_url)
                                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                                     @else
                                         <span class="placeholder-badge">{{ strtoupper(substr($product->category, 0, 1)) }}</span>
                                     @endif
-                                </a>
+                                </div>
 
                                 <span class="eyebrow-tag">{{ $product->category }}</span>
                                 <h3>
-                                    <a href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
+                                    <a class="product-title-link" href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
                                 </h3>
                                 <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
                                 <p class="muted-copy">{{ $product->description }}</p>
@@ -212,8 +212,6 @@
                                     </div>
 
                                     <div class="tile-actions">
-                                        <a class="button-secondary" href="{{ route('catalog.show', $product) }}">View</a>
-
                                         @auth
                                             @if (auth()->user()->role !== 'admin')
                                                 <form method="POST" action="{{ route('cart.store', $product) }}">

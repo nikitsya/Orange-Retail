@@ -687,10 +687,8 @@ textarea {
 
 .product-card {
     padding: 18px;
-    transition: transform 0.18s ease;
 }
 
-.product-card:hover,
 .tile-card:hover {
     transform: translateY(-3px);
 }
@@ -730,6 +728,15 @@ textarea {
     font-size: 1.22rem;
     letter-spacing: -0.03em;
     line-height: 1.15;
+}
+
+.product-title-link {
+    text-decoration: none;
+}
+
+.product-title-link:hover,
+.product-title-link:focus-visible {
+    text-decoration: underline;
 }
 
 .product-meta,
