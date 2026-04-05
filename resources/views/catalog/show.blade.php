@@ -129,7 +129,7 @@
                                 <a class="button-primary" href="{{ route('products.index') }}">Manage inventory</a>
                             @endif
                         @else
-                            <a class="button-primary" href="{{ route('login') }}">Login to add</a>
+                            <a class="button-primary" href="{{ route('login') }}">Add</a>
                         @endauth
 
                         <a class="button-secondary" href="{{ route('catalog.index', ['category' => $product->category]) }}">More in {{ $product->category }}</a>

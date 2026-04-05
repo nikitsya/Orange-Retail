@@ -220,7 +220,7 @@
                                                 </form>
                                             @endif
                                         @else
-                                            <a class="button-primary" href="{{ route('login') }}">Login to add</a>
+                                            <a class="button-primary" href="{{ route('login') }}">Add</a>
                                         @endauth
                                     </div>
                                 </div>
