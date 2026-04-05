@@ -1,200 +1,220 @@
-# Orange Retail
+# Supermarket Store Web Platform (Laravel MVC)
 
-Orange Retail is a Laravel 12 supermarket web application prototype with two working surfaces:
+## 1. Project Overview
 
-- a customer-facing product catalog with search, category filtering, product details, and a session cart
-- an admin inventory screen for managing products
+This project is a dynamic, data-driven supermarket management and shopping web application built with the Laravel framework using the MVC (Model-View-Controller) architecture.
 
-The repository is currently in a mid-build state. This README describes what is actually implemented now, not the larger target scope from earlier drafts.
+The system addresses common operational issues in small-to-medium supermarkets, where product data, stock visibility, customer orders, and user management are often handled through disconnected tools or manual workflows.
 
-## Current Status
+The platform provides one structured environment for both customers and staff:
 
-Implemented now:
+- Customers can register, log in, browse products, search by category, add items to a cart, and place orders.
+- Staff and administrators can securely manage products, categories, inventory, and user access through role-based permissions.
 
-- guest access to the catalog and product detail pages
-- customer registration and login
-- role-based redirects after login
-- admin-only access to inventory management
-- product search and category filtering
-- session-based cart for authenticated non-admin users
-- create, update, and delete product records from the inventory UI
-- product import from `database/data/supermarket_products.json`
-- feature tests for authentication, catalog browsing, cart flow, and admin inventory access
+The core objective is to demonstrate practical server-side development skills through a realistic business scenario while implementing reliable CRUD operations, authentication, authorization, database design, and validation.
 
-Not implemented yet:
+## 2. Problem Statement
 
-- checkout and order placement
-- order history or order management
-- real payments
-- stock tracking and stock-aware cart validation
-- a separate staff role with its own permissions
-- image upload handling
+Many supermarkets need a simple but robust online platform that supports both public shopping features and internal management operations.
 
-## Application Areas
+Common issues include:
 
-### Customer Area
+- No centralized product and inventory database.
+- Manual stock tracking that causes out-of-stock confusion.
+- Limited visibility of order history for customers and staff.
+- Weak access control where all users have identical permissions.
+- Poor data validation that causes inconsistent records.
 
-- browse the catalog at `/` or `/catalog`
-- search by product name, description, brand, or category
-- filter by department
-- open a dedicated product details page
-- add and remove products from a session-based cart after login
+This project solves these issues with a Laravel-based platform featuring clear user roles, controlled access, structured data relationships, and validated workflows.
 
-### Admin Area
+## 3. Target Users and Roles
 
-- sign in as an admin and open `/products`
-- browse inventory with pagination, search, and department filters
-- add new products
-- edit existing products in modal forms
-- delete products from the inventory list
+### Guest
 
-## Roles
+- Can view public pages and browse the product catalog.
+- Cannot place orders or access account features.
+- Is encouraged to register for full functionality.
 
-- `guest`: can browse the catalog and product details
-- `user`: can register, log in, browse the catalog, and use the cart
-- `admin`: can access the full inventory management interface
+### Customer
 
-The application currently uses a single `role` column on the `users` table together with `App\Http\Middleware\EnsureAdmin`.
+- Can register, log in, and manage profile details.
+- Can browse products, use filters/search, add items to cart, and place orders.
+- Can view personal order history and order status.
 
-## Data Model in Use
+### Staff (Optional Role)
 
-### Users
+- Can monitor orders and update order status.
+- Can view product and stock information relevant to store operations.
+- Cannot perform high-risk administrative actions unless explicitly authorized.
 
-The `users` table is the standard Laravel authentication table with an added `role` field.
+### Admin
 
-### Products
+- Has full management access to products, categories, users, and core system content.
+- Can perform CRUD actions for key entities.
+- Controls role assignments and access policies.
 
-The `products` table currently stores catalog and inventory metadata such as:
+## 4. Project Scope
 
-- `sku`
-- `barcode`
-- `name`
-- `brand`
-- `category`
-- `subcategory`
-- `description`
-- `image_url`
-- `unit_type`
-- `pack_size`
-- `weight_value`
-- `weight_unit`
-- `price_value`
-- `currency`
-- `price_display`
-- `unit_price_display`
+### Included Scope
 
-Products are seeded from `database/data/supermarket_products.json`.
+- Authentication (registration, login, logout, password hashing).
+- Authorization through roles and middleware/policies.
+- At least one fully implemented CRUD module (Products).
+- Relational database design with migrations and seed data.
+- Customer-facing product browsing and checkout flow.
+- Validation on both client side and server side.
+- Minimum of five views/pages with consistent navigation and feedback messages.
 
-## Tech Stack
+### Excluded Scope
 
-- PHP 8.2+
-- Laravel 12
-- Blade templates
-- Laravel authentication with session-based auth
-- Vite
-- Tailwind CSS v4 tooling
-- PHPUnit
+- Real payment gateway integration.
+- Delivery route optimization.
+- Multi-language localization.
+- External ERP/accounting integrations.
 
-## Local Setup
+## 5. Core Functional Features
 
-### 1. Install dependencies
+### User Account Management
 
-```bash
-composer install
-npm install
-```
+- User registration with unique email constraint.
+- Secure login/logout flow.
+- Password hashing using Laravel defaults.
+- Basic profile management.
 
-### 2. Configure the environment
+### Role-Based Access Control
 
-```bash
-cp .env.example .env
-php artisan key:generate
-```
+- Route protection using middleware.
+- Permission boundaries between guest/customer/admin.
+- Admin-only access for management pages.
 
-Use any Laravel-supported database. For a quick local setup, SQLite is the simplest option.
+### Product Catalog
 
-Example:
+- Product list page with pagination.
+- Product details page with image, description, price, and stock state.
+- Category-based filtering and keyword search.
 
-```bash
-touch database/database.sqlite
-```
+### Shopping Cart and Checkout
 
-Then update `.env` so the database connection points to `database/database.sqlite`.
+- Add, remove, and update cart items.
+- Quantity controls with stock-aware limits.
+- Checkout creates an order and order items snapshot.
 
-### 3. Run migrations and seed data
+### Product Management (CRUD)
 
-```bash
-php artisan migrate:fresh --seed
-```
+- Admin can create products with validated fields.
+- Admin can edit product details and stock quantity.
+- Admin can soft-delete or deactivate products.
+- Admin can view product records in table/list format.
 
-This seeds:
+### Category Management (Optional but Recommended)
 
-- an admin account
-- a regular user account
-- the product catalog dataset
+- Create, update, and manage categories.
+- Assign products to categories for organized browsing.
 
-The seeded credentials are defined in [database/seeders/DatabaseSeeder.php](/Users/nikitsya/projects/Supermarket-Management/database/seeders/DatabaseSeeder.php). Review or change them before using the project outside local development.
+### Order Management
 
-### 4. Start the application
+- Customers can view their own orders and details.
+- Admin/staff can review order lists and statuses.
+- Status lifecycle examples: `pending`, `confirmed`, `completed`, `cancelled`.
 
-```bash
-composer dev
-```
+## 6. Suggested Data Model (Relational Database)
 
-This starts:
+Suggested normalized schema:
 
-- the Laravel development server
-- the queue listener
-- Laravel Pail
-- the Vite dev server
+- `users`
+- `roles`
+- `role_user` (or equivalent role mapping table)
+- `categories`
+- `products`
+- `carts`
+- `cart_items`
+- `orders`
+- `order_items`
 
-## Useful Commands
+Key relationships:
 
-```bash
-composer dev
-composer test
-npm run dev
-npm run build
-php artisan migrate:fresh --seed
-```
+- One role to many users (or many-to-many, depending on implementation).
+- One category to many products.
+- One user to many orders.
+- One order to many order items.
+- One product to many order items.
 
-There is also a `composer setup` script, but it still depends on a correctly configured database connection in `.env`.
+## 7. Validation and Business Rules
 
-## Route Summary
+Validation is enforced on both frontend and backend for reliability and security.
 
-- `/` and `/catalog`: customer catalog
-- `/catalog/{product}`: product details
-- `/login`: login form
-- `/register`: registration form
-- `/cart`: session cart for authenticated non-admin users
-- `/products`: admin-only inventory management
+### Server-Side Validation Examples
 
-## Project Structure
+- Product name: required, length constraints.
+- Price: required, numeric, positive.
+- Stock: required, integer, non-negative.
+- Email: required, unique, valid format.
+- Password: required, minimum complexity.
 
-- [app/Http/Controllers/CatalogController.php](/Users/nikitsya/projects/Supermarket-Management/app/Http/Controllers/CatalogController.php): catalog, product details, and cart actions
-- [app/Http/Controllers/ProductController.php](/Users/nikitsya/projects/Supermarket-Management/app/Http/Controllers/ProductController.php): admin inventory CRUD
-- [app/Http/Controllers/Auth/ManagerSessionController.php](/Users/nikitsya/projects/Supermarket-Management/app/Http/Controllers/Auth/ManagerSessionController.php): login, registration, and logout
-- [app/Http/Middleware/EnsureAdmin.php](/Users/nikitsya/projects/Supermarket-Management/app/Http/Middleware/EnsureAdmin.php): admin-only route protection
-- [resources/views/catalog](/Users/nikitsya/projects/Supermarket-Management/resources/views/catalog): customer catalog pages
-- [resources/views/products](/Users/nikitsya/projects/Supermarket-Management/resources/views/products): admin inventory page
-- [database/seeders/IrishSupermarketProductsSeeder.php](/Users/nikitsya/projects/Supermarket-Management/database/seeders/IrishSupermarketProductsSeeder.php): JSON import seeder
+### Business Rule Examples
 
-## Testing
+- Customers cannot order a quantity above available stock.
+- Only admins can access product creation and deletion routes.
+- Order total is calculated from order items at checkout time.
+- Deleted/inactive products are hidden from the public catalog.
 
-Run the test suite with:
+## 8. Security and Authorization
 
-```bash
-composer test
-```
+Security is a core requirement:
 
-The existing test suite focuses on:
+- CSRF protection for all form submissions.
+- Password hashing via Laravel authentication stack.
+- Input sanitization and validation.
+- Route-level protection via middleware.
+- Policy/gate checks for sensitive actions.
+- Session-based authentication with secure logout behavior.
 
-- authentication and registration
-- admin authorization
-- catalog browsing and pagination
-- session cart add/remove flow
-- admin product CRUD
+## 9. User Interface and Pages
 
-## Known Gaps
+Minimum set of views/pages includes:
 
-This project already works as a catalog and inventory prototype, but it is not yet a complete supermarket commerce system. The biggest missing parts are checkout, orders, stock control, and a broader back-office workflow.
+- Home page
+- Product catalog page
+- Product details page
+- Cart page
+- Checkout page
+- Login page
+- Registration page
+- Admin dashboard
+- Admin products management page
+
+UX principles:
+
+- Clear navigation and task flow.
+- Action feedback (success/error alerts).
+- Validation messages near relevant form fields.
+- Consistent layout and component behavior.
+
+## 10. Technical Architecture (Laravel MVC)
+
+The project follows Laravel MVC conventions:
+
+- Models define business entities and Eloquent relationships.
+- Views render Blade templates for customer and admin interfaces.
+- Controllers handle requests, validation, service logic, and responses.
+- Migrations manage schema changes version by version.
+- Middleware enforces access control and request filtering.
+- Routes separate public and protected endpoints.
+
+This architecture supports maintainability, testability, and clear separation of concerns.
+
+## 11. Assumptions and Limitations
+
+### Assumptions
+
+- Users have a stable internet connection and modern browsers.
+- Product images are stored locally or through configured storage.
+- Payment is simulated (no real transaction processing).
+
+### Limitations
+
+- No advanced analytics dashboard in the initial release.
+- No mobile app client (web only).
+- No third-party logistics integration in core scope.
+
+## 12. Future Improvements

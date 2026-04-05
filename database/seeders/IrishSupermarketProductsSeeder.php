@@ -53,6 +53,10 @@ class IrishSupermarketProductsSeeder extends Seeder
                     'currency' => $product['currency'] ?: null,
                     'price_display' => $product['price_display'] ?: null,
                     'unit_price_display' => $product['unit_price_display'] ?: null,
+                    'stock' => 18 + (((int) ($product['id'] ?? 0)) % 24),
+                    'is_active' => true,
+                    'last_restocked_at' => now()->subDays((((int) ($product['id'] ?? 1)) % 5) + 1),
+                    'next_delivery_due_at' => now()->addDays((((int) ($product['id'] ?? 1)) % 6) + 2),
                 ];
             })
             ->values();
@@ -77,6 +81,10 @@ class IrishSupermarketProductsSeeder extends Seeder
                     'currency',
                     'price_display',
                     'unit_price_display',
+                    'stock',
+                    'is_active',
+                    'last_restocked_at',
+                    'next_delivery_due_at',
                 ],
             );
         }

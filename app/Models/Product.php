@@ -30,6 +30,10 @@ class Product extends Model
         'currency',
         'price_display',
         'unit_price_display',
+        'stock',
+        'is_active',
+        'last_restocked_at',
+        'next_delivery_due_at',
     ];
 
     /**
@@ -42,6 +46,19 @@ class Product extends Model
         return [
             'weight_value' => 'decimal:2',
             'price_value' => 'decimal:2',
+            'is_active' => 'boolean',
+            'last_restocked_at' => 'datetime',
+            'next_delivery_due_at' => 'datetime',
         ];
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
     }
 }

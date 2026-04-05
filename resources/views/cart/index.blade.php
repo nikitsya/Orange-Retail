@@ -15,6 +15,8 @@
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
                 <div class="utility-links">
+                    <a href="{{ route('dashboard') }}">Dashboard</a>
+                    <a href="{{ route('orders.index') }}">Orders</a>
                     <a href="{{ route('catalog.index') }}">Back to catalog</a>
                 </div>
 
@@ -67,6 +69,7 @@
                 </div>
 
                 <div class="hero-actions">
+                    <a class="button-primary" href="{{ route('checkout.create') }}">Checkout</a>
                     <a class="button-primary" href="{{ route('catalog.index') }}">Continue shopping</a>
                     <a class="button-secondary" href="{{ route('catalog.index') }}">Back to catalog</a>
                 </div>
@@ -104,10 +107,18 @@
                                                 <span class="filter-note">Brand: {{ $item['product']->brand }}</span>
                                                 <span class="filter-note">Quantity: {{ $item['quantity'] }}</span>
                                                 <span class="filter-note">{{ $item['product']->subcategory }}</span>
+                                                <span class="filter-note">Stock: {{ $item['product']->stock }}</span>
                                             </div>
 
                                             <div class="tile-actions" style="margin-top: 18px;">
                                                 <a class="button-secondary" href="{{ route('catalog.show', $item['product']) }}">View product</a>
+
+                                                <form method="POST" action="{{ route('cart.update', $item['product']) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input class="field" style="min-height: 44px; width: 96px;" type="number" min="1" max="{{ $item['product']->stock }}" name="quantity" value="{{ $item['quantity'] }}">
+                                                    <button class="button-secondary" type="submit">Update</button>
+                                                </form>
 
                                                 <form method="POST" action="{{ route('cart.destroy', $item['product']) }}">
                                                     @csrf
@@ -139,10 +150,16 @@
                             <span>Status</span>
                         </div>
                         <div class="summary-stat">
-                            <strong>Saved</strong>
-                            <span>Stored in session</span>
+                            <strong>€{{ number_format($subtotal, 2) }}</strong>
+                            <span>Subtotal</span>
                         </div>
                     </div>
+
+                    @if ($itemCount > 0)
+                        <div class="tile-actions" style="margin-top: 20px;">
+                            <a class="button-primary" href="{{ route('checkout.create') }}">Proceed to checkout</a>
+                        </div>
+                    @endif
                 </aside>
             </section>
         </main>

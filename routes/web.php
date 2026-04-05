@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Auth\ManagerSessionController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -18,15 +21,25 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::redirect('/dashboard', '/catalog')->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/cart', [CatalogController::class, 'cart'])->name('cart.index');
     Route::post('/cart/{product}', [CatalogController::class, 'addToCart'])->name('cart.store');
+    Route::put('/cart/{product}', [CatalogController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/{product}', [CatalogController::class, 'removeFromCart'])->name('cart.destroy');
+    Route::get('/checkout', [OrderController::class, 'create'])->name('checkout.create');
+    Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/logout', [ManagerSessionController::class, 'destroy'])->name('logout');
 });
 
 Route::middleware(['auth', EnsureAdmin::class])->group(function (): void {
+    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('admin.dashboard');
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
+    Route::patch('/admin/orders/{order}', [OrderController::class, 'updateStatus'])->name('admin.orders.update');
+    Route::get('/admin/stock', [StockController::class, 'index'])->name('admin.stock.index');
+    Route::patch('/admin/stock/{product}', [StockController::class, 'update'])->name('admin.stock.update');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');

@@ -51,8 +51,13 @@
                     <a href="{{ route('catalog.index') }}">Catalog</a>
                     @auth
                         @if (auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+                            <a href="{{ route('admin.orders.index') }}">Orders</a>
+                            <a href="{{ route('admin.stock.index') }}">Stock Center</a>
                             <a href="{{ route('products.index') }}">Inventory</a>
                         @else
+                            <a href="{{ route('dashboard') }}">Dashboard</a>
+                            <a href="{{ route('orders.index') }}">Orders</a>
                             <a href="{{ route('cart.index') }}">Cart</a>
                         @endif
                     @else
@@ -161,6 +166,14 @@
             <main class="page-shell page-main stack">
                 <h1 class="sr-only">Browse supermarket products</h1>
 
+                @if (session('status'))
+                    <div class="flash-message">{{ session('status') }}</div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="error-message">{{ $errors->first() }}</div>
+                @endif
+
                 @if ($products->isEmpty())
                     <section class="empty-panel">
                         <h2 class="section-heading">No products matched the current selection.</h2>
@@ -199,15 +212,27 @@
                                         @else
                                             <span>{{ $product->unit_type }}{{ $product->pack_size ? ' | ' . $product->pack_size : '' }}</span>
                                         @endif
+
+                                        <span>
+                                            @if ($product->stock > 0)
+                                                {{ $product->stock }} in stock
+                                            @else
+                                                Out of stock
+                                            @endif
+                                        </span>
                                     </div>
 
                                     <div class="tile-actions">
                                         @auth
                                             @if (auth()->user()->role !== 'admin')
-                                                <form method="POST" action="{{ route('cart.store', $product) }}">
-                                                    @csrf
-                                                    <button class="button-primary" type="submit">Add to cart</button>
-                                                </form>
+                                                @if ($product->stock > 0)
+                                                    <form method="POST" action="{{ route('cart.store', $product) }}">
+                                                        @csrf
+                                                        <button class="button-primary" type="submit">Add to cart</button>
+                                                    </form>
+                                                @else
+                                                    <span class="button-secondary" aria-disabled="true">Out of stock</span>
+                                                @endif
                                             @endif
                                         @else
                                             <a class="button-primary" href="{{ route('login') }}">Add</a>

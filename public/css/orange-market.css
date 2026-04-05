@@ -1363,3 +1363,109 @@ textarea {
         grid-template-columns: 1fr;
     }
 }
+
+.summary-stats-wide {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.order-list,
+.stock-card-list,
+.mini-list {
+    display: grid;
+    gap: 18px;
+}
+
+.order-card,
+.stock-card {
+    padding: 24px;
+}
+
+.order-card-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.order-card-total {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+}
+
+.order-card-actions,
+.inline-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.mini-list-item {
+    padding: 16px 18px;
+    border-radius: 20px;
+    background: var(--surface-muted);
+    border: 1px solid rgba(240, 210, 182, 0.86);
+    display: grid;
+    gap: 4px;
+}
+
+.checkout-layout,
+.stock-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 24px;
+}
+
+.stock-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 128px;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    border-radius: 999px;
+    font-weight: 800;
+    background: var(--success-soft);
+    color: var(--success-ink);
+}
+
+.stock-pill.is-warning {
+    background: #fff4dc;
+    color: #9a5b00;
+}
+
+.stock-pill.is-danger {
+    background: var(--danger-soft);
+    color: var(--danger-ink);
+}
+
+.field-area-compact {
+    min-height: 92px;
+}
+
+@media (max-width: 1100px) {
+    .checkout-layout,
+    .stock-layout,
+    .dashboard-layout,
+    .detail-layout,
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-stats-wide {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .order-card-head,
+    .inline-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .summary-stats-wide {
+        grid-template-columns: 1fr;
+    }
+}

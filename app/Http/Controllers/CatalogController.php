@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Support\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -23,6 +24,7 @@ class CatalogController extends Controller
             ->pluck('category');
 
         $products = Product::query()
+            ->where('is_active', true)
             ->when($category !== '', function ($query) use ($category) {
                 $query->where('category', $category);
             })
@@ -51,6 +53,10 @@ class CatalogController extends Controller
 
     public function show(Product $product): View
     {
+        if (! $product->is_active && request()->user()?->role !== 'admin') {
+            abort(404);
+        }
+
         return view('catalog.show', [
             'product' => $product,
         ]);
@@ -58,48 +64,76 @@ class CatalogController extends Controller
 
     public function cart(Request $request): View
     {
-        $cart = collect($request->session()->get('cart', []));
+        $this->ensureCustomer($request);
 
-        $items = $cart
-            ->map(function (array $item, string $productId): ?array {
-                $product = Product::query()->find($productId);
-
-                if (! $product) {
-                    return null;
-                }
-
-                return [
-                    'product' => $product,
-                    'quantity' => (int) ($item['quantity'] ?? 1),
-                ];
-            })
-            ->filter()
-            ->values();
+        $items = Cart::items($request->session()->get('cart', []));
 
         return view('cart.index', [
             'items' => $items,
-            'itemCount' => $this->cartItemCount($items),
+            'itemCount' => Cart::itemCount($items),
+            'subtotal' => Cart::subtotal($items),
         ]);
     }
 
     public function addToCart(Request $request, Product $product): RedirectResponse
     {
+        $this->ensureCustomer($request);
+        $this->ensurePurchasable($product);
+
         $cart = $request->session()->get('cart', []);
         $productKey = (string) $product->id;
+        $currentQuantity = (int) ($cart[$productKey]['quantity'] ?? 0);
+
+        if ($currentQuantity >= $product->stock) {
+            return redirect()
+                ->route('cart.index')
+                ->withErrors(['cart' => "{$product->name} has reached the available stock limit."]);
+        }
 
         $cart[$productKey] = [
-            'quantity' => (int) (($cart[$productKey]['quantity'] ?? 0) + 1),
+            'quantity' => $currentQuantity + 1,
         ];
 
         $request->session()->put('cart', $cart);
 
         return redirect()
-            ->to(url()->previous() ?: route('catalog.index'))
+            ->route('cart.index')
             ->with('status', "{$product->name} was added to your cart.");
+    }
+
+    public function updateCart(Request $request, Product $product): RedirectResponse
+    {
+        $this->ensureCustomer($request);
+        $this->ensurePurchasable($product);
+
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $quantity = (int) $validated['quantity'];
+
+        if ($quantity > $product->stock) {
+            return redirect()
+                ->route('cart.index')
+                ->withErrors(['cart' => "{$product->name} only has {$product->stock} item(s) available."]);
+        }
+
+        $cart = $request->session()->get('cart', []);
+        $cart[(string) $product->id] = [
+            'quantity' => $quantity,
+        ];
+
+        $request->session()->put('cart', $cart);
+
+        return redirect()
+            ->route('cart.index')
+            ->with('status', 'Cart quantity updated successfully.');
     }
 
     public function removeFromCart(Request $request, Product $product): RedirectResponse
     {
+        $this->ensureCustomer($request);
+
         $cart = $request->session()->get('cart', []);
 
         unset($cart[(string) $product->id]);
@@ -111,8 +145,23 @@ class CatalogController extends Controller
             ->with('status', 'The item was removed from your cart.');
     }
 
-    protected function cartItemCount(Collection $items): int
+    protected function ensureCustomer(Request $request): void
     {
-        return $items->sum('quantity');
+        if ($request->user()?->role === 'admin') {
+            abort(403);
+        }
+    }
+
+    protected function ensurePurchasable(Product $product): void
+    {
+        if (! $product->is_active) {
+            abort(404);
+        }
+
+        if ($product->stock < 1) {
+            throw ValidationException::withMessages([
+                'cart' => "{$product->name} is currently out of stock.",
+            ]);
+        }
     }
 }

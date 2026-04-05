@@ -18,6 +18,14 @@
                     <a href="{{ route('catalog.index') }}">Back to catalog</a>
                     <a href="{{ route('home') }}">Home</a>
                     <a href="{{ route('catalog.index', ['category' => $product->category]) }}">{{ $product->category }}</a>
+                    @auth
+                        @if (auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+                        @else
+                            <a href="{{ route('dashboard') }}">Dashboard</a>
+                            <a href="{{ route('orders.index') }}">Orders</a>
+                        @endif
+                    @endauth
                 </div>
 
                 <div class="utility-actions">
@@ -118,12 +126,16 @@
                     <div class="detail-actions" style="margin-top: 18px;">
                         @auth
                             @if (auth()->user()->role !== 'admin')
-                                <form method="POST" action="{{ route('cart.store', $product) }}">
-                                    @csrf
-                                    <button class="button-primary" type="submit">Add to cart</button>
-                                </form>
+                                @if ($product->stock > 0)
+                                    <form method="POST" action="{{ route('cart.store', $product) }}">
+                                        @csrf
+                                        <button class="button-primary" type="submit">Add to cart</button>
+                                    </form>
+                                @else
+                                    <span class="button-secondary" aria-disabled="true">Out of stock</span>
+                                @endif
                             @else
-                                <a class="button-primary" href="{{ route('products.index') }}">Manage inventory</a>
+                                <a class="button-primary" href="{{ route('admin.stock.index') }}">Manage stock</a>
                             @endif
                         @else
                             <a class="button-primary" href="{{ route('login') }}">Add</a>
@@ -156,6 +168,10 @@
                         <div class="detail-info-card">
                             <strong>Category line</strong>
                             <div>{{ $product->category }} / {{ $product->subcategory }}</div>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Stock</strong>
+                            <div>{{ $product->stock > 0 ? $product->stock . ' available' : 'Out of stock' }}</div>
                         </div>
                     </div>
                 </aside>

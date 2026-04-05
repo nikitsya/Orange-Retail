@@ -49,7 +49,10 @@
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
                 <div class="utility-links">
+                    <a href="{{ route('admin.dashboard') }}">Dashboard</a>
                     <a href="{{ route('home') }}">Home</a>
+                    <a href="{{ route('admin.orders.index') }}">Orders</a>
+                    <a href="{{ route('admin.stock.index') }}">Stock Center</a>
                     <a href="{{ route('catalog.index') }}">Catalog</a>
                     <a href="{{ route('products.index') }}">Inventory</a>
                 </div>
@@ -89,6 +92,7 @@
                     </form>
 
                     <div class="masthead-actions">
+                        <a class="button-secondary" href="{{ route('admin.stock.index') }}">Stock Center</a>
                         <a class="account-pill" href="{{ route('catalog.index') }}">
                             <div>
                                 <strong>{{ $productCount }} products</strong>
@@ -172,7 +176,7 @@
                                     >
                                         <span class="inventory-tag">{{ $product->category }}</span>
                                         <strong>{{ $product->name }}</strong>
-                                        <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }}</span>
+                                        <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }} | Stock: {{ $product->stock }} | {{ $product->is_active ? 'Active' : 'Inactive' }}</span>
                                     </button>
                                 </article>
 
@@ -215,6 +219,16 @@
                                                 {{ $product->pack_size ?: 'No pack size' }} |
                                                 {{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'No weight data' }}
                                             </div>
+                                        </div>
+
+                                        <div class="meta-card">
+                                            <strong>Stock and status</strong>
+                                            <div>{{ $product->stock }} units | {{ $product->is_active ? 'Active in catalog' : 'Hidden from catalog' }}</div>
+                                        </div>
+
+                                        <div class="meta-card">
+                                            <strong>Price</strong>
+                                            <div>{{ $product->price_display ?: 'No display price' }} | {{ $product->unit_price_display ?: 'No unit price' }}</div>
                                         </div>
                                     </div>
 
@@ -279,6 +293,23 @@
 
                                         <div class="form-grid-3">
                                             <label class="field-label">
+                                                Price value
+                                                <input class="field" type="number" step="0.01" min="0.01" name="price_value" value="{{ old('modal_product_id') == $product->id ? old('price_value', $product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') : ($product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') }}" required>
+                                            </label>
+
+                                            <label class="field-label">
+                                                Currency
+                                                <input class="field" type="text" name="currency" value="{{ old('modal_product_id') == $product->id ? old('currency', $product->currency ?: 'EUR') : ($product->currency ?: 'EUR') }}" required>
+                                            </label>
+
+                                            <label class="field-label">
+                                                Unit price display
+                                                <input class="field" type="text" name="unit_price_display" value="{{ old('modal_product_id') == $product->id ? old('unit_price_display', $product->unit_price_display) : $product->unit_price_display }}">
+                                            </label>
+                                        </div>
+
+                                        <div class="form-grid-3">
+                                            <label class="field-label">
                                                 Unit type
                                                 <input class="field" type="text" name="unit_type" value="{{ old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type }}" required>
                                             </label>
@@ -297,6 +328,24 @@
                                         <label class="field-label">
                                             Weight value
                                             <input class="field" type="number" step="0.01" min="0" name="weight_value" value="{{ old('modal_product_id') == $product->id ? old('weight_value', $product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') : ($product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') }}">
+                                        </label>
+
+                                        <div class="form-grid-2">
+                                            <label class="field-label">
+                                                Stock
+                                                <input class="field" type="number" min="0" name="stock" value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}" required>
+                                            </label>
+
+                                            <label class="field-label">
+                                                Price display
+                                                <input class="field" type="text" name="price_display" value="{{ old('modal_product_id') == $product->id ? old('price_display', $product->price_display) : $product->price_display }}">
+                                            </label>
+                                        </div>
+
+                                        <label class="remember-row">
+                                            <input type="hidden" name="is_active" value="0">
+                                            <input type="checkbox" name="is_active" value="1" @checked((old('modal_product_id') == $product->id ? old('is_active', $product->is_active ? '1' : '0') : ($product->is_active ? '1' : '0')) == '1')>
+                                            Visible in the customer catalog
                                         </label>
 
                                         <div class="tile-actions">
@@ -392,6 +441,24 @@
                     </div>
 
                     <div class="form-grid-2">
+                        <label class="field-label" for="price_value">
+                            Price value
+                            <input class="field" id="price_value" type="number" step="0.01" min="0.01" name="price_value" value="{{ old('price_value') }}" required>
+                            @error('price_value')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label class="field-label" for="currency">
+                            Currency
+                            <input class="field" id="currency" type="text" name="currency" value="{{ old('currency', 'EUR') }}" required>
+                            @error('currency')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    </div>
+
+                    <div class="form-grid-2">
                         <label class="field-label" for="name">
                             Product name
                             <input class="field" id="name" type="text" name="name" value="{{ old('name') }}" required>
@@ -444,6 +511,14 @@
                     </label>
 
                     <div class="form-grid-3">
+                        <label class="field-label" for="unit_price_display">
+                            Unit price display
+                            <input class="field" id="unit_price_display" type="text" name="unit_price_display" value="{{ old('unit_price_display') }}">
+                            @error('unit_price_display')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
                         <label class="field-label" for="unit_type">
                             Unit type
                             <input class="field" id="unit_type" type="text" name="unit_type" value="{{ old('unit_type') }}" required>
@@ -475,6 +550,30 @@
                         @error('weight_value')
                             <span class="field-error">{{ $message }}</span>
                         @enderror
+                    </label>
+
+                    <div class="form-grid-2">
+                        <label class="field-label" for="stock">
+                            Stock
+                            <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}" required>
+                            @error('stock')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+
+                        <label class="field-label" for="price_display">
+                            Price display
+                            <input class="field" id="price_display" type="text" name="price_display" value="{{ old('price_display') }}">
+                            @error('price_display')
+                                <span class="field-error">{{ $message }}</span>
+                            @enderror
+                        </label>
+                    </div>
+
+                    <label class="remember-row" for="is_active">
+                        <input type="hidden" name="is_active" value="0">
+                        <input id="is_active" type="checkbox" name="is_active" value="1" @checked(old('is_active', '1') === '1')>
+                        Visible in the customer catalog
                     </label>
 
                     <div class="tile-actions">

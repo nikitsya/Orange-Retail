@@ -40,8 +40,12 @@ class ManagerAuthenticationTest extends TestCase
             'password' => 'secret123',
         ]);
 
-        $response->assertRedirect('/products');
+        $response->assertRedirect('/admin/dashboard');
         $this->assertAuthenticatedAs($admin);
+
+        $this->get('/admin/dashboard')
+            ->assertOk()
+            ->assertSee('Admin Dashboard');
 
         $this->get('/products')
             ->assertOk()
@@ -117,10 +121,16 @@ class ManagerAuthenticationTest extends TestCase
             'subcategory' => 'Apples',
             'description' => 'Fresh Gala apples pack of 6',
             'image_url' => 'https://example.com/images/apples.jpg',
+            'price_value' => '3.49',
+            'currency' => 'EUR',
+            'price_display' => '€3.49',
+            'unit_price_display' => '€0.58/each',
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
             'weight_value' => '0.80',
             'weight_unit' => 'kg',
+            'stock' => 24,
+            'is_active' => '1',
         ])->assertRedirect('/products');
 
         $product = Product::query()->where('sku', 'TESCO-APP-001')->firstOrFail();
@@ -134,10 +144,16 @@ class ManagerAuthenticationTest extends TestCase
             'subcategory' => 'Apples',
             'description' => 'Fresh Gala apples pack of 8',
             'image_url' => 'https://example.com/images/apples-8.jpg',
+            'price_value' => '4.29',
+            'currency' => 'EUR',
+            'price_display' => '€4.29',
+            'unit_price_display' => '€0.54/each',
             'unit_type' => 'pack',
             'pack_size' => '8 apples',
             'weight_value' => '1.00',
             'weight_unit' => 'kg',
+            'stock' => 18,
+            'is_active' => '1',
         ])->assertRedirect('/products');
 
         $this->assertDatabaseHas('products', [
@@ -145,6 +161,7 @@ class ManagerAuthenticationTest extends TestCase
             'name' => 'Tesco Gala Apples 8 Pack',
             'pack_size' => '8 apples',
             'weight_unit' => 'kg',
+            'stock' => 18,
         ]);
 
         $this->delete("/products/{$product->id}")
