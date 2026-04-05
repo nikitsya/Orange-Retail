@@ -61,29 +61,6 @@
         </header>
 
         <main class="page-shell page-main admin-grid">
-            <section class="admin-hero stack">
-                <div>
-                    <span class="section-kicker">Admin</span>
-                    <h1>Inventory list</h1>
-                    <p class="muted-copy">Update or remove product records stored with the current schema.</p>
-                </div>
-
-                <div class="hero-notes">
-                    <div class="hero-note">
-                        <strong>{{ $products->count() }}</strong>
-                        <span>Products in the current result</span>
-                    </div>
-                    <div class="hero-note">
-                        <strong>{{ $search !== '' ? 'Filtered' : 'All records' }}</strong>
-                        <span>{{ $search !== '' ? 'Search is active for the inventory list.' : 'No search filter is active.' }}</span>
-                    </div>
-                    <div class="hero-note">
-                        <strong>Products</strong>
-                        <span>Create, edit, and delete catalog items.</span>
-                    </div>
-                </div>
-            </section>
-
             @if (session('status'))
                 <div class="flash-message">{{ session('status') }}</div>
             @endif
@@ -93,31 +70,6 @@
             @endif
 
             <section class="admin-surface stack">
-                <div class="admin-toolbar">
-                    <form class="toolbar-search" method="GET" action="{{ route('products.index') }}">
-                        <input
-                            type="search"
-                            name="search"
-                            value="{{ $search }}"
-                            placeholder="Search by name or description"
-                        >
-                        <button class="search-image-button" type="submit" aria-label="Search">
-                            <img src="{{ asset('images/ui/search.png') }}" alt="">
-                            <span class="sr-only">Search</span>
-                        </button>
-                    </form>
-
-                    <div class="toolbar">
-                        @if ($search !== '')
-                            <a class="button-secondary" href="{{ route('products.index') }}">Clear</a>
-                        @endif
-                    </div>
-                </div>
-
-                @if ($search !== '')
-                    <p class="muted-copy">Showing results for "{{ $search }}".</p>
-                @endif
-
                 @if ($products->isEmpty())
                     <section class="empty-panel">
                         <h2 class="section-heading">No products found</h2>
