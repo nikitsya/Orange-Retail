@@ -64,12 +64,15 @@
                 @if ($category !== '')
                     <input type="hidden" name="category" value="{{ $category }}">
                 @endif
+                @if ($subcategory !== '')
+                    <input type="hidden" name="subcategory" value="{{ $subcategory }}">
+                @endif
 
                 <input
                     type="search"
                     name="search"
                     value="{{ $search }}"
-                    placeholder="Search by name, brand, SKU, barcode, or subcategory"
+                    placeholder="Search by name, brand, SKU, or barcode"
                     aria-label="Search inventory"
                 >
                 <button class="search-image-button" type="submit" aria-label="Search">
@@ -123,6 +126,28 @@
                 @endforeach
             </nav>
         </div>
+
+        @if ($category !== '' && $subcategoryOptions->isNotEmpty())
+            <div class="subcategory-filter-shell">
+                <div class="subcategory-filter-row" role="navigation" aria-label="{{ $category }} subcategories">
+                    <a
+                        class="subcategory-chip @if ($subcategory === '') is-active @endif"
+                        href="{{ route('products.index', array_filter(['category' => $category, 'search' => $search !== '' ? $search : null])) }}"
+                    >
+                        All {{ $category }}
+                    </a>
+
+                    @foreach ($subcategoryOptions as $subcategoryOption)
+                        <a
+                            class="subcategory-chip @if ($subcategory === $subcategoryOption) is-active @endif"
+                            href="{{ route('products.index', array_filter(['category' => $category, 'subcategory' => $subcategoryOption, 'search' => $search !== '' ? $search : null])) }}"
+                        >
+                            {{ $subcategoryOption }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 
@@ -143,7 +168,7 @@
                 <section class="empty-panel">
                     <h2 class="section-heading">No products found</h2>
                     <p class="muted-copy">
-                        {{ $search !== '' || $category !== '' ? 'No products matched your current filters.' : 'No products are available yet. Add the first one above.' }}
+                        {{ $search !== '' || $category !== '' || $subcategory !== '' ? 'No products matched your current filters.' : 'No products are available yet. Add the first one above.' }}
                     </p>
                 </section>
             @else
@@ -196,6 +221,7 @@
                                     <input type="hidden" name="modal_product_id" value="{{ $product->id }}">
                                     <input type="hidden" name="current_search" value="{{ $search }}">
                                     <input type="hidden" name="current_category" value="{{ $category }}">
+                                    <input type="hidden" name="current_subcategory" value="{{ $subcategory }}">
 
                                     <div class="form-grid-2">
                                         <label class="field-label">
@@ -346,6 +372,7 @@
                                         @method('DELETE')
                                         <input type="hidden" name="current_search" value="{{ $search }}">
                                         <input type="hidden" name="current_category" value="{{ $category }}">
+                                        <input type="hidden" name="current_subcategory" value="{{ $subcategory }}">
                                         <button class="button-danger" type="submit">Delete product</button>
                                     </form>
                                 </div>
@@ -408,6 +435,7 @@
             <input type="hidden" name="modal_context" value="create">
             <input type="hidden" name="current_search" value="{{ $search }}">
             <input type="hidden" name="current_category" value="{{ $category }}">
+            <input type="hidden" name="current_subcategory" value="{{ $subcategory }}">
 
             <div class="form-grid-2">
                 <label class="field-label" for="sku">

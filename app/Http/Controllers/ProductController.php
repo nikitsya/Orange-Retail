@@ -15,6 +15,7 @@ class ProductController extends Controller
     {
         $search = trim($request->string('search')->toString());
         $category = trim($request->string('category')->toString());
+        $subcategory = trim($request->string('subcategory')->toString());
 
         $categories = Product::query()
             ->select('category')
@@ -40,9 +41,14 @@ class ProductController extends Controller
             $subcategoryOptionsByCategory[$categoryOption] ??= [];
         }
 
+        $subcategoryOptions = collect($subcategoryOptionsByCategory[$category] ?? []);
+
         $products = Product::query()
             ->when($category !== '', function ($query) use ($category) {
                 $query->where('category', $category);
+            })
+            ->when($subcategory !== '', function ($query) use ($subcategory) {
+                $query->where('subcategory', $subcategory);
             })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($nestedQuery) use ($search) {
@@ -50,8 +56,7 @@ class ProductController extends Controller
                         ->where('name', 'like', "%{$search}%")
                         ->orWhere('sku', 'like', "%{$search}%")
                         ->orWhere('barcode', 'like', "%{$search}%")
-                        ->orWhere('brand', 'like', "%{$search}%")
-                        ->orWhere('subcategory', 'like', "%{$search}%");
+                        ->orWhere('brand', 'like', "%{$search}%");
                 });
             })
             ->orderBy('category')
@@ -67,9 +72,11 @@ class ProductController extends Controller
             'products' => $products,
             'search' => $search,
             'category' => $category,
+            'subcategory' => $subcategory,
             'categories' => $categories,
             'categoryOptions' => Product::categories(),
             'subcategoryOptionsByCategory' => $subcategoryOptionsByCategory,
+            'subcategoryOptions' => $subcategoryOptions,
             'unitTypes' => Product::unitTypes(),
         ]);
     }
@@ -144,10 +151,12 @@ class ProductController extends Controller
     {
         $search = trim($request->string('current_search')->toString());
         $category = trim($request->string('current_category')->toString());
+        $subcategory = trim($request->string('current_subcategory')->toString());
 
         return array_filter([
             'search' => $search !== '' ? $search : null,
             'category' => $category !== '' ? $category : null,
+            'subcategory' => $subcategory !== '' ? $subcategory : null,
         ]);
     }
 
