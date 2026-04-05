@@ -467,5 +467,6 @@
 
             toggleBodyScroll();
         </script>
+        @include('partials.masthead-stick-on-scroll')
     </body>
 </html>

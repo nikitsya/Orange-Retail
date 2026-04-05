@@ -162,5 +162,7 @@
                 </aside>
             </section>
         </main>
+
+        @include('partials.masthead-stick-on-scroll')
     </body>
 </html>

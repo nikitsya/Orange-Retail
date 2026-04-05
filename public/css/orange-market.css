@@ -115,12 +115,21 @@ textarea {
 }
 
 .masthead {
-    position: sticky;
-    top: 0;
     z-index: 20;
     background: rgba(255, 248, 240, 0.94);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(201, 75, 0, 0.10);
+}
+
+.masthead.is-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.masthead-spacer {
+    height: 0;
 }
 
 .masthead-main {

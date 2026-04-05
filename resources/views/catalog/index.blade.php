@@ -256,5 +256,7 @@
                 @endif
             </main>
         </section>
+
+        @include('partials.masthead-stick-on-scroll')
     </body>
 </html>
