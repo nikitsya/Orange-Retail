@@ -77,6 +77,8 @@ textarea {
 }
 
 .utility-bar {
+    position: relative;
+    z-index: 30;
     background: var(--accent);
     color: #fffaf5;
 }

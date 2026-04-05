@@ -10,10 +10,20 @@
         const spacer = document.createElement('div');
         spacer.className = 'masthead-spacer';
         masthead.insertAdjacentElement('afterend', spacer);
-        masthead.classList.add('is-fixed');
 
         const syncMasthead = () => {
+            const utilityHeight = utilityBar.offsetHeight;
             const utilityBottom = Math.max(0, utilityBar.getBoundingClientRect().bottom);
+            const shouldFix = utilityBottom < utilityHeight;
+
+            masthead.classList.toggle('is-fixed', shouldFix);
+
+            if (! shouldFix) {
+                masthead.style.top = '';
+                spacer.style.height = '0px';
+                return;
+            }
+
             masthead.style.top = `${utilityBottom}px`;
             spacer.style.height = `${masthead.offsetHeight}px`;
         };
