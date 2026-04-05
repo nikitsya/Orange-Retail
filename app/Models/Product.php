@@ -26,7 +26,6 @@ class Product extends Model
         'weight_value',
         'weight_unit',
         'price_value',
-        'currency',
         'price_display',
         'unit_price_display',
         'stock',

@@ -32,7 +32,6 @@ class OrderManagementTest extends TestCase
             'weight_value' => 0.90,
             'weight_unit' => 'kg',
             'price_value' => 3.50,
-            'currency' => 'EUR',
             'price_display' => '€3.50',
             'unit_price_display' => '€0.58/each',
             'stock' => 10,
@@ -113,7 +112,6 @@ class OrderManagementTest extends TestCase
             'weight_value' => null,
             'weight_unit' => null,
             'price_value' => 2.25,
-            'currency' => 'EUR',
             'price_display' => '€2.25',
             'unit_price_display' => '€2.25/l',
             'stock' => 3,
@@ -135,7 +133,6 @@ class OrderManagementTest extends TestCase
             'item_count' => 2,
             'subtotal' => 4.50,
             'total' => 4.50,
-            'currency' => 'EUR',
             'placed_at' => now(),
         ]);
 
@@ -192,7 +189,6 @@ class OrderManagementTest extends TestCase
             'weight_value' => null,
             'weight_unit' => null,
             'price_value' => 1.95,
-            'currency' => 'EUR',
             'price_display' => '€1.95',
             'unit_price_display' => '€1.95/l',
             'stock' => 4,

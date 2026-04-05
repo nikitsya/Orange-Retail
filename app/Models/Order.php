@@ -31,7 +31,6 @@ class Order extends Model
         'item_count',
         'subtotal',
         'total',
-        'currency',
         'placed_at',
     ];
 

@@ -91,7 +91,6 @@ class OrderController extends Controller
                 'item_count' => (int)$preparedItems->sum('quantity'),
                 'subtotal' => $subtotal,
                 'total' => $subtotal,
-                'currency' => 'EUR',
                 'placed_at' => now(),
             ]);
 

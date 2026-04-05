@@ -260,13 +260,6 @@
                                         </label>
 
                                         <label class="field-label">
-                                            Currency
-                                            <input class="field" type="text" name="currency"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('currency', $product->currency ?: 'EUR') : ($product->currency ?: 'EUR') }}"
-                                                   required>
-                                        </label>
-
-                                        <label class="field-label">
                                             Unit price display
                                             <input class="field" type="text" name="unit_price_display"
                                                    value="{{ old('modal_product_id') == $product->id ? old('unit_price_display', $product->unit_price_display) : $product->unit_price_display }}">
@@ -425,14 +418,6 @@
                     @enderror
                 </label>
 
-                <label class="field-label" for="currency">
-                    Currency
-                    <input class="field" id="currency" type="text" name="currency" value="{{ old('currency', 'EUR') }}"
-                           required>
-                    @error('currency')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
             </div>
 
             <div class="form-grid-2">
