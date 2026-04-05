@@ -23,15 +23,15 @@
                 'Treats & Snacks' => 'treats_snacks.png',
             ];
             $navCategories = collect([
-                'Baby & Toddler',
-                'Drinks',
-                'Food Cupboard',
                 'Fresh Food',
-                'Health & Beauty',
-                'Home & Furniture',
-                'Household',
-                'Pets',
+                'Drinks',
                 'Treats & Snacks',
+                'Pets',
+                'Home & Furniture',
+                'Food Cupboard',
+                'Health & Beauty',
+                'Baby & Toddler',
+                'Household',
             ])->filter(fn (string $catalogCategory) => $categories->contains($catalogCategory));
             $productCount = $products->total();
             $currentPage = $products->currentPage();
