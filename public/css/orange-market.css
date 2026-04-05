@@ -76,6 +76,10 @@ textarea {
     margin: 0 auto;
 }
 
+.catalog-content .page-shell {
+    width: min(calc(100% - 16px), 1520px);
+}
+
 .utility-bar {
     position: relative;
     z-index: 30;
@@ -731,7 +735,7 @@ textarea {
 
 .catalog-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -1258,6 +1262,10 @@ textarea {
 @media (max-width: 640px) {
     .page-shell {
         width: min(calc(100% - 20px), var(--page-width));
+    }
+
+    .catalog-content .page-shell {
+        width: min(calc(100% - 12px), 1520px);
     }
 
     .utility-bar-inner,
