@@ -259,6 +259,12 @@ textarea {
     border-radius: 0;
 }
 
+.masthead .search-image-button {
+    outline: 0;
+    border: 0;
+    box-shadow: none;
+}
+
 .search-image-button img {
     display: block;
     width: 100%;
@@ -270,6 +276,11 @@ textarea {
 .search-image-button:focus-visible {
     outline: 2px solid rgba(201, 75, 0, 0.55);
     outline-offset: 4px;
+}
+
+.masthead .search-image-button:hover,
+.masthead .search-image-button:focus-visible {
+    outline: 0;
 }
 
 .button-primary,
