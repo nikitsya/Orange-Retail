@@ -611,9 +611,46 @@
 </div>
 
 <script>
+    let lockedScrollY = 0;
+
+    const lockBodyScroll = () => {
+        if (document.body.classList.contains('modal-open')) {
+            return;
+        }
+
+        lockedScrollY = window.scrollY;
+        document.documentElement.classList.add('modal-open');
+        document.body.classList.add('modal-open');
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${lockedScrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+    };
+
+    const unlockBodyScroll = () => {
+        if (!document.body.classList.contains('modal-open')) {
+            return;
+        }
+
+        document.documentElement.classList.remove('modal-open');
+        document.body.classList.remove('modal-open');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        window.scrollTo(0, lockedScrollY);
+    };
+
     const toggleBodyScroll = () => {
         const hasOpenModal = document.querySelector('.modal.is-open') !== null;
-        document.body.style.overflow = hasOpenModal ? 'hidden' : '';
+        if (hasOpenModal) {
+            lockBodyScroll();
+            return;
+        }
+
+        unlockBodyScroll();
     };
 
     document.querySelectorAll('[data-open-modal]').forEach((button) => {

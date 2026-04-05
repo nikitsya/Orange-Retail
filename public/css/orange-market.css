@@ -1185,10 +1185,17 @@ textarea {
     padding: 24px;
     background: rgba(36, 23, 20, 0.42);
     backdrop-filter: blur(10px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .modal.is-open {
     display: flex;
+}
+
+html.modal-open,
+body.modal-open {
+    overflow: hidden;
 }
 
 .modal-dialog {
