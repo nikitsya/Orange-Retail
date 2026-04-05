@@ -16,17 +16,7 @@
             <div class="page-shell utility-bar-inner">
                 @include('partials.app-nav')
 
-                <div class="utility-actions">
-                    @auth
-                        @if (auth()->user()->role === 'admin')
-                            <a href="{{ route('products.index') }}">Inventory</a>
-                        @else
-                            <a href="{{ route('cart.index') }}">Cart</a>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}">Sign in</a>
-                    @endauth
-                </div>
+                @include('partials.utility-actions')
             </div>
         </div>
 

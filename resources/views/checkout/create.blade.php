@@ -12,12 +12,7 @@
             <div class="page-shell utility-bar-inner">
                 @include('partials.app-nav')
 
-                <div class="utility-actions">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="utility-button" type="submit">Sign out</button>
-                    </form>
-                </div>
+                @include('partials.utility-actions')
             </div>
         </div>
 

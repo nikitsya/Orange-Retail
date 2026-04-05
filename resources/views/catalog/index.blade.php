@@ -48,17 +48,7 @@
             <div class="page-shell utility-bar-inner">
                 @include('partials.app-nav')
 
-                <div class="utility-actions">
-                    @auth
-                        <span>{{ auth()->user()->name }}</span>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button class="utility-button" type="submit">Sign out</button>
-                        </form>
-                    @else
-                        <a href="{{ route('login') }}">Sign in</a>
-                    @endauth
-                </div>
+                @include('partials.utility-actions')
             </div>
         </div>
 
