@@ -36,7 +36,6 @@
     $navCategories = $preferredCategories
         ->filter(fn (string $inventoryCategory) => $categories->contains($inventoryCategory))
         ->merge($categories->reject(fn (string $inventoryCategory) => $preferredCategories->contains($inventoryCategory)));
-    $productCount = $products->total();
     $currentPage = $products->currentPage();
     $lastPage = $products->lastPage();
     $windowSize = 5;
@@ -80,14 +79,6 @@
             </form>
 
             <div class="masthead-actions">
-                <a class="button-secondary" href="{{ route('admin.stock.index') }}">Stock Center</a>
-                <a class="account-pill" href="{{ route('catalog.index') }}">
-                    <div>
-                        <strong>{{ $productCount }} products</strong>
-                        <span>Visible in the current inventory view</span>
-                    </div>
-                </a>
-
                 <button class="button-primary" type="button" data-open-modal="add-product-modal">Add product</button>
             </div>
         </div>
