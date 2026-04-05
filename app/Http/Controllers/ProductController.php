@@ -93,23 +93,18 @@ class ProductController extends Controller
             'weight_value' => ['nullable', 'numeric', 'min:0'],
             'weight_unit' => ['nullable', 'string', 'max:20'],
             'price_value' => ['required', 'numeric', 'gt:0'],
-            'price_display' => ['nullable', 'string', 'max:30'],
             'unit_price_display' => ['nullable', 'string', 'max:40'],
             'stock' => ['required', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        foreach (['barcode', 'image_url', 'pack_size', 'weight_value', 'weight_unit', 'price_display', 'unit_price_display'] as $field) {
+        foreach (['barcode', 'image_url', 'pack_size', 'weight_value', 'weight_unit', 'unit_price_display'] as $field) {
             if (($validated[$field] ?? null) === '') {
                 $validated[$field] = null;
             }
         }
 
         $validated['is_active'] = $request->boolean('is_active');
-
-        if (!$validated['price_display']) {
-            $validated['price_display'] = '€' . number_format((float)$validated['price_value'], 2);
-        }
 
         return $validated;
     }

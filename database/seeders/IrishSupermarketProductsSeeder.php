@@ -49,7 +49,6 @@ class IrishSupermarketProductsSeeder extends Seeder
                     'price_value' => $product['price_value'] !== null
                         ? (float)$product['price_value']
                         : null,
-                    'price_display' => $product['price_display'] ?: null,
                     'unit_price_display' => $product['unit_price_display'] ?: null,
                     'stock' => 18 + (((int)($product['id'] ?? 0)) % 24),
                     'is_active' => true,
@@ -75,7 +74,6 @@ class IrishSupermarketProductsSeeder extends Seeder
                     'weight_value',
                     'weight_unit',
                     'price_value',
-                    'price_display',
                     'unit_price_display',
                     'stock',
                     'is_active',

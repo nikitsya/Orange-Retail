@@ -293,20 +293,12 @@
                                                value="{{ old('modal_product_id') == $product->id ? old('weight_value', $product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') : ($product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') }}">
                                     </label>
 
-                                    <div class="form-grid-2">
-                                        <label class="field-label">
-                                            Stock
-                                            <input class="field" type="number" min="0" name="stock"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
-                                                   required>
-                                        </label>
-
-                                        <label class="field-label">
-                                            Price display
-                                            <input class="field" type="text" name="price_display"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('price_display', $product->price_display) : $product->price_display }}">
-                                        </label>
-                                    </div>
+                                    <label class="field-label">
+                                        Stock
+                                        <input class="field" type="number" min="0" name="stock"
+                                               value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
+                                               required>
+                                    </label>
 
                                     <label class="remember-row">
                                         <input type="hidden" name="is_active" value="0">
@@ -512,25 +504,14 @@
                 @enderror
             </label>
 
-            <div class="form-grid-2">
-                <label class="field-label" for="stock">
-                    Stock
-                    <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}"
-                           required>
-                    @error('stock')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
-
-                <label class="field-label" for="price_display">
-                    Price display
-                    <input class="field" id="price_display" type="text" name="price_display"
-                           value="{{ old('price_display') }}">
-                    @error('price_display')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
-            </div>
+            <label class="field-label" for="stock">
+                Stock
+                <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}"
+                       required>
+                @error('stock')
+                <span class="field-error">{{ $message }}</span>
+                @enderror
+            </label>
 
             <label class="remember-row" for="is_active">
                 <input type="hidden" name="is_active" value="0">

@@ -26,7 +26,6 @@ class Product extends Model
         'weight_value',
         'weight_unit',
         'price_value',
-        'price_display',
         'unit_price_display',
         'stock',
         'is_active',
@@ -77,5 +76,14 @@ class Product extends Model
         return $parts->isEmpty()
             ? 'Product information is available in the saved fields.'
             : $parts->implode(', ') . '.';
+    }
+
+    public function getFormattedPriceAttribute(): ?string
+    {
+        if ($this->price_value === null) {
+            return null;
+        }
+
+        return '€' . number_format((float) $this->price_value, 2);
     }
 }

@@ -88,7 +88,7 @@
 
             <div class="summary-stats">
                 <div class="summary-stat">
-                    <strong>{{ $product->price_display ?: 'In store' }}</strong>
+                    <strong>{{ $product->formatted_price ?: 'In store' }}</strong>
                     <span>Price</span>
                 </div>
                 <div class="summary-stat">

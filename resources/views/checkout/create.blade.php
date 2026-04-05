@@ -98,7 +98,7 @@
             @foreach ($items as $item)
                 <article class="mini-list-item">
                     <strong>{{ $item['product']->name }}</strong>
-                    <span>{{ $item['quantity'] }} x {{ $item['product']->price_display ?: 'In store' }}</span>
+                    <span>{{ $item['quantity'] }} x {{ $item['product']->formatted_price ?: 'In store' }}</span>
                     <span>€{{ number_format($item['line_total'], 2) }}</span>
                 </article>
             @endforeach

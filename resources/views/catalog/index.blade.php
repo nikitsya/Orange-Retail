@@ -177,8 +177,8 @@
 
                         <div class="price-row">
                             <div class="price-block">
-                                @if ($product->price_display)
-                                    <strong>{{ $product->price_display }}</strong>
+                                @if ($product->formatted_price)
+                                    <strong>{{ $product->formatted_price }}</strong>
                                 @else
                                     <strong>In store</strong>
                                 @endif
