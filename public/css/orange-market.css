@@ -1196,7 +1196,7 @@ textarea {
     max-height: calc(100vh - 48px);
     overflow: auto;
     padding: 28px;
-    border-radius: var(--radius-xl);
+    border-radius: 0;
     background: rgba(255, 252, 247, 0.98);
     border: 1px solid rgba(240, 210, 182, 0.9);
 }
@@ -1212,6 +1212,7 @@ textarea {
 .modal-close {
     min-width: 48px;
     padding-inline: 0;
+    border-radius: 0;
     border-color: rgba(240, 210, 182, 0.9);
     background: #fff;
     color: var(--accent-deep);
@@ -1226,9 +1227,16 @@ textarea {
 
 .meta-card {
     padding: 16px 18px;
-    border-radius: 20px;
+    border-radius: 0;
     background: #fff;
     border: 1px solid rgba(240, 210, 182, 0.86);
+}
+
+.modal-dialog .eyebrow-tag,
+.modal-dialog .field,
+.modal-dialog .field-select,
+.modal-dialog .field-area {
+    border-radius: 0;
 }
 
 .meta-card strong {
