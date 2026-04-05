@@ -8,6 +8,10 @@
         <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
     </head>
     <body>
+        @php
+            $fallbackProductImage = asset('images/products/picture.png');
+        @endphp
+
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
                 <div class="utility-links">
@@ -81,11 +85,11 @@
                             @foreach ($items as $item)
                                 <article class="summary-panel">
                                     <div class="cart-line">
-                                        <div class="cart-thumb">
+                                        <div class="cart-thumb @if (! $item['product']->image_url) has-fallback-image @endif">
                                             @if ($item['product']->image_url)
                                                 <img src="{{ $item['product']->image_url }}" alt="{{ $item['product']->name }}">
                                             @else
-                                                <span class="placeholder-badge">{{ strtoupper(substr($item['product']->name, 0, 1)) }}</span>
+                                                <img src="{{ $fallbackProductImage }}" alt="{{ $item['product']->name }}">
                                             @endif
                                         </div>
 

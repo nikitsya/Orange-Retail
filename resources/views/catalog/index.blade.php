@@ -22,6 +22,7 @@
                 'Pets' => 'pets.png',
                 'Treats & Snacks' => 'treats_snacks.png',
             ];
+            $fallbackProductImage = asset('images/products/picture.png');
             $navCategories = collect([
                 'Fresh Food',
                 'Drinks',
@@ -179,11 +180,11 @@
                     <section class="catalog-grid">
                         @foreach ($products as $product)
                             <article class="product-card">
-                                <div class="product-media">
+                                <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
                                     @if ($product->image_url)
                                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                                     @else
-                                        <span class="placeholder-badge">{{ strtoupper(substr($product->category, 0, 1)) }}</span>
+                                        <img src="{{ $fallbackProductImage }}" alt="{{ $product->name }}">
                                     @endif
                                 </div>
 

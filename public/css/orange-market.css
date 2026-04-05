@@ -803,6 +803,12 @@ textarea {
     object-fit: cover;
 }
 
+.product-media.has-fallback-image,
+.cart-thumb.has-fallback-image,
+.detail-gallery.has-fallback-image {
+    background: #ffffff;
+}
+
 .placeholder-badge {
     width: 74px;
     height: 74px;

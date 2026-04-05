@@ -8,6 +8,10 @@
         <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
     </head>
     <body>
+        @php
+            $fallbackProductImage = asset('images/products/picture.png');
+        @endphp
+
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
                 <div class="utility-links">
@@ -81,11 +85,11 @@
                     <h1 class="detail-heading">{{ $product->name }}</h1>
                     <p class="lede">{{ $product->description }}</p>
 
-                    <div class="detail-gallery">
+                    <div class="detail-gallery @if (! $product->image_url) has-fallback-image @endif">
                         @if ($product->image_url)
                             <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                         @else
-                            <div class="detail-gallery-empty">{{ strtoupper(substr($product->name, 0, 1)) }}</div>
+                            <img src="{{ $fallbackProductImage }}" alt="{{ $product->name }}">
                         @endif
                     </div>
 
