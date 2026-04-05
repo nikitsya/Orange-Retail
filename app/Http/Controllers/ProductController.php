@@ -13,22 +13,41 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $search = trim($request->string('search')->toString());
+        $category = trim($request->string('category')->toString());
+
+        $categories = Product::query()
+            ->select('category')
+            ->whereNotNull('category')
+            ->distinct()
+            ->orderBy('category')
+            ->pluck('category');
 
         $products = Product::query()
+            ->when($category !== '', function ($query) use ($category) {
+                $query->where('category', $category);
+            })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($nestedQuery) use ($search) {
                     $nestedQuery
                         ->where('name', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%");
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('brand', 'like', "%{$search}%")
+                        ->orWhere('category', 'like', "%{$search}%")
+                        ->orWhere('subcategory', 'like', "%{$search}%");
                 });
             })
+            ->orderBy('category')
+            ->orderBy('subcategory')
             ->orderBy('brand')
             ->orderBy('name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         return view('products.index', [
             'products' => $products,
             'search' => $search,
+            'category' => $category,
+            'categories' => $categories,
         ]);
     }
 
@@ -107,8 +126,12 @@ class ProductController extends Controller
      */
     protected function indexParameters(Request $request): array
     {
-        $search = trim($request->string('search')->toString());
+        $search = trim($request->string('current_search')->toString());
+        $category = trim($request->string('current_category')->toString());
 
-        return $search === '' ? [] : ['search' => $search];
+        return array_filter([
+            'search' => $search !== '' ? $search : null,
+            'category' => $category !== '' ? $category : null,
+        ]);
     }
 }

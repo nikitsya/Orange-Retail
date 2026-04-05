@@ -8,6 +8,44 @@
         <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
     </head>
     <body>
+        @php
+            $departmentImages = [
+                '' => 'all_dep.png',
+                'All departments' => 'all_dep.png',
+                'Baby & Toddler' => 'baby_toddler.png',
+                'Drinks' => 'drinks.png',
+                'Food Cupboard' => 'food_cupb.png',
+                'Fresh Food' => 'fresh_food.png',
+                'Health & Beauty' => 'health_beauty.png',
+                'Home & Furniture' => 'home_furniture.png',
+                'Household' => 'household.png',
+                'Pets' => 'pets.png',
+                'Treats & Snacks' => 'treats_snacks.png',
+            ];
+            $preferredCategories = collect([
+                'Fresh Food',
+                'Drinks',
+                'Food Cupboard',
+                'Treats & Snacks',
+                'Household',
+                'Pets',
+                'Health & Beauty',
+                'Baby & Toddler',
+                'Home & Furniture',
+            ]);
+            $navCategories = $preferredCategories
+                ->filter(fn (string $inventoryCategory) => $categories->contains($inventoryCategory))
+                ->merge($categories->reject(fn (string $inventoryCategory) => $preferredCategories->contains($inventoryCategory)));
+            $productCount = $products->total();
+            $currentPage = $products->currentPage();
+            $lastPage = $products->lastPage();
+            $windowSize = 5;
+            $halfWindow = intdiv($windowSize, 2);
+            $pageStart = max(1, $currentPage - $halfWindow);
+            $pageEnd = min($lastPage, $pageStart + $windowSize - 1);
+            $pageStart = max(1, $pageEnd - $windowSize + 1);
+        @endphp
+
         <div class="utility-bar">
             <div class="page-shell utility-bar-inner">
                 <div class="utility-links">
@@ -33,6 +71,10 @@
                     </a>
 
                     <form class="search-shell" method="GET" action="{{ route('products.index') }}">
+                        @if ($category !== '')
+                            <input type="hidden" name="category" value="{{ $category }}">
+                        @endif
+
                         <input
                             type="search"
                             name="search"
@@ -49,7 +91,7 @@
                     <div class="masthead-actions">
                         <a class="account-pill" href="{{ route('catalog.index') }}">
                             <div>
-                                <strong>{{ $products->count() }} products</strong>
+                                <strong>{{ $productCount }} products</strong>
                                 <span>Visible in the current inventory view</span>
                             </div>
                         </a>
@@ -60,8 +102,49 @@
             </div>
         </header>
 
+        <div class="catalog-nav-shell">
+            <div class="page-shell">
+                <div class="catalog-nav-scroll">
+                    <nav class="section-nav" aria-label="Inventory departments">
+                        <a
+                            class="nav-chip @if ($category === '') is-active @endif"
+                            href="{{ route('products.index', ['search' => $search]) }}"
+                            aria-label="All departments"
+                        >
+                            <span class="nav-chip-media">
+                                <img src="{{ asset('images/departments/' . $departmentImages['']) }}" alt="All departments">
+                            </span>
+                            <span class="sr-only">All departments</span>
+                        </a>
+
+                        @foreach ($navCategories as $inventoryCategory)
+                            <a
+                                class="nav-chip @if ($category === $inventoryCategory) is-active @endif"
+                                href="{{ route('products.index', array_filter(['category' => $inventoryCategory, 'search' => $search !== '' ? $search : null])) }}"
+                                aria-label="{{ $inventoryCategory }}"
+                            >
+                                <span class="nav-chip-media">
+                                    @if (isset($departmentImages[$inventoryCategory]))
+                                        <img
+                                            src="{{ asset('images/departments/' . $departmentImages[$inventoryCategory]) }}"
+                                            alt="{{ $inventoryCategory }}"
+                                        >
+                                    @else
+                                        <span class="nav-chip-fallback">{{ strtoupper(substr($inventoryCategory, 0, 1)) }}</span>
+                                    @endif
+                                </span>
+                                <span class="sr-only">{{ $inventoryCategory }}</span>
+                            </a>
+                        @endforeach
+                    </nav>
+                </div>
+            </div>
+        </div>
+
         <section class="catalog-content">
             <main class="page-shell page-main admin-grid">
+                <h1 class="sr-only">Inventory list</h1>
+
                 @if (session('status'))
                     <div class="flash-message">{{ session('status') }}</div>
                 @endif
@@ -75,7 +158,7 @@
                         <section class="empty-panel">
                             <h2 class="section-heading">No products found</h2>
                             <p class="muted-copy">
-                                {{ $search !== '' ? 'No products matched your search.' : 'No products are available yet. Add the first one above.' }}
+                                {{ $search !== '' || $category !== '' ? 'No products matched your current filters.' : 'No products are available yet. Add the first one above.' }}
                             </p>
                         </section>
                     @else
@@ -145,7 +228,8 @@
                                         @csrf
                                         @method('PUT')
                                         <input type="hidden" name="modal_product_id" value="{{ $product->id }}">
-                                        <input type="hidden" name="search" value="{{ $search }}">
+                                        <input type="hidden" name="current_search" value="{{ $search }}">
+                                        <input type="hidden" name="current_category" value="{{ $category }}">
 
                                         <div class="form-grid-2">
                                             <label class="field-label">
@@ -224,7 +308,8 @@
                                         <form method="POST" action="{{ route('products.destroy', $product) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <input type="hidden" name="search" value="{{ $search }}">
+                                            <input type="hidden" name="current_search" value="{{ $search }}">
+                                            <input type="hidden" name="current_category" value="{{ $category }}">
                                             <button class="button-danger" type="submit">Delete product</button>
                                         </form>
                                     </div>
@@ -232,6 +317,35 @@
                                 </div>
                             @endforeach
                         </section>
+
+                        @if ($products->hasPages())
+                            <nav class="pagination-nav" aria-label="Inventory pages">
+                                @if ($products->onFirstPage())
+                                    <span class="pagination-link is-disabled" aria-hidden="true">Previous</span>
+                                @else
+                                    <a class="pagination-link" href="{{ $products->previousPageUrl() }}">Previous</a>
+                                @endif
+
+                                <div class="pagination-pages">
+                                    @for ($page = $pageStart; $page <= $pageEnd; $page++)
+                                        <a
+                                            class="pagination-link @if ($page === $products->currentPage()) is-active @endif"
+                                            href="{{ $products->url($page) }}"
+                                            aria-label="Page {{ $page }}"
+                                            @if ($page === $products->currentPage()) aria-current="page" @endif
+                                        >
+                                            {{ $page }}
+                                        </a>
+                                    @endfor
+                                </div>
+
+                                @if ($products->hasMorePages())
+                                    <a class="pagination-link" href="{{ $products->nextPageUrl() }}">Next</a>
+                                @else
+                                    <span class="pagination-link is-disabled" aria-hidden="true">Next</span>
+                                @endif
+                            </nav>
+                        @endif
                     @endif
                 </section>
             </main>
@@ -256,7 +370,8 @@
                 <form class="stack" method="POST" action="{{ route('products.store') }}">
                     @csrf
                     <input type="hidden" name="modal_context" value="create">
-                    <input type="hidden" name="search" value="{{ $search }}">
+                    <input type="hidden" name="current_search" value="{{ $search }}">
+                    <input type="hidden" name="current_category" value="{{ $category }}">
 
                     <div class="form-grid-2">
                         <label class="field-label" for="sku">
