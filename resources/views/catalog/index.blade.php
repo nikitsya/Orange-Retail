@@ -66,7 +66,7 @@
                         <span>{{ auth()->user()->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit">Sign out</button>
+                            <button class="utility-button" type="submit">Sign out</button>
                         </form>
                     @else
                         <a href="{{ route('login') }}">Sign in</a>

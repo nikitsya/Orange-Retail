@@ -19,7 +19,7 @@
                 <div class="utility-actions">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit">Sign out</button>
+                        <button class="utility-button" type="submit">Sign out</button>
                     </form>
                 </div>
             </div>
@@ -40,7 +40,10 @@
                             placeholder="Search by name or description"
                             aria-label="Search inventory"
                         >
-                        <button type="submit">Search</button>
+                        <button class="search-image-button" type="submit" aria-label="Search">
+                            <img src="{{ asset('images/ui/search.png') }}" alt="">
+                            <span class="sr-only">Search</span>
+                        </button>
                     </form>
 
                     <div class="masthead-actions">
@@ -96,7 +99,10 @@
                             value="{{ $search }}"
                             placeholder="Search by name or description"
                         >
-                        <button type="submit">Search</button>
+                        <button class="search-image-button" type="submit" aria-label="Search">
+                            <img src="{{ asset('images/ui/search.png') }}" alt="">
+                            <span class="sr-only">Search</span>
+                        </button>
                     </form>
 
                     <div class="toolbar">

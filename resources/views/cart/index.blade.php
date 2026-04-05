@@ -22,7 +22,7 @@
                 <div class="utility-actions">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit">Sign out</button>
+                        <button class="utility-button" type="submit">Sign out</button>
                     </form>
                 </div>
             </div>
@@ -37,7 +37,10 @@
 
                     <form class="search-shell" method="GET" action="{{ route('catalog.index') }}">
                         <input type="search" name="search" placeholder="Search for more products" aria-label="Search products">
-                        <button type="submit">Search</button>
+                        <button class="search-image-button" type="submit" aria-label="Search">
+                            <img src="{{ asset('images/ui/search.png') }}" alt="">
+                            <span class="sr-only">Search</span>
+                        </button>
                     </form>
 
                     <div class="masthead-actions">
