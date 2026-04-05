@@ -23,7 +23,7 @@
 <header class="masthead">
     <div class="page-shell">
         <div class="masthead-main">
-            <a class="brand-lockup" href="{{ route('home') }}">
+            <a class="brand-lockup" href="{{ route('catalog.index') }}">
                 @include('partials.brand-name', ['class' => 'brand-title'])
             </a>
 
