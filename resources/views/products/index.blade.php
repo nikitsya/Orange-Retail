@@ -69,7 +69,7 @@
                     type="search"
                     name="search"
                     value="{{ $search }}"
-                    placeholder="Search by name, brand, SKU, or category"
+                    placeholder="Search by name, brand, SKU, barcode, or subcategory"
                     aria-label="Search inventory"
                 >
                 <button class="search-image-button" type="submit" aria-label="Search">

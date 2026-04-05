@@ -51,7 +51,6 @@ class ProductController extends Controller
                         ->orWhere('sku', 'like', "%{$search}%")
                         ->orWhere('barcode', 'like', "%{$search}%")
                         ->orWhere('brand', 'like', "%{$search}%")
-                        ->orWhere('category', 'like', "%{$search}%")
                         ->orWhere('subcategory', 'like', "%{$search}%");
                 });
             })
