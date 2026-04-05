@@ -30,8 +30,6 @@ class ManagerAuthenticationTest extends TestCase
             'image_url' => 'https://example.com/products/inventory-item.jpg',
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
-            'weight_value' => 0.80,
-            'weight_unit' => 'kg',
         ]);
 
         $response = $this->post('/login', [
@@ -123,8 +121,6 @@ class ManagerAuthenticationTest extends TestCase
             'unit_price_display' => '€0.58/each',
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
-            'weight_value' => '0.80',
-            'weight_unit' => 'kg',
             'stock' => 24,
             'is_active' => '1',
         ])->assertRedirect('/products');
@@ -143,8 +139,6 @@ class ManagerAuthenticationTest extends TestCase
             'unit_price_display' => '€0.54/each',
             'unit_type' => 'pack',
             'pack_size' => '8 apples',
-            'weight_value' => '1.00',
-            'weight_unit' => 'kg',
             'stock' => 18,
             'is_active' => '1',
         ])->assertRedirect('/products');
@@ -153,7 +147,6 @@ class ManagerAuthenticationTest extends TestCase
             'id' => $product->id,
             'name' => 'Tesco Gala Apples 8 Pack',
             'pack_size' => '8 apples',
-            'weight_unit' => 'kg',
             'stock' => 18,
         ]);
 
@@ -181,8 +174,6 @@ class ManagerAuthenticationTest extends TestCase
             'image_url' => null,
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
-            'weight_value' => 0.80,
-            'weight_unit' => 'kg',
         ]);
 
         Product::query()->create([
@@ -195,8 +186,6 @@ class ManagerAuthenticationTest extends TestCase
             'image_url' => null,
             'unit_type' => 'each',
             'pack_size' => null,
-            'weight_value' => null,
-            'weight_unit' => null,
         ]);
 
         $this->actingAs($admin)

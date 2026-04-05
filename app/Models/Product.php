@@ -48,8 +48,6 @@ class Product extends Model
         'image_url',
         'unit_type',
         'pack_size',
-        'weight_value',
-        'weight_unit',
         'price_value',
         'unit_price_display',
         'stock',
@@ -92,7 +90,6 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'weight_value' => 'decimal:2',
             'price_value' => 'decimal:2',
             'is_active' => 'boolean',
             'last_restocked_at' => 'datetime',

@@ -298,7 +298,7 @@
                                         </label>
                                     </div>
 
-                                    <div class="form-grid-3">
+                                    <div class="form-grid-2">
                                         <label class="field-label">
                                             Unit type
                                             <select class="field-select" name="unit_type" required>
@@ -318,19 +318,7 @@
                                             <input class="field" type="text" name="pack_size"
                                                    value="{{ old('modal_product_id') == $product->id ? old('pack_size', $product->pack_size) : $product->pack_size }}">
                                         </label>
-
-                                        <label class="field-label">
-                                            Weight unit
-                                            <input class="field" type="text" name="weight_unit"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('weight_unit', $product->weight_unit) : $product->weight_unit }}">
-                                        </label>
                                     </div>
-
-                                    <label class="field-label">
-                                        Weight value
-                                        <input class="field" type="number" step="0.01" min="0" name="weight_value"
-                                               value="{{ old('modal_product_id') == $product->id ? old('weight_value', $product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') : ($product->weight_value !== null ? number_format((float) $product->weight_value, 2, '.', '') : '') }}">
-                                    </label>
 
                                     <label class="field-label">
                                         Stock
@@ -525,7 +513,7 @@
                 @enderror
             </label>
 
-            <div class="form-grid-3">
+            <div class="form-grid-2">
                 <label class="field-label" for="unit_price_display">
                     Unit price display
                     <input class="field" id="unit_price_display" type="text" name="unit_price_display"
@@ -556,25 +544,7 @@
                     <span class="field-error">{{ $message }}</span>
                     @enderror
                 </label>
-
-                <label class="field-label" for="weight_unit">
-                    Weight unit
-                    <input class="field" id="weight_unit" type="text" name="weight_unit"
-                           value="{{ old('weight_unit') }}">
-                    @error('weight_unit')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
             </div>
-
-            <label class="field-label" for="weight_value">
-                Weight value
-                <input class="field" id="weight_value" type="number" step="0.01" min="0" name="weight_value"
-                       value="{{ old('weight_value') }}">
-                @error('weight_value')
-                <span class="field-error">{{ $message }}</span>
-                @enderror
-            </label>
 
             <label class="field-label" for="stock">
                 Stock

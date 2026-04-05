@@ -141,10 +141,6 @@
                     <div>{{ $product->pack_size ?: 'Not specified' }}</div>
                 </div>
                 <div class="detail-info-card">
-                    <strong>Weight</strong>
-                    <div>{{ $product->weight_value !== null ? trim(number_format((float) $product->weight_value, 2) . ' ' . ($product->weight_unit ?: '')) : 'Not specified' }}</div>
-                </div>
-                <div class="detail-info-card">
                     <strong>Category line</strong>
                     <div>{{ $product->category }} / {{ $product->subcategory }}</div>
                 </div>

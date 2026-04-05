@@ -112,15 +112,13 @@ class ProductController extends Controller
             'image_url' => ['nullable', 'url', 'max:2048'],
             'unit_type' => ['required', 'string', Rule::in(Product::unitTypes())],
             'pack_size' => ['nullable', 'string', 'max:100'],
-            'weight_value' => ['nullable', 'numeric', 'min:0'],
-            'weight_unit' => ['nullable', 'string', 'max:20'],
             'price_value' => ['required', 'numeric', 'gt:0'],
             'unit_price_display' => ['nullable', 'string', 'max:40'],
             'stock' => ['required', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        foreach (['barcode', 'image_url', 'pack_size', 'weight_value', 'weight_unit', 'unit_price_display', 'subcategory', 'new_subcategory'] as $field) {
+        foreach (['barcode', 'image_url', 'pack_size', 'unit_price_display', 'subcategory', 'new_subcategory'] as $field) {
             if (($validated[$field] ?? null) === '') {
                 $validated[$field] = null;
             }

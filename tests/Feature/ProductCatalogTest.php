@@ -27,8 +27,6 @@ class ProductCatalogTest extends TestCase
             'image_url' => null,
             'unit_type' => 'pack',
             'pack_size' => '6 apples',
-            'weight_value' => 0.90,
-            'weight_unit' => 'kg',
         ]);
 
         $this->actingAs($user)
@@ -54,8 +52,6 @@ class ProductCatalogTest extends TestCase
             'image_url' => null,
             'unit_type' => 'carton',
             'pack_size' => '1 litre',
-            'weight_value' => null,
-            'weight_unit' => null,
         ]);
 
         Product::query()->create([
@@ -68,8 +64,6 @@ class ProductCatalogTest extends TestCase
             'image_url' => null,
             'unit_type' => 'each',
             'pack_size' => null,
-            'weight_value' => null,
-            'weight_unit' => null,
         ]);
 
         $this->actingAs($user)
@@ -101,8 +95,6 @@ class ProductCatalogTest extends TestCase
             'image_url' => 'https://example.com/images/pasta.jpg',
             'unit_type' => 'pack',
             'pack_size' => '500g',
-            'weight_value' => 0.50,
-            'weight_unit' => 'kg',
         ]);
 
         $this->actingAs($user)
@@ -129,8 +121,6 @@ class ProductCatalogTest extends TestCase
             'image_url' => null,
             'unit_type' => 'tin',
             'pack_size' => '400g',
-            'weight_value' => 0.40,
-            'weight_unit' => 'kg',
         ]);
 
         $this->actingAs($user)
@@ -161,8 +151,6 @@ class ProductCatalogTest extends TestCase
             'image_url' => null,
             'unit_type' => 'box',
             'pack_size' => '80 bags',
-            'weight_value' => null,
-            'weight_unit' => null,
         ]);
 
         $this->actingAs($user)->withSession([
@@ -196,8 +184,6 @@ class ProductCatalogTest extends TestCase
                 'image_url' => null,
                 'unit_type' => 'bottle',
                 'pack_size' => '500ml',
-                'weight_value' => null,
-                'weight_unit' => null,
             ]);
         }
 
@@ -233,8 +219,6 @@ class ProductCatalogTest extends TestCase
                 'image_url' => null,
                 'unit_type' => 'pack',
                 'pack_size' => '1 pack',
-                'weight_value' => null,
-                'weight_unit' => null,
             ]);
         }
 
