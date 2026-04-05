@@ -33,7 +33,14 @@
                 'Pets',
                 'Treats & Snacks',
             ])->filter(fn (string $catalogCategory) => $categories->contains($catalogCategory));
-            $productCount = $products->count();
+            $productCount = $products->total();
+            $currentPage = $products->currentPage();
+            $lastPage = $products->lastPage();
+            $windowSize = 5;
+            $halfWindow = intdiv($windowSize, 2);
+            $pageStart = max(1, $currentPage - $halfWindow);
+            $pageEnd = min($lastPage, $pageStart + $windowSize - 1);
+            $pageStart = max(1, $pageEnd - $windowSize + 1);
         @endphp
 
         <div class="utility-bar">
@@ -222,6 +229,35 @@
                             </article>
                         @endforeach
                     </section>
+
+                    @if ($products->hasPages())
+                        <nav class="pagination-nav" aria-label="Catalog pages">
+                            @if ($products->onFirstPage())
+                                <span class="pagination-link is-disabled" aria-hidden="true">Previous</span>
+                            @else
+                                <a class="pagination-link" href="{{ $products->previousPageUrl() }}">Previous</a>
+                            @endif
+
+                            <div class="pagination-pages">
+                                @for ($page = $pageStart; $page <= $pageEnd; $page++)
+                                    <a
+                                        class="pagination-link @if ($page === $products->currentPage()) is-active @endif"
+                                        href="{{ $products->url($page) }}"
+                                        aria-label="Page {{ $page }}"
+                                        @if ($page === $products->currentPage()) aria-current="page" @endif
+                                    >
+                                        {{ $page }}
+                                    </a>
+                                @endfor
+                            </div>
+
+                            @if ($products->hasMorePages())
+                                <a class="pagination-link" href="{{ $products->nextPageUrl() }}">Next</a>
+                            @else
+                                <span class="pagination-link is-disabled" aria-hidden="true">Next</span>
+                            @endif
+                        </nav>
+                    @endif
                 @endif
             </main>
         </section>

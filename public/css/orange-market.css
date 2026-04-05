@@ -655,6 +655,46 @@ textarea {
     gap: 20px;
 }
 
+.pagination-nav,
+.pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pagination-nav {
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pagination-link {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.7rem 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.pagination-link.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff9f5;
+}
+
+.pagination-link.is-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
 .product-card {
     padding: 18px;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
@@ -1131,7 +1171,9 @@ textarea {
     }
 
     .search-image-button {
-        width: 86px;
+        width: 24px;
+        min-width: 24px;
+        height: 24px;
         justify-self: start;
     }
 

@@ -38,7 +38,8 @@ class CatalogController extends Controller
             ->orderBy('category')
             ->orderBy('subcategory')
             ->orderBy('name')
-            ->get();
+            ->paginate(20)
+            ->withQueryString();
 
         return view('catalog.index', [
             'products' => $products,

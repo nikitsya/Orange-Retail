@@ -184,4 +184,88 @@ class ProductCatalogTest extends TestCase
             ->assertSee('Your cart is empty')
             ->assertDontSee('Breakfast Tea');
     }
+
+    public function test_catalog_is_paginated_by_twenty_products_per_page(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        foreach (range(1, 21) as $index) {
+            Product::query()->create([
+                'sku' => sprintf('CAT-PAG-%03d', $index),
+                'barcode' => sprintf('5391234568%03d', $index),
+                'name' => sprintf('Paged Product %02d', $index),
+                'brand' => 'Orange Retail',
+                'category' => 'Drinks',
+                'subcategory' => 'Soft Drinks',
+                'description' => 'Product used to verify catalog pagination.',
+                'image_url' => null,
+                'unit_type' => 'bottle',
+                'pack_size' => '500ml',
+                'weight_value' => null,
+                'weight_unit' => null,
+            ]);
+        }
+
+        $this->actingAs($user)
+            ->get('/catalog')
+            ->assertOk()
+            ->assertSee('Paged Product 01')
+            ->assertSee('Paged Product 20')
+            ->assertDontSee('Paged Product 21')
+            ->assertSee('?page=2', false);
+
+        $this->actingAs($user)
+            ->get('/catalog?page=2')
+            ->assertOk()
+            ->assertSee('Paged Product 21')
+            ->assertDontSee('Paged Product 01');
+    }
+
+    public function test_catalog_pagination_shows_a_centered_five_page_window(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        foreach (range(1, 160) as $index) {
+            Product::query()->create([
+                'sku' => sprintf('CAT-WIN-%03d', $index),
+                'barcode' => sprintf('5399999999%03d', $index),
+                'name' => sprintf('Window Product %03d', $index),
+                'brand' => 'Orange Retail',
+                'category' => 'Treats & Snacks',
+                'subcategory' => 'Biscuits',
+                'description' => 'Product used to verify the pagination window.',
+                'image_url' => null,
+                'unit_type' => 'pack',
+                'pack_size' => '1 pack',
+                'weight_value' => null,
+                'weight_unit' => null,
+            ]);
+        }
+
+        $this->actingAs($user)
+            ->get('/catalog?page=3')
+            ->assertOk()
+            ->assertSee('?page=1', false)
+            ->assertSee('?page=2', false)
+            ->assertSee('?page=3', false)
+            ->assertSee('?page=4', false)
+            ->assertSee('?page=5', false)
+            ->assertDontSee('?page=6', false);
+
+        $this->actingAs($user)
+            ->get('/catalog?page=5')
+            ->assertOk()
+            ->assertDontSee('?page=1', false)
+            ->assertDontSee('?page=2', false)
+            ->assertSee('?page=3', false)
+            ->assertSee('?page=4', false)
+            ->assertSee('?page=5', false)
+            ->assertSee('?page=6', false)
+            ->assertSee('?page=7', false)
+            ->assertDontSee('?page=8', false);
+    }
 }
