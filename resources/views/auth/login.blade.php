@@ -10,27 +10,6 @@
     <body>
         <main class="auth-page">
             <div class="page-shell auth-layout">
-                <section class="auth-aside">
-                    @include('partials.brand-name', ['class' => 'brand-title'])
-                    <h2>Access your account</h2>
-                    <p>Sign in to open the customer dashboard or the admin inventory area.</p>
-
-                    <div class="hero-notes" style="margin-top: 24px;">
-                        <div class="hero-note">
-                            <strong>Catalog</strong>
-                            <span>Browse products and departments.</span>
-                        </div>
-                        <div class="hero-note">
-                            <strong>Cart</strong>
-                            <span>Use the session cart for customer flows.</span>
-                        </div>
-                        <div class="hero-note">
-                            <strong>Inventory</strong>
-                            <span>Admins can manage product records.</span>
-                        </div>
-                    </div>
-                </section>
-
                 <section class="auth-panel">
                     <a class="button-secondary" href="{{ route('home') }}">Back to home</a>
                     <h1>Login</h1>

@@ -10,27 +10,6 @@
     <body>
         <main class="auth-page">
             <div class="page-shell auth-layout">
-                <section class="auth-aside">
-                    @include('partials.brand-name', ['class' => 'brand-title'])
-                    <h2>Create an account</h2>
-                    <p>Register a customer account to open the dashboard and use the cart.</p>
-
-                    <div class="hero-notes" style="margin-top: 24px;">
-                        <div class="hero-note">
-                            <strong>Catalog</strong>
-                            <span>Search products and browse departments.</span>
-                        </div>
-                        <div class="hero-note">
-                            <strong>Dashboard</strong>
-                            <span>Open your customer area after registration.</span>
-                        </div>
-                        <div class="hero-note">
-                            <strong>Cart</strong>
-                            <span>Keep selected items in the session cart.</span>
-                        </div>
-                    </div>
-                </section>
-
                 <section class="auth-panel">
                     <a class="button-secondary" href="{{ route('home') }}">Back to home</a>
                     <h1>Register</h1>

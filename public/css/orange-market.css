@@ -1007,7 +1007,8 @@ textarea {
 }
 
 .auth-layout {
-    grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 640px);
+    justify-content: center;
     align-items: stretch;
 }
 
