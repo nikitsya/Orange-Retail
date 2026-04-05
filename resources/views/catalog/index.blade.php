@@ -25,13 +25,13 @@
             $navCategories = collect([
                 'Fresh Food',
                 'Drinks',
-                'Treats & Snacks',
-                'Pets',
-                'Home & Furniture',
                 'Food Cupboard',
+                'Treats & Snacks',
+                'Household',
+                'Pets',
                 'Health & Beauty',
                 'Baby & Toddler',
-                'Household',
+                'Home & Furniture',
             ])->filter(fn (string $catalogCategory) => $categories->contains($catalogCategory));
             $productCount = $products->total();
             $currentPage = $products->currentPage();
