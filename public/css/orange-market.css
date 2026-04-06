@@ -769,6 +769,11 @@ textarea {
     border-radius: 0;
 }
 
+.stock-layout > .section-panel,
+.stock-layout > .summary-panel {
+    border-radius: 0;
+}
+
 .filter-grid,
 .detail-grid,
 .cart-layout,
