@@ -68,35 +68,37 @@
 </header>
 
 <main class="page-shell page-main stock-layout">
-    <section class="section-panel stack">
-        @if (session('status'))
-            <div class="flash-message">{{ session('status') }}</div>
-        @endif
+    <div class="stock-primary stack">
+        <section class="section-panel stack stock-overview">
+            @if (session('status'))
+                <div class="flash-message">{{ session('status') }}</div>
+            @endif
 
-        @if ($errors->any())
-            <div class="error-message">{{ $errors->first() }}</div>
-        @endif
+            @if ($errors->any())
+                <div class="error-message">{{ $errors->first() }}</div>
+            @endif
 
-        <div>
-            <h1 class="page-title">Warehouse and delivery planning</h1>
-            <p class="muted-copy">Review live stock, last restock dates, next expected deliveries, and record manual
-                warehouse updates.</p>
-        </div>
+            <div>
+                <h1 class="page-title">Warehouse and delivery planning</h1>
+                <p class="muted-copy">Review live stock, last restock dates, next expected deliveries, and record manual
+                    warehouse updates.</p>
+            </div>
 
-        <div class="summary-stats summary-stats-wide">
-            <div class="summary-stat">
-                <strong>{{ $outOfStockCount }}</strong>
-                <span>Out of stock</span>
+            <div class="summary-stats summary-stats-wide">
+                <div class="summary-stat">
+                    <strong>{{ $outOfStockCount }}</strong>
+                    <span>Out of stock</span>
+                </div>
+                <div class="summary-stat">
+                    <strong>{{ $lowStockCount }}</strong>
+                    <span>At or below minimum</span>
+                </div>
+                <div class="summary-stat">
+                    <strong>{{ $incomingDeliveryCount }}</strong>
+                    <span>Deliveries due within 7 days</span>
+                </div>
             </div>
-            <div class="summary-stat">
-                <strong>{{ $lowStockCount }}</strong>
-                <span>At or below minimum</span>
-            </div>
-            <div class="summary-stat">
-                <strong>{{ $incomingDeliveryCount }}</strong>
-                <span>Deliveries due within 7 days</span>
-            </div>
-        </div>
+        </section>
 
         @if ($products->isEmpty())
             <section class="empty-panel">
@@ -106,7 +108,7 @@
         @else
             <section class="stock-card-list">
                 @foreach ($products as $product)
-                    <article class="summary-panel stock-card">
+                    <article class="stock-card">
                         <div class="order-card-head">
                             <div>
                                 <span class="inventory-tag">{{ $product->category }}</span>
@@ -192,7 +194,7 @@
                 </nav>
             @endif
         @endif
-    </section>
+    </div>
 
     <aside class="summary-panel stack">
         <div>

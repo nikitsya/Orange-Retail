@@ -791,7 +791,7 @@ textarea {
     border-radius: 0;
 }
 
-.stock-layout > .section-panel,
+.stock-overview,
 .stock-layout > .summary-panel {
     border-radius: 0;
 }
@@ -802,15 +802,23 @@ textarea {
     background: var(--bg);
 }
 
-.stock-layout > .section-panel,
+.stock-overview,
 .stock-layout .summary-stat,
 .stock-layout .detail-info-card,
 .stock-layout .mini-list-item.is-warning {
     background: #ffffff;
 }
 
+.stock-primary {
+    display: grid;
+    gap: 24px;
+    align-content: start;
+}
+
 .stock-layout .stock-card {
-    background: #fff6ea;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid rgba(240, 210, 182, 0.86);
     border-radius: 0;
 }
 
