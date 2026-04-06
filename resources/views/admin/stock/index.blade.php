@@ -40,7 +40,7 @@
             </div>
             <div class="summary-stat">
                 <strong>{{ $lowStockCount }}</strong>
-                <span>Low stock</span>
+                <span>At or below minimum</span>
             </div>
             <div class="summary-stat">
                 <strong>{{ $incomingDeliveryCount }}</strong>
@@ -71,7 +71,7 @@
                 <select class="field-select" name="stock_state">
                     <option value="">All states</option>
                     <option value="out" @selected($stockState === 'out')>Out of stock</option>
-                    <option value="low" @selected($stockState === 'low')>Low stock</option>
+                    <option value="low" @selected($stockState === 'low')>At or below minimum</option>
                     <option value="healthy" @selected($stockState === 'healthy')>Healthy stock</option>
                 </select>
             </label>
@@ -91,7 +91,7 @@
                             <p>{{ $product->brand }} | SKU {{ $product->sku }}</p>
                         </div>
                         <div
-                            class="stock-pill {{ $product->stock === 0 ? 'is-danger' : ($product->stock <= 5 ? 'is-warning' : 'is-ok') }}">
+                            class="stock-pill {{ $product->stock === 0 ? 'is-danger' : ($product->stock <= $product->minimum_stock_level ? 'is-warning' : 'is-ok') }}">
                             {{ $product->stock }} in stock
                         </div>
                     </div>
@@ -100,6 +100,10 @@
                         <div class="detail-info-card">
                             <strong>Last restock</strong>
                             <div>{{ $product->last_restocked_at?->format('d M Y H:i') ?? 'Not recorded yet' }}</div>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Minimum stock</strong>
+                            <div>{{ $product->minimum_stock_level }} units</div>
                         </div>
                         <div class="detail-info-card">
                             <strong>Next delivery</strong>
@@ -111,11 +115,17 @@
                         @csrf
                         @method('PATCH')
 
-                        <div class="form-grid-3">
+                        <div class="form-grid-2">
                             <label class="field-label">
                                 Current stock
                                 <input class="field" type="number" min="0" name="stock"
                                        value="{{ old('stock', $product->stock) }}" required>
+                            </label>
+
+                            <label class="field-label">
+                                Minimum stock level
+                                <input class="field" type="number" min="0" name="minimum_stock_level"
+                                       value="{{ old('minimum_stock_level', $product->minimum_stock_level) }}" required>
                             </label>
 
                             <label class="field-label">
@@ -150,23 +160,25 @@
 
     <aside class="summary-panel stack">
         <div>
-            <span class="section-kicker">Movement log</span>
-            <h2>Latest stock activity</h2>
-            <p>Track the latest manual adjustments, sales, returns, and delivery planning updates.</p>
+            <span class="section-kicker">Stock alerts</span>
+            <h2>Products at minimum stock</h2>
+            <p>Review the items that have reached their minimum stock level or already dropped below it.</p>
         </div>
 
         <section class="mini-list">
-            @forelse ($recentMovements as $movement)
+            @forelse ($lowStockProducts as $product)
                 <article class="mini-list-item">
-                    <strong>{{ $movement->product?->name ?? 'Removed product' }}</strong>
-                    <span>{{ strtoupper(str_replace('_', ' ', $movement->type)) }}</span>
-                    <span>{{ $movement->quantity_change > 0 ? '+' : '' }}{{ $movement->quantity_change }} | {{ $movement->occurred_at?->format('d M Y H:i') }}</span>
-                    @if ($movement->note)
-                        <span>{{ $movement->note }}</span>
+                    <strong>{{ $product->name }}</strong>
+                    <span>{{ $product->brand }} | SKU {{ $product->sku }}</span>
+                    <span>Stock {{ $product->stock }} | Minimum {{ $product->minimum_stock_level }}</span>
+                    @if ($product->next_delivery_due_at)
+                        <span>Next delivery {{ $product->next_delivery_due_at->format('d M Y H:i') }}</span>
+                    @else
+                        <span>No delivery scheduled</span>
                     @endif
                 </article>
             @empty
-                <p class="muted-copy">No stock events have been recorded yet.</p>
+                <p class="muted-copy">No products are currently at or below their minimum stock level.</p>
             @endforelse
         </section>
     </aside>

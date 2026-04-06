@@ -121,6 +121,7 @@ class ProductController extends Controller
             'price_value' => ['required', 'numeric', 'gt:0'],
             'unit_price_display' => ['nullable', 'string', 'max:40'],
             'stock' => ['required', 'integer', 'min:0'],
+            'minimum_stock_level' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
@@ -139,6 +140,9 @@ class ProductController extends Controller
         }
 
         unset($validated['new_subcategory']);
+        $validated['minimum_stock_level'] = isset($validated['minimum_stock_level'])
+            ? (int) $validated['minimum_stock_level']
+            : ($product?->minimum_stock_level ?? 5);
         $validated['is_active'] = $request->boolean('is_active');
 
         return $validated;

@@ -181,7 +181,7 @@
                                 data-open-modal="product-modal-{{ $product->id }}"
                             >
                                 <strong>{{ $product->name }}</strong>
-                                <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }} | Stock: {{ $product->stock }} | {{ $product->is_active ? 'Active' : 'Inactive' }}</span>
+                                <span>{{ $product->brand }} | {{ $product->subcategory }} | SKU: {{ $product->sku }} | Stock: {{ $product->stock }} | Min: {{ $product->minimum_stock_level }} | {{ $product->is_active ? 'Active' : 'Inactive' }}</span>
                             </button>
                         </article>
 
@@ -346,17 +346,30 @@
                                         </label>
                                     </div>
 
-                                    <label class="field-label">
-                                        Stock
-                                        <input class="field" type="number" min="0" name="stock"
-                                               value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
-                                               readonly
-                                               aria-readonly="true"
-                                               required>
-                                        <span class="field-help">
-                                            Stock is managed in <a href="{{ route('admin.stock.index') }}">Stock Center</a>.
-                                        </span>
-                                    </label>
+                                    <div class="form-grid-2">
+                                        <label class="field-label">
+                                            Stock
+                                            <input class="field" type="number" min="0" name="stock"
+                                                   value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
+                                                   readonly
+                                                   aria-readonly="true"
+                                                   required>
+                                            <span class="field-help">
+                                                Stock is managed in <a href="{{ route('admin.stock.index') }}">Stock Center</a>.
+                                            </span>
+                                        </label>
+
+                                        <label class="field-label">
+                                            Minimum stock level
+                                            <input class="field" type="number" min="0" name="minimum_stock_level"
+                                                   value="{{ old('modal_product_id') == $product->id ? old('minimum_stock_level', $product->minimum_stock_level) : $product->minimum_stock_level }}">
+                                            @if (old('modal_product_id') == $product->id)
+                                                @error('minimum_stock_level')
+                                                <span class="field-error">{{ $message }}</span>
+                                                @enderror
+                                            @endif
+                                        </label>
+                                    </div>
 
                                     <label class="remember-row">
                                         <input type="hidden" name="is_active" value="0">
@@ -579,14 +592,25 @@
                 </label>
             </div>
 
-            <label class="field-label" for="stock">
-                Stock
-                <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}"
-                       required>
-                @error('stock')
-                <span class="field-error">{{ $message }}</span>
-                @enderror
-            </label>
+            <div class="form-grid-2">
+                <label class="field-label" for="stock">
+                    Stock
+                    <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}"
+                           required>
+                    @error('stock')
+                    <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </label>
+
+                <label class="field-label" for="minimum_stock_level">
+                    Minimum stock level
+                    <input class="field" id="minimum_stock_level" type="number" min="0" name="minimum_stock_level"
+                           value="{{ old('minimum_stock_level', 5) }}">
+                    @error('minimum_stock_level')
+                    <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </label>
+            </div>
 
             <label class="remember-row" for="is_active">
                 <input type="hidden" name="is_active" value="0">

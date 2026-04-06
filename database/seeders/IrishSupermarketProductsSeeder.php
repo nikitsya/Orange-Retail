@@ -46,7 +46,8 @@ class IrishSupermarketProductsSeeder extends Seeder
                         ? (float)$product['price_value']
                         : null,
                     'unit_price_display' => $product['unit_price_display'] ?: null,
-                    'stock' => 18 + (((int)($product['id'] ?? 0)) % 24),
+                    'stock' => 4 + ((((int)($product['id'] ?? 0)) * 3) % 28),
+                    'minimum_stock_level' => 5 + ((((int)($product['id'] ?? 0)) % 4) * 2),
                     'is_active' => true,
                     'last_restocked_at' => now()->subDays((((int)($product['id'] ?? 1)) % 5) + 1),
                     'next_delivery_due_at' => now()->addDays((((int)($product['id'] ?? 1)) % 6) + 2),
@@ -70,6 +71,7 @@ class IrishSupermarketProductsSeeder extends Seeder
                     'price_value',
                     'unit_price_display',
                     'stock',
+                    'minimum_stock_level',
                     'is_active',
                     'last_restocked_at',
                     'next_delivery_due_at',

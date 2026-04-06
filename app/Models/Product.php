@@ -51,6 +51,7 @@ class Product extends Model
         'price_value',
         'unit_price_display',
         'stock',
+        'minimum_stock_level',
         'is_active',
         'last_restocked_at',
         'next_delivery_due_at',
@@ -82,6 +83,11 @@ class Product extends Model
         return self::CATEGORIES;
     }
 
+    public function scopeAtOrBelowMinimumStock($query)
+    {
+        return $query->whereColumn('stock', '<=', 'minimum_stock_level');
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -91,6 +97,8 @@ class Product extends Model
     {
         return [
             'price_value' => 'decimal:2',
+            'stock' => 'integer',
+            'minimum_stock_level' => 'integer',
             'is_active' => 'boolean',
             'last_restocked_at' => 'datetime',
             'next_delivery_due_at' => 'datetime',

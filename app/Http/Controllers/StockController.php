@@ -42,12 +42,13 @@ class StockController extends Controller
             ->when($stockState !== '', function ($query) use ($stockState) {
                 match ($stockState) {
                     'out' => $query->where('stock', 0),
-                    'low' => $query->whereBetween('stock', [1, 5]),
-                    'healthy' => $query->where('stock', '>', 5),
+                    'low' => $query->whereColumn('stock', '<=', 'minimum_stock_level'),
+                    'healthy' => $query->whereColumn('stock', '>', 'minimum_stock_level'),
                     default => null,
                 };
             })
             ->orderBy('stock')
+            ->orderBy('minimum_stock_level')
             ->orderBy('next_delivery_due_at')
             ->orderBy('name')
             ->paginate(15)
@@ -59,13 +60,15 @@ class StockController extends Controller
             'category' => $category,
             'categories' => $categories,
             'stockState' => $stockState,
-            'recentMovements' => StockMovement::query()
-                ->with('product', 'user')
-                ->latest('occurred_at')
+            'lowStockProducts' => Product::query()
+                ->atOrBelowMinimumStock()
+                ->orderBy('stock')
+                ->orderBy('minimum_stock_level')
+                ->orderBy('name')
                 ->limit(12)
                 ->get(),
             'outOfStockCount' => Product::query()->where('stock', 0)->count(),
-            'lowStockCount' => Product::query()->whereBetween('stock', [1, 5])->count(),
+            'lowStockCount' => Product::query()->atOrBelowMinimumStock()->count(),
             'incomingDeliveryCount' => Product::query()
                 ->whereNotNull('next_delivery_due_at')
                 ->whereBetween('next_delivery_due_at', [now(), now()->addDays(7)])
@@ -77,6 +80,7 @@ class StockController extends Controller
     {
         $validated = $request->validate([
             'stock' => ['required', 'integer', 'min:0'],
+            'minimum_stock_level' => ['required', 'integer', 'min:0'],
             'next_delivery_due_at' => ['nullable', 'date'],
             'last_restocked_at' => ['nullable', 'date'],
             'stock_note' => ['nullable', 'string', 'max:500'],
@@ -107,6 +111,7 @@ class StockController extends Controller
 
             $lockedProduct->update([
                 'stock' => $newStock,
+                'minimum_stock_level' => (int) $validated['minimum_stock_level'],
                 'last_restocked_at' => $lastRestockedAt,
                 'next_delivery_due_at' => $newDeliveryDate,
             ]);

@@ -189,6 +189,7 @@ class OrderManagementTest extends TestCase
         $this->actingAs($admin)
             ->patch("/admin/stock/{$product->id}", [
                 'stock' => 12,
+                'minimum_stock_level' => 6,
                 'last_restocked_at' => '2026-04-05 10:00:00',
                 'next_delivery_due_at' => '2026-04-09 09:30:00',
                 'stock_note' => 'Supplier confirmed a new delivery window.',
@@ -198,6 +199,7 @@ class OrderManagementTest extends TestCase
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
             'stock' => 12,
+            'minimum_stock_level' => 6,
         ]);
 
         $this->assertDatabaseHas('stock_movements', [
@@ -211,5 +213,71 @@ class OrderManagementTest extends TestCase
             ->assertOk()
             ->assertSee('Warehouse and delivery planning')
             ->assertSee('Warehouse Milk');
+    }
+
+    public function test_stock_center_sidebar_lists_products_at_or_below_minimum_stock_level(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+        ]);
+
+        Product::query()->create([
+            'sku' => 'LOW-001',
+            'barcode' => '5391000000101',
+            'name' => 'Low Stock Apples',
+            'brand' => 'Orange Retail',
+            'category' => 'Fresh Food',
+            'subcategory' => 'Fruit',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '6 apples',
+            'price_value' => 3.10,
+            'unit_price_display' => '€0.52/each',
+            'stock' => 4,
+            'minimum_stock_level' => 4,
+            'is_active' => true,
+        ]);
+
+        Product::query()->create([
+            'sku' => 'LOW-002',
+            'barcode' => '5391000000102',
+            'name' => 'Critical Milk',
+            'brand' => 'Orange Retail',
+            'category' => 'Fresh Food',
+            'subcategory' => 'Milk',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '1 litre',
+            'price_value' => 1.99,
+            'unit_price_display' => '€1.99/l',
+            'stock' => 2,
+            'minimum_stock_level' => 5,
+            'is_active' => true,
+        ]);
+
+        Product::query()->create([
+            'sku' => 'OK-001',
+            'barcode' => '5391000000103',
+            'name' => 'Healthy Stock Juice',
+            'brand' => 'Orange Retail',
+            'category' => 'Drinks',
+            'subcategory' => 'Juice',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '1 litre',
+            'price_value' => 2.49,
+            'unit_price_display' => '€2.49/l',
+            'stock' => 9,
+            'minimum_stock_level' => 4,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->get('/admin/stock')
+            ->assertOk()
+            ->assertSee('Products at minimum stock')
+            ->assertSee('Low Stock Apples')
+            ->assertSee('Critical Milk')
+            ->assertDontSee('Healthy Stock Juice');
     }
 }
