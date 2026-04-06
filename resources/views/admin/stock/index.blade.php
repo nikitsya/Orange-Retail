@@ -25,6 +25,48 @@
     </div>
 </div>
 
+<header class="masthead">
+    <div class="page-shell">
+        <div class="masthead-main stock-masthead-main">
+            <a class="brand-lockup" href="{{ route('catalog.index') }}">
+                @include('partials.brand-name', ['class' => 'brand-title'])
+            </a>
+
+            <form class="stock-toolbar" method="GET" action="{{ route('admin.stock.index') }}" data-auto-filter-form>
+                <div class="search-shell stock-toolbar-search">
+                    <input
+                        type="search"
+                        name="search"
+                        value="{{ $search }}"
+                        placeholder="Search products, SKU, or brand"
+                        aria-label="Search stock products"
+                        data-auto-filter-search
+                    >
+                    <button class="search-image-button" type="submit" aria-label="Search stock center">
+                        <img src="{{ asset('images/ui/search.png') }}" alt="">
+                        <span class="sr-only">Search</span>
+                    </button>
+                </div>
+
+                <select class="field-select" name="category" aria-label="Filter by category" data-auto-filter-select>
+                    <option value="">All categories</option>
+                    @foreach ($categories as $catalogCategory)
+                        <option
+                            value="{{ $catalogCategory }}" @selected($catalogCategory === $category)>{{ $catalogCategory }}</option>
+                    @endforeach
+                </select>
+
+                <select class="field-select" name="stock_state" aria-label="Filter by stock state" data-auto-filter-select>
+                    <option value="">All states</option>
+                    <option value="out" @selected($stockState === 'out')>Out of stock</option>
+                    <option value="low" @selected($stockState === 'low')>At or below minimum</option>
+                    <option value="healthy" @selected($stockState === 'healthy')>Healthy stock</option>
+                </select>
+            </form>
+        </div>
+    </div>
+</header>
+
 <main class="page-shell page-main stock-layout">
     <section class="section-panel stack">
         @if (session('status'))
@@ -55,35 +97,6 @@
                 <span>Deliveries due within 7 days</span>
             </div>
         </div>
-
-        <form class="form-grid-3" method="GET" action="{{ route('admin.stock.index') }}" data-auto-filter-form>
-            <label class="field-label">
-                Search
-                <input class="field" type="search" name="search" value="{{ $search }}"
-                       placeholder="Product, SKU, brand" data-auto-filter-search>
-            </label>
-
-            <label class="field-label">
-                Category
-                <select class="field-select" name="category" data-auto-filter-select>
-                    <option value="">All categories</option>
-                    @foreach ($categories as $catalogCategory)
-                        <option
-                            value="{{ $catalogCategory }}" @selected($catalogCategory === $category)>{{ $catalogCategory }}</option>
-                    @endforeach
-                </select>
-            </label>
-
-            <label class="field-label">
-                Stock state
-                <select class="field-select" name="stock_state" data-auto-filter-select>
-                    <option value="">All states</option>
-                    <option value="out" @selected($stockState === 'out')>Out of stock</option>
-                    <option value="low" @selected($stockState === 'low')>At or below minimum</option>
-                    <option value="healthy" @selected($stockState === 'healthy')>Healthy stock</option>
-                </select>
-            </label>
-        </form>
 
         @if ($products->isEmpty())
             <section class="empty-panel">
@@ -242,5 +255,6 @@
         }
     })();
 </script>
+@include('partials.masthead-stick-on-scroll')
 </body>
 </html>

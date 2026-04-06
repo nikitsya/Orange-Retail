@@ -379,6 +379,22 @@ textarea {
     justify-content: flex-end;
 }
 
+.stock-masthead-main {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 28px;
+}
+
+.stock-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.8fr) minmax(220px, 0.8fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.stock-toolbar .field-select {
+    min-height: 48px;
+}
+
 .masthead .button-primary,
 .masthead .button-secondary,
 .masthead .account-pill {
@@ -1362,6 +1378,11 @@ body.modal-open {
 
     .masthead-actions {
         justify-content: flex-start;
+    }
+
+    .stock-masthead-main,
+    .stock-toolbar {
+        grid-template-columns: 1fr;
     }
 
     .catalog-grid,
