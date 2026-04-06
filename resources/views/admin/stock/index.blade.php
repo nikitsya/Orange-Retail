@@ -189,7 +189,7 @@
 
         <section class="mini-list">
             @forelse ($lowStockProducts as $product)
-                <article class="mini-list-item">
+                <article class="mini-list-item {{ $product->stock === 0 ? 'is-danger' : 'is-warning' }}">
                     <strong>{{ $product->name }}</strong>
                     <span>{{ $product->brand }} | SKU {{ $product->sku }}</span>
                     <span>Stock {{ $product->stock }} | Minimum {{ $product->minimum_stock_level }}</span>

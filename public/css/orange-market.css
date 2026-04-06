@@ -1491,6 +1491,22 @@ body.modal-open {
     gap: 4px;
 }
 
+.mini-list-item.is-warning {
+    background: var(--surface-muted);
+    border-color: rgba(240, 210, 182, 0.86);
+}
+
+.mini-list-item.is-danger {
+    background: var(--danger-soft);
+    border-color: rgba(182, 69, 45, 0.24);
+    color: var(--danger-ink);
+}
+
+.mini-list-item.is-danger span,
+.mini-list-item.is-danger strong {
+    color: inherit;
+}
+
 .checkout-layout,
 .stock-layout {
     display: grid;
