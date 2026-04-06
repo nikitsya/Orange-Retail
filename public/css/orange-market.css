@@ -200,6 +200,12 @@ textarea {
     align-items: baseline;
 }
 
+.brand-mark,
+.brand-retail,
+.brand-word-text {
+    color: #8d5b43;
+}
+
 .brand-mark {
     gap: 0.26em;
 }
