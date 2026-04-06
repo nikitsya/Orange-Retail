@@ -2,6 +2,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const utilityBar = document.querySelector('.utility-bar');
         const masthead = document.querySelector('.masthead');
+        const mobileViewport = window.matchMedia('(max-width: 920px)');
 
         if (!utilityBar || !masthead) {
             return;
@@ -12,6 +13,13 @@
         masthead.insertAdjacentElement('afterend', spacer);
 
         const syncMasthead = () => {
+            if (mobileViewport.matches) {
+                masthead.classList.remove('is-fixed');
+                masthead.style.top = '';
+                spacer.style.height = '0px';
+                return;
+            }
+
             const utilityHeight = utilityBar.offsetHeight;
             const utilityBottom = Math.max(0, utilityBar.getBoundingClientRect().bottom);
             const shouldFix = utilityBottom < utilityHeight;
