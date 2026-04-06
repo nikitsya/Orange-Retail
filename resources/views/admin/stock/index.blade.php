@@ -27,7 +27,6 @@
         @endif
 
         <div>
-            <span class="section-kicker">Stock Center</span>
             <h1 class="page-title">Warehouse and delivery planning</h1>
             <p class="muted-copy">Review live stock, last restock dates, next expected deliveries, and record manual
                 warehouse updates.</p>
@@ -160,7 +159,6 @@
 
     <aside class="summary-panel stack">
         <div>
-            <span class="section-kicker">Stock alerts</span>
             <h2>Products at minimum stock</h2>
             <p>Review the items that have reached their minimum stock level or already dropped below it.</p>
         </div>
