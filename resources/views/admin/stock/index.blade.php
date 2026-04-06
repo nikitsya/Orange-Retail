@@ -47,16 +47,16 @@
             </div>
         </div>
 
-        <form class="form-grid-3" method="GET" action="{{ route('admin.stock.index') }}">
+        <form class="form-grid-3" method="GET" action="{{ route('admin.stock.index') }}" data-auto-filter-form>
             <label class="field-label">
                 Search
                 <input class="field" type="search" name="search" value="{{ $search }}"
-                       placeholder="Product, SKU, brand">
+                       placeholder="Product, SKU, brand" data-auto-filter-search>
             </label>
 
             <label class="field-label">
                 Category
-                <select class="field-select" name="category">
+                <select class="field-select" name="category" data-auto-filter-select>
                     <option value="">All categories</option>
                     @foreach ($categories as $catalogCategory)
                         <option
@@ -67,17 +67,13 @@
 
             <label class="field-label">
                 Stock state
-                <select class="field-select" name="stock_state">
+                <select class="field-select" name="stock_state" data-auto-filter-select>
                     <option value="">All states</option>
                     <option value="out" @selected($stockState === 'out')>Out of stock</option>
                     <option value="low" @selected($stockState === 'low')>At or below minimum</option>
                     <option value="healthy" @selected($stockState === 'healthy')>Healthy stock</option>
                 </select>
             </label>
-
-            <div class="tile-actions">
-                <button class="button-primary" type="submit">Apply filters</button>
-            </div>
         </form>
 
         <section class="stock-card-list">
@@ -181,5 +177,42 @@
         </section>
     </aside>
 </main>
+<script>
+    (() => {
+        const filterForm = document.querySelector('[data-auto-filter-form]');
+
+        if (!filterForm) {
+            return;
+        }
+
+        const searchInput = filterForm.querySelector('[data-auto-filter-search]');
+        const selects = filterForm.querySelectorAll('[data-auto-filter-select]');
+        let searchDebounceTimer = null;
+
+        const submitFilters = () => {
+            if (searchDebounceTimer) {
+                clearTimeout(searchDebounceTimer);
+            }
+
+            filterForm.requestSubmit();
+        };
+
+        selects.forEach((select) => {
+            select.addEventListener('change', submitFilters);
+        });
+
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                if (searchDebounceTimer) {
+                    clearTimeout(searchDebounceTimer);
+                }
+
+                searchDebounceTimer = setTimeout(() => {
+                    filterForm.requestSubmit();
+                }, 350);
+            });
+        }
+    })();
+</script>
 </body>
 </html>
