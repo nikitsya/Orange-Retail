@@ -106,21 +106,6 @@
                             </div>
                         </div>
 
-                        <div class="detail-info-grid">
-                            <div class="detail-info-card">
-                                <strong>Last restock</strong>
-                                <div>{{ $product->last_restocked_at?->format('d M Y H:i') ?? 'Not recorded yet' }}</div>
-                            </div>
-                            <div class="detail-info-card">
-                                <strong>Minimum stock</strong>
-                                <div>{{ $product->minimum_stock_level }} units</div>
-                            </div>
-                            <div class="detail-info-card">
-                                <strong>Next delivery</strong>
-                                <div>{{ $product->next_delivery_due_at?->format('d M Y H:i') ?? 'Not scheduled' }}</div>
-                            </div>
-                        </div>
-
                         <form class="stack" method="POST" action="{{ route('admin.stock.update', $product) }}">
                             @csrf
                             @method('PATCH')
