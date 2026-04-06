@@ -50,7 +50,6 @@
 
     <section class="hero-panel">
         <div class="hero-copy">
-            <span class="section-kicker">User Dashboard</span>
             <h1>User Dashboard</h1>
             <p>Use this area to continue shopping, review your cart, and track every order placed in the supermarket
                 system.</p>
@@ -81,7 +80,6 @@
     <section class="section-panel stack">
         <div class="section-actions" style="justify-content: space-between;">
             <div>
-                <span class="section-kicker">Recent orders</span>
                 <h2>Latest customer activity</h2>
             </div>
             <a class="button-secondary" href="{{ route('orders.index') }}">View all orders</a>

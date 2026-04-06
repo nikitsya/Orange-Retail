@@ -62,7 +62,6 @@
 <main class="page-shell page-main stack">
     <section class="detail-layout">
         <article class="detail-panel">
-            <span class="section-kicker">{{ $product->category }}</span>
             <h1 class="detail-heading">{{ $product->name }}</h1>
             <p class="lede">{{ $product->summary_text }}</p>
 
@@ -82,7 +81,6 @@
         </article>
 
         <aside class="summary-panel">
-            <span class="section-kicker">Product details</span>
             <h2>{{ $product->brand }}</h2>
             <p>Use this page to review packaging, price information, and the saved product metadata.</p>
 

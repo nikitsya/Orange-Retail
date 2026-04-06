@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
     <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
 </head>
-<body>
+<body class="inventory-page">
 @php
     $departmentImages = [
         '' => 'all_dep.png',
@@ -440,7 +440,6 @@
     <div class="modal-dialog">
         <div class="modal-head">
             <div>
-                <span class="section-kicker">New product</span>
                 <h2>Add product</h2>
                 <p class="muted-copy">Create a product record with the current catalog metadata fields.</p>
             </div>

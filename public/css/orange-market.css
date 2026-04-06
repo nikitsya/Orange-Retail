@@ -17,10 +17,10 @@
     --success-ink: #1c6c38;
     --danger-soft: #ffe9e3;
     --danger-ink: #b6452d;
-    --radius-xl: 32px;
-    --radius-lg: 24px;
-    --radius-md: 18px;
-    --radius-sm: 14px;
+    --radius-xl: 10px;
+    --radius-lg: 10px;
+    --radius-md: 12px;
+    --radius-sm: 10px;
     --page-width: 1320px;
     --font-display: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
     --font-body: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
@@ -251,7 +251,7 @@ textarea {
     min-height: 54px;
     padding: 0.95rem 1rem;
     border: 1px solid var(--line);
-    border-radius: 16px;
+    border-radius: 14px;
     background: rgba(255, 255, 255, 0.96);
     color: var(--ink);
     font-size: 1rem;
@@ -326,7 +326,7 @@ textarea {
 .modal-close {
     min-height: 48px;
     padding: 0.85rem 1.1rem;
-    border-radius: 999px;
+    border-radius: 12px;
     border: 1px solid transparent;
     cursor: pointer;
     font-size: 0.95rem;
@@ -420,7 +420,7 @@ textarea {
     gap: 10px;
     min-height: 50px;
     padding: 0.65rem 1rem;
-    border-radius: 999px;
+    border-radius: 12px;
     background: #fff;
     border: 1px solid var(--line);
     font-weight: 800;
@@ -479,6 +479,7 @@ textarea {
     justify-content: center;
     min-height: 48px;
     padding: 0 18px;
+    border-radius: 10px;
     border: 1px solid rgba(240, 210, 182, 0.9);
     background: rgba(255, 255, 255, 0.86);
     color: var(--accent-deep);
@@ -687,7 +688,7 @@ textarea {
 .metric-card,
 .summary-stat {
     padding: 16px 18px;
-    border-radius: 20px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(235, 109, 31, 0.12);
 }
@@ -880,7 +881,7 @@ textarea {
     align-items: center;
     justify-content: center;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: 10px;
     background: #ffffff;
     color: var(--ink);
     font-size: 0.95rem;
@@ -1080,7 +1081,7 @@ textarea {
 
 .detail-info-card {
     padding: 16px;
-    border-radius: 20px;
+    border-radius: 10px;
     background: var(--surface-muted);
     border: 1px solid rgba(240, 210, 182, 0.86);
 }
@@ -1128,7 +1129,7 @@ textarea {
 
 .cart-thumb {
     aspect-ratio: 1 / 1;
-    border-radius: 24px;
+    border-radius: 10px;
     overflow: hidden;
     background: var(--surface-soft);
     display: grid;
@@ -1438,6 +1439,10 @@ body.modal-open {
         width: min(calc(100% - 12px), 1520px);
     }
 
+    .inventory-page .catalog-content .page-shell {
+        width: min(calc(100% - 20px), 1460px);
+    }
+
     .utility-bar-inner,
     .section-actions,
     .hero-actions,
@@ -1533,7 +1538,7 @@ body.modal-open {
 
 .mini-list-item {
     padding: 16px 18px;
-    border-radius: 20px;
+    border-radius: 10px;
     background: var(--surface-muted);
     border: 1px solid rgba(240, 210, 182, 0.86);
     display: grid;
@@ -1571,7 +1576,7 @@ body.modal-open {
     min-width: 128px;
     min-height: 44px;
     padding: 0.7rem 1rem;
-    border-radius: 999px;
+    border-radius: 12px;
     font-weight: 800;
     background: var(--success-soft);
     color: var(--success-ink);
@@ -1589,6 +1594,23 @@ body.modal-open {
 
 .field-area-compact {
     min-height: 92px;
+}
+
+.inventory-page .catalog-content .page-shell {
+    width: min(calc(100% - 72px), 1460px);
+}
+
+.inventory-page .admin-surface {
+    padding: 36px;
+    background: #fffdf9;
+    border: 1px solid rgba(240, 210, 182, 0.9);
+    border-radius: 0;
+}
+
+.admin-orders-page .section-panel,
+.admin-orders-page .empty-panel,
+.admin-orders-page .order-card {
+    border-radius: 0;
 }
 
 @media (max-width: 1100px) {

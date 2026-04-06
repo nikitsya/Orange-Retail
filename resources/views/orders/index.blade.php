@@ -24,7 +24,6 @@
     <section class="section-panel stack">
         <div class="section-actions" style="justify-content: space-between;">
             <div>
-                <span class="section-kicker">Orders</span>
                 <h1 class="page-title">Order history</h1>
             </div>
             <a class="button-primary" href="{{ route('catalog.index') }}">Continue shopping</a>

@@ -23,7 +23,6 @@
         @endif
 
         <div>
-            <span class="section-kicker">{{ strtoupper($order->status) }}</span>
             <h1 class="detail-heading">{{ $order->order_number }}</h1>
             <p class="lede">Placed on {{ $order->placed_at?->format('d M Y H:i') }} by {{ $order->customer_name }}.</p>
         </div>
@@ -49,7 +48,6 @@
 
         @if ($order->notes)
             <section class="summary-panel">
-                <span class="section-kicker">Notes</span>
                 <p>{{ $order->notes }}</p>
             </section>
         @endif
@@ -72,7 +70,6 @@
 
     <aside class="summary-panel stack">
         <div>
-            <span class="section-kicker">Status</span>
             <h2>{{ ucfirst($order->status) }}</h2>
             <p>Track the current state of the order lifecycle from placement through completion.</p>
         </div>

@@ -54,7 +54,6 @@
 
     <section class="hero-panel">
         <div class="hero-copy">
-            <span class="section-kicker">Your cart</span>
             <h1>Your cart</h1>
             <p>This is a session-based customer cart. It stores the products selected for the current session.</p>
         </div>
@@ -129,7 +128,6 @@
         </div>
 
         <aside class="summary-panel">
-            <span class="section-kicker">Cart summary</span>
             <h2>Session cart</h2>
             <p>Total quantity of items currently stored in the session cart.</p>
             <strong class="summary-figure">{{ $itemCount }}</strong>

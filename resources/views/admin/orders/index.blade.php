@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
     <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
 </head>
-<body>
+<body class="admin-orders-page">
 <div class="utility-bar">
     <div class="page-shell utility-bar-inner">
         @include('partials.app-nav')
@@ -25,10 +25,9 @@
         <div class="error-message">{{ $errors->first() }}</div>
     @endif
 
-    <section class="section-panel stack">
+        <section class="section-panel stack">
         <div class="section-actions" style="justify-content: space-between;">
             <div>
-                <span class="section-kicker">Admin Orders</span>
                 <h1 class="page-title">Order queue</h1>
             </div>
         </div>

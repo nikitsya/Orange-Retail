@@ -19,7 +19,6 @@
 <main class="page-shell page-main checkout-layout">
     <section class="section-panel stack">
         <div>
-            <span class="section-kicker">Checkout</span>
             <h1 class="page-title">Review delivery details</h1>
             <p class="muted-copy">Checkout creates an order snapshot and reserves the requested stock immediately.</p>
         </div>
@@ -89,7 +88,6 @@
 
     <aside class="summary-panel stack">
         <div>
-            <span class="section-kicker">Order summary</span>
             <h2>{{ $itemCount }} item{{ $itemCount === 1 ? '' : 's' }}</h2>
             <p>Review the exact products and quantities that will be captured in the order snapshot.</p>
         </div>
