@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
     <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
 </head>
-<body>
+<body class="stock-center-page">
 @php
     $currentPage = $products->currentPage();
     $lastPage = $products->lastPage();

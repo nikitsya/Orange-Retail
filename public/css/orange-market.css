@@ -790,6 +790,28 @@ textarea {
     border-radius: 0;
 }
 
+.stock-center-page,
+.stock-center-page .page-main {
+    background: #ffffff;
+}
+
+.stock-layout > .section-panel,
+.stock-layout .summary-stat,
+.stock-layout .detail-info-card,
+.stock-layout .mini-list-item.is-warning {
+    background: #ffffff;
+}
+
+.stock-layout .stock-card {
+    background: #fff6ea;
+    border-radius: 0;
+}
+
+.stock-layout > .summary-panel {
+    background: #ffffff;
+    border-color: rgba(240, 210, 182, 0.86);
+}
+
 .filter-grid,
 .detail-grid,
 .cart-layout,
