@@ -25,7 +25,7 @@
         <div class="error-message">{{ $errors->first() }}</div>
     @endif
 
-        <section class="section-panel stack">
+    <section class="section-panel stack">
         <div class="section-actions" style="justify-content: space-between;">
             <div>
                 <h1 class="page-title">Order queue</h1>

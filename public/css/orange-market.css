@@ -1440,7 +1440,7 @@ body.modal-open {
     }
 
     .inventory-page .catalog-content .page-shell {
-        width: min(calc(100% - 20px), 1460px);
+        width: min(calc(100% - 20px), var(--page-width));
     }
 
     .utility-bar-inner,
@@ -1597,13 +1597,13 @@ body.modal-open {
 }
 
 .inventory-page .catalog-content .page-shell {
-    width: min(calc(100% - 72px), 1460px);
+    width: min(calc(100% - 32px), var(--page-width));
 }
 
 .inventory-page .admin-surface {
-    padding: 36px;
-    background: #fffdf9;
-    border: 1px solid rgba(240, 210, 182, 0.9);
+    padding: 0;
+    background: transparent;
+    border: 0;
     border-radius: 0;
 }
 
