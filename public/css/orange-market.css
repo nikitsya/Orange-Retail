@@ -804,9 +804,12 @@ textarea {
 
 .stock-overview,
 .stock-layout .summary-stat,
-.stock-layout .detail-info-card,
-.stock-layout .mini-list-item.is-warning {
+.stock-layout .detail-info-card {
     background: #ffffff;
+}
+
+.stock-layout .mini-list-item.is-warning {
+    background: #fffaf2;
 }
 
 .stock-primary {
