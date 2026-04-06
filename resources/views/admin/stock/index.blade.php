@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
 </head>
 <body>
+@php
+    $currentPage = $products->currentPage();
+    $lastPage = $products->lastPage();
+    $windowSize = 5;
+    $halfWindow = intdiv($windowSize, 2);
+    $pageStart = max(1, $currentPage - $halfWindow);
+    $pageEnd = min($lastPage, $pageStart + $windowSize - 1);
+    $pageStart = max(1, $pageEnd - $windowSize + 1);
+@endphp
 <div class="utility-bar">
     <div class="page-shell utility-bar-inner">
         @include('partials.app-nav')
@@ -76,81 +85,115 @@
             </label>
         </form>
 
-        <section class="stock-card-list">
-            @foreach ($products as $product)
-                <article class="summary-panel stock-card">
-                    <div class="order-card-head">
-                        <div>
-                            <span class="inventory-tag">{{ $product->category }}</span>
-                            <h2>{{ $product->name }}</h2>
-                            <p>{{ $product->brand }} | SKU {{ $product->sku }}</p>
+        @if ($products->isEmpty())
+            <section class="empty-panel">
+                <h2 class="section-heading">No products found</h2>
+                <p class="muted-copy">No products matched the current Stock Center filters.</p>
+            </section>
+        @else
+            <section class="stock-card-list">
+                @foreach ($products as $product)
+                    <article class="summary-panel stock-card">
+                        <div class="order-card-head">
+                            <div>
+                                <span class="inventory-tag">{{ $product->category }}</span>
+                                <h2>{{ $product->name }}</h2>
+                                <p>{{ $product->brand }} | SKU {{ $product->sku }}</p>
+                            </div>
+                            <div
+                                class="stock-pill {{ $product->stock === 0 ? 'is-danger' : ($product->stock <= $product->minimum_stock_level ? 'is-warning' : 'is-ok') }}">
+                                {{ $product->stock }} in stock
+                            </div>
                         </div>
-                        <div
-                            class="stock-pill {{ $product->stock === 0 ? 'is-danger' : ($product->stock <= $product->minimum_stock_level ? 'is-warning' : 'is-ok') }}">
-                            {{ $product->stock }} in stock
+
+                        <div class="detail-info-grid">
+                            <div class="detail-info-card">
+                                <strong>Last restock</strong>
+                                <div>{{ $product->last_restocked_at?->format('d M Y H:i') ?? 'Not recorded yet' }}</div>
+                            </div>
+                            <div class="detail-info-card">
+                                <strong>Minimum stock</strong>
+                                <div>{{ $product->minimum_stock_level }} units</div>
+                            </div>
+                            <div class="detail-info-card">
+                                <strong>Next delivery</strong>
+                                <div>{{ $product->next_delivery_due_at?->format('d M Y H:i') ?? 'Not scheduled' }}</div>
+                            </div>
                         </div>
+
+                        <form class="stack" method="POST" action="{{ route('admin.stock.update', $product) }}">
+                            @csrf
+                            @method('PATCH')
+
+                            <div class="form-grid-2">
+                                <label class="field-label">
+                                    Current stock
+                                    <input class="field" type="number" min="0" name="stock"
+                                           value="{{ old('stock', $product->stock) }}" required>
+                                </label>
+
+                                <label class="field-label">
+                                    Minimum stock level
+                                    <input class="field" type="number" min="0" name="minimum_stock_level"
+                                           value="{{ old('minimum_stock_level', $product->minimum_stock_level) }}" required>
+                                </label>
+
+                                <label class="field-label">
+                                    Last restocked at
+                                    <input class="field" type="datetime-local" name="last_restocked_at"
+                                           value="{{ old('last_restocked_at', $product->last_restocked_at?->format('Y-m-d\\TH:i')) }}">
+                                </label>
+
+                                <label class="field-label">
+                                    Next delivery due
+                                    <input class="field" type="datetime-local" name="next_delivery_due_at"
+                                           value="{{ old('next_delivery_due_at', $product->next_delivery_due_at?->format('Y-m-d\\TH:i')) }}">
+                                </label>
+                            </div>
+
+                            <label class="field-label">
+                                Stock note
+                                <textarea class="field-area field-area-compact"
+                                          name="stock_note">{{ old('stock_note') }}</textarea>
+                            </label>
+
+                            <div class="tile-actions">
+                                <button class="button-primary" type="submit">Save stock update</button>
+                            </div>
+                        </form>
+                    </article>
+                @endforeach
+            </section>
+
+            @if ($products->hasPages())
+                <nav class="pagination-nav" aria-label="Stock Center pages">
+                    @if ($products->onFirstPage())
+                        <span class="pagination-link is-disabled" aria-hidden="true">Previous</span>
+                    @else
+                        <a class="pagination-link" href="{{ $products->previousPageUrl() }}">Previous</a>
+                    @endif
+
+                    <div class="pagination-pages">
+                        @for ($page = $pageStart; $page <= $pageEnd; $page++)
+                            <a
+                                class="pagination-link @if ($page === $products->currentPage()) is-active @endif"
+                                href="{{ $products->url($page) }}"
+                                aria-label="Page {{ $page }}"
+                                @if ($page === $products->currentPage()) aria-current="page" @endif
+                            >
+                                {{ $page }}
+                            </a>
+                        @endfor
                     </div>
 
-                    <div class="detail-info-grid">
-                        <div class="detail-info-card">
-                            <strong>Last restock</strong>
-                            <div>{{ $product->last_restocked_at?->format('d M Y H:i') ?? 'Not recorded yet' }}</div>
-                        </div>
-                        <div class="detail-info-card">
-                            <strong>Minimum stock</strong>
-                            <div>{{ $product->minimum_stock_level }} units</div>
-                        </div>
-                        <div class="detail-info-card">
-                            <strong>Next delivery</strong>
-                            <div>{{ $product->next_delivery_due_at?->format('d M Y H:i') ?? 'Not scheduled' }}</div>
-                        </div>
-                    </div>
-
-                    <form class="stack" method="POST" action="{{ route('admin.stock.update', $product) }}">
-                        @csrf
-                        @method('PATCH')
-
-                        <div class="form-grid-2">
-                            <label class="field-label">
-                                Current stock
-                                <input class="field" type="number" min="0" name="stock"
-                                       value="{{ old('stock', $product->stock) }}" required>
-                            </label>
-
-                            <label class="field-label">
-                                Minimum stock level
-                                <input class="field" type="number" min="0" name="minimum_stock_level"
-                                       value="{{ old('minimum_stock_level', $product->minimum_stock_level) }}" required>
-                            </label>
-
-                            <label class="field-label">
-                                Last restocked at
-                                <input class="field" type="datetime-local" name="last_restocked_at"
-                                       value="{{ old('last_restocked_at', $product->last_restocked_at?->format('Y-m-d\\TH:i')) }}">
-                            </label>
-
-                            <label class="field-label">
-                                Next delivery due
-                                <input class="field" type="datetime-local" name="next_delivery_due_at"
-                                       value="{{ old('next_delivery_due_at', $product->next_delivery_due_at?->format('Y-m-d\\TH:i')) }}">
-                            </label>
-                        </div>
-
-                        <label class="field-label">
-                            Stock note
-                            <textarea class="field-area field-area-compact"
-                                      name="stock_note">{{ old('stock_note') }}</textarea>
-                        </label>
-
-                        <div class="tile-actions">
-                            <button class="button-primary" type="submit">Save stock update</button>
-                        </div>
-                    </form>
-                </article>
-            @endforeach
-        </section>
-
-        {{ $products->links() }}
+                    @if ($products->hasMorePages())
+                        <a class="pagination-link" href="{{ $products->nextPageUrl() }}">Next</a>
+                    @else
+                        <span class="pagination-link is-disabled" aria-hidden="true">Next</span>
+                    @endif
+                </nav>
+            @endif
+        @endif
     </section>
 
     <aside class="summary-panel stack">
