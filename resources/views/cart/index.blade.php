@@ -55,7 +55,7 @@
     <section class="hero-panel">
         <div class="hero-copy">
             <h1>Your cart</h1>
-            <p>This is a session-based customer cart. It stores the products selected for the current session.</p>
+            <p>Review your selected items before checkout or continue shopping.</p>
         </div>
 
         <div class="hero-actions">
@@ -128,8 +128,8 @@
         </div>
 
         <aside class="summary-panel">
-            <h2>Session cart</h2>
-            <p>Total quantity of items currently stored in the session cart.</p>
+            <h2>Cart summary</h2>
+            <p>Check the number of items in your cart and the current subtotal.</p>
             <strong class="summary-figure">{{ $itemCount }}</strong>
 
             <div class="summary-stats" style="margin-top: 20px;">

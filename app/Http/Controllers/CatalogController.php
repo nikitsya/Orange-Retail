@@ -56,6 +56,11 @@ class CatalogController extends Controller
             ->paginate(20)
             ->withQueryString();
 
+        $cartQuantities = collect($request->session()->get('cart', []))
+            ->mapWithKeys(fn (array $item, string $productId): array => [
+                (int) $productId => (int) ($item['quantity'] ?? 1),
+            ]);
+
         return view('catalog.index', [
             'products' => $products,
             'search' => $search,
@@ -63,6 +68,7 @@ class CatalogController extends Controller
             'subcategory' => $subcategory,
             'categories' => $categories,
             'subcategoryOptions' => $subcategoryOptions,
+            'cartQuantities' => $cartQuantities,
         ]);
     }
 
@@ -108,7 +114,7 @@ class CatalogController extends Controller
 
         if ($currentQuantity >= $product->stock) {
             return redirect()
-                ->route('cart.index')
+                ->back()
                 ->withErrors(['cart' => "{$product->name} has reached the available stock limit."]);
         }
 
@@ -120,7 +126,7 @@ class CatalogController extends Controller
 
         return redirect()
             ->route('cart.index')
-            ->with('status', "{$product->name} was added to your cart.");
+            ->with('status', 'Added to cart');
     }
 
     protected function ensurePurchasable(Product $product): void
@@ -179,4 +185,5 @@ class CatalogController extends Controller
             ->route('cart.index')
             ->with('status', 'The item was removed from your cart.');
     }
+
 }

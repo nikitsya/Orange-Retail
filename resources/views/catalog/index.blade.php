@@ -166,10 +166,6 @@
     <main class="page-shell page-main stack">
         <h1 class="sr-only">Browse supermarket products</h1>
 
-        @if (session('status'))
-            <div class="flash-message">{{ session('status') }}</div>
-        @endif
-
         @if ($errors->any())
             <div class="error-message">{{ $errors->first() }}</div>
         @endif
@@ -184,7 +180,7 @@
         @else
             <section class="catalog-grid">
                 @foreach ($products as $product)
-                    <article class="product-card">
+                    <article class="product-card" id="product-card-{{ $product->id }}">
                         <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
                             @if ($product->image_url)
                                 <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
@@ -199,6 +195,12 @@
                         </h3>
                         <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
                         <p class="muted-copy">{{ $product->summary_text }}</p>
+
+                        @if (($cartQuantities[$product->id] ?? 0) > 0)
+                            <div class="tile-actions" style="margin-top: 10px;">
+                                <span class="button-secondary">In cart: {{ $cartQuantities[$product->id] }}</span>
+                            </div>
+                        @endif
 
                         <div class="price-row">
                             <div class="price-block">
@@ -229,6 +231,7 @@
                                         @if ($product->stock > 0)
                                             <form method="POST" action="{{ route('cart.store', $product) }}">
                                                 @csrf
+                                                <input type="hidden" name="redirect_to" value="{{ request()->getRequestUri() }}#product-card-{{ $product->id }}">
                                                 <button class="button-primary" type="submit">Add to cart</button>
                                             </form>
                                         @else
