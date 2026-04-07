@@ -61,7 +61,6 @@
         <div class="hero-actions compact-actions">
             <a class="button-primary" href="{{ route('checkout.create') }}">Checkout</a>
             <a class="button-primary" href="{{ route('catalog.index') }}">Continue shopping</a>
-            <a class="button-secondary" href="{{ route('catalog.index') }}">Back to catalog</a>
         </div>
     </section>
 
