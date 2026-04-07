@@ -82,7 +82,7 @@
 
         <aside class="summary-panel">
             <h2>{{ $product->brand }}</h2>
-            <p>Use this page to review packaging, price information, and the saved product metadata.</p>
+            <p>Review the key product details before adding this item to your cart.</p>
 
             <div class="summary-stats">
                 <div class="summary-stat">
@@ -94,8 +94,8 @@
                     <span>Unit</span>
                 </div>
                 <div class="summary-stat">
-                    <strong>{{ $product->subcategory }}</strong>
-                    <span>Subcategory</span>
+                    <strong>{{ $product->stock > 0 ? ($product->stock <= 5 ? 'Only ' . $product->stock . ' left' : 'In stock') : 'Out of stock' }}</strong>
+                    <span>Availability</span>
                 </div>
             </div>
 
@@ -123,33 +123,6 @@
 
                 <a class="button-secondary" href="{{ route('catalog.index', ['category' => $product->category]) }}">More
                     in {{ $product->category }}</a>
-            </div>
-
-            <div class="detail-info-grid">
-                <div class="detail-info-card">
-                    <strong>SKU</strong>
-                    <div>{{ $product->sku }}</div>
-                </div>
-                <div class="detail-info-card">
-                    <strong>Barcode</strong>
-                    <div>{{ $product->barcode ?: 'Not specified' }}</div>
-                </div>
-                <div class="detail-info-card">
-                    <strong>Unit type</strong>
-                    <div>{{ $product->unit_type }}</div>
-                </div>
-                <div class="detail-info-card">
-                    <strong>Pack size</strong>
-                    <div>{{ $product->pack_size ?: 'Not specified' }}</div>
-                </div>
-                <div class="detail-info-card">
-                    <strong>Category line</strong>
-                    <div>{{ $product->category }} / {{ $product->subcategory }}</div>
-                </div>
-                <div class="detail-info-card">
-                    <strong>Stock</strong>
-                    <div>{{ $product->stock > 0 ? $product->stock . ' available' : 'Out of stock' }}</div>
-                </div>
             </div>
         </aside>
     </section>
