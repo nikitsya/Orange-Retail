@@ -88,15 +88,27 @@
                                 </div>
 
                                 <div>
-                                    <span class="inventory-tag">{{ $item['product']->category }}</span>
                                     <h2>{{ $item['product']->name }}</h2>
-                                    <p>{{ $item['product']->summary_text }}</p>
+                                    <p>{{ $item['product']->brand }}</p>
+
+                                    <div style="margin: 12px 0 10px;">
+                                        <div style="font-size: 1.15rem; font-weight: 700; color: var(--ink);">
+                                            &euro;{{ number_format((float) ($item['product']->price_value ?? 0), 2) }} each
+                                        </div>
+                                        @if ($item['product']->unit_price_display)
+                                            <div style="margin-top: 2px; font-size: 0.95rem; color: var(--muted);">
+                                                {{ $item['product']->unit_price_display }}
+                                            </div>
+                                        @endif
+                                        <div style="margin-top: 8px; font-size: 1rem; font-weight: 600; color: var(--ink);">
+                                            Total: &euro;{{ number_format((float) $item['line_total'], 2) }}
+                                        </div>
+                                    </div>
 
                                     <div class="filter-notes">
-                                        <span class="filter-note">Brand: {{ $item['product']->brand }}</span>
-                                        <span class="filter-note">Quantity: {{ $item['quantity'] }}</span>
-                                        <span class="filter-note">{{ $item['product']->subcategory }}</span>
-                                        <span class="filter-note">Stock: {{ $item['product']->stock }}</span>
+                                        @if ($item['product']->stock <= 5)
+                                            <span class="filter-note">Only {{ $item['product']->stock }} left in stock</span>
+                                        @endif
                                     </div>
 
                                     <div class="tile-actions" style="margin-top: 18px;">
