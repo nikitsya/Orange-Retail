@@ -100,6 +100,10 @@
             </div>
 
             <div class="detail-actions" style="margin-top: 18px;">
+                @if (request()->query('from') === 'cart')
+                    <a class="button-secondary" href="{{ route('cart.index') }}">Back to cart</a>
+                @endif
+
                 @auth
                     @if (auth()->user()->role !== 'admin')
                         @if ($product->stock > 0)

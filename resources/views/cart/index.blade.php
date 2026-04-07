@@ -113,7 +113,7 @@
 
                                     <div class="tile-actions" style="margin-top: 18px;">
                                         <a class="button-secondary"
-                                           href="{{ route('catalog.show', $item['product']) }}">View product</a>
+                                           href="{{ route('catalog.show', ['product' => $item['product'], 'from' => 'cart']) }}">View product</a>
 
                                         <form method="POST" action="{{ route('cart.update', $item['product']) }}">
                                             @csrf
