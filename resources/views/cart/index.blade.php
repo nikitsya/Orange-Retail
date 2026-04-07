@@ -52,13 +52,13 @@
         <div class="flash-message">{{ session('status') }}</div>
     @endif
 
-    <section class="hero-panel">
+    <section class="hero-panel cart-page-hero">
         <div class="hero-copy">
             <h1>Your cart</h1>
             <p>Review your selected items before checkout or continue shopping.</p>
         </div>
 
-        <div class="hero-actions">
+        <div class="hero-actions compact-actions">
             <a class="button-primary" href="{{ route('checkout.create') }}">Checkout</a>
             <a class="button-primary" href="{{ route('catalog.index') }}">Continue shopping</a>
             <a class="button-secondary" href="{{ route('catalog.index') }}">Back to catalog</a>

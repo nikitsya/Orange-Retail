@@ -1126,6 +1126,27 @@ textarea {
     grid-template-columns: minmax(0, 1.1fr) 360px;
 }
 
+.compact-actions {
+    gap: 10px;
+}
+
+.cart-page-hero {
+    min-height: auto;
+    padding: 24px 28px;
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+.cart-page-hero .hero-copy h1 {
+    margin: 0 0 8px;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+}
+
+.cart-page-hero .hero-copy p {
+    margin: 0;
+    max-width: 640px;
+}
+
 .cart-list {
     display: grid;
     gap: 18px;
@@ -1496,6 +1517,11 @@ body.modal-open {
     .admin-surface,
     .modal-dialog {
         padding: 22px;
+    }
+
+    .cart-page-hero {
+        gap: 16px;
+        padding: 20px 22px;
     }
 
     .hero-panel h1,
