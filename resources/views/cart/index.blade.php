@@ -139,11 +139,35 @@
         </div>
 
         <aside class="summary-panel">
-            <h2>Cart summary</h2>
-            <p>Check the number of items in your cart and the current subtotal.</p>
-            <strong class="summary-figure">{{ $itemCount }}</strong>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+                <h2 style="margin: 0;">Cart summary</h2>
+                <span class="muted-copy" style="white-space: nowrap;">{{ $itemCount }} item{{ $itemCount === 1 ? '' : 's' }}</span>
+            </div>
 
-            <div class="summary-stats" style="margin-top: 20px;">
+            <div class="stack" style="gap: 14px; margin-top: 24px;">
+                <div style="display: flex; justify-content: space-between; gap: 16px;">
+                    <span class="muted-copy">Products</span>
+                    <strong>{{ $items->count() }}</strong>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; gap: 16px;">
+                    <span class="muted-copy">Subtotal</span>
+                    <strong>&euro;{{ number_format($subtotal, 2) }}</strong>
+                </div>
+
+                <div style="height: 1px; background: rgba(198, 111, 0, 0.14);"></div>
+
+                <div style="display: flex; justify-content: space-between; gap: 16px; align-items: baseline;">
+                    <strong style="font-size: 1.15rem;">Total</strong>
+                    <strong style="font-size: 1.35rem;">&euro;{{ number_format($subtotal, 2) }}</strong>
+                </div>
+            </div>
+
+            <h2 style="display: none;">Cart summary</h2>
+            <p style="display: none;">Check the number of items in your cart and the current subtotal.</p>
+            <strong class="summary-figure" style="display: none;">{{ $itemCount }}</strong>
+
+            <div class="summary-stats" style="display: none; margin-top: 20px;">
                 <div class="summary-stat">
                     <strong>{{ $items->count() }}</strong>
                     <span>Distinct lines</span>
