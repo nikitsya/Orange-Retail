@@ -194,7 +194,6 @@
                                href="{{ route('catalog.show', $product) }}">{{ $product->name }}</a>
                         </h3>
                         <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
-                        <p class="muted-copy">{{ $product->summary_text }}</p>
 
                         @if (($cartQuantities[$product->id] ?? 0) > 0)
                             <div class="tile-actions" style="margin-top: 10px;">
