@@ -51,8 +51,7 @@
     <section class="hero-panel">
         <div class="hero-copy">
             <h1>Hello, {{ auth()->user()->name }}</h1>
-            <p>Use this area to continue shopping, review your cart, and track every order placed in the supermarket
-                system.</p>
+            <p>Pick up where you left off: browse products, review your cart, or check your recent orders.</p>
         </div>
 
         <div class="hero-actions">
@@ -63,16 +62,50 @@
 
         <div class="summary-stats">
             <div class="summary-stat">
-                <strong>{{ $orders->count() }}</strong>
-                <span>Recent orders shown</span>
+                <strong>{{ $cartItemCount }}</strong>
+                <span>Cart items</span>
             </div>
             <div class="summary-stat">
-                <strong>{{ $cartItemCount }}</strong>
-                <span>Items in session cart</span>
+                <strong>{{ $orders->count() }}</strong>
+                <span>Recent orders</span>
             </div>
             <div class="summary-stat">
                 <strong>€{{ number_format($cartSubtotal, 2) }}</strong>
                 <span>Current cart subtotal</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-panel stack">
+        <div class="section-actions" style="justify-content: space-between; align-items: center;">
+            <div>
+                <h2>At a glance</h2>
+                <p class="muted-copy" style="margin: 6px 0 0;">
+                    {{ $cartItemCount > 0
+                        ? 'Your cart is ready whenever you want to continue to checkout.'
+                        : 'Your cart is empty right now. Browse the catalog to add products.' }}
+                </p>
+            </div>
+
+            @if ($cartItemCount > 0)
+                <a class="button-primary" href="{{ route('checkout.create') }}">Continue to checkout</a>
+            @else
+                <a class="button-primary" href="{{ route('catalog.index') }}">Start shopping</a>
+            @endif
+        </div>
+
+        <div class="summary-stats summary-stats-wide">
+            <div class="summary-stat">
+                <strong>{{ $orders->first()?->order_number ?? 'No orders yet' }}</strong>
+                <span>Latest order</span>
+            </div>
+            <div class="summary-stat">
+                <strong>{{ $orders->first()?->status ? strtoupper($orders->first()->status) : 'Ready to shop' }}</strong>
+                <span>Current status</span>
+            </div>
+            <div class="summary-stat">
+                <strong>{{ $orders->first()?->total !== null ? '€' . number_format((float) $orders->first()->total, 2) : '€' . number_format($cartSubtotal, 2) }}</strong>
+                <span>{{ $orders->first() ? 'Latest order total' : 'Current cart total' }}</span>
             </div>
         </div>
     </section>
