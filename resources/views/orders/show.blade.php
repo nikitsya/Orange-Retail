@@ -54,6 +54,24 @@
 
         <section class="order-list">
             @foreach ($order->items as $item)
+                @if (! $isAdmin)
+                <article style="padding: 12px 8px; border-bottom: 1px solid rgba(198, 111, 0, 0.14);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
+                        <div style="min-width: 0;">
+                            <div style="font-size: 1rem; font-weight: 700; line-height: 1.35; color: var(--ink);">
+                                {{ $item->product_name }}
+                            </div>
+                            <div class="muted-copy" style="margin-top: 4px; font-size: 0.92rem;">
+                                Qty {{ $item->quantity }}
+                            </div>
+                        </div>
+                        <div style="text-align: right; white-space: nowrap; font-size: 1rem; font-weight: 700; color: var(--ink);">
+                            €{{ number_format((float) $item->line_total, 2) }}
+                        </div>
+                    </div>
+                </article>
+                @else
+
                 <article class="summary-panel order-card">
                     <div class="order-card-head">
                         <div>
@@ -64,6 +82,7 @@
                         <div class="order-card-total">€{{ number_format((float) $item->line_total, 2) }}</div>
                     </div>
                 </article>
+                @endif
             @endforeach
         </section>
     </section>
