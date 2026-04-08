@@ -217,12 +217,14 @@
                                 @endif
 
                                 <span>
-                                            @if ($product->stock > 0)
-                                        {{ $product->stock }} in stock
+                                    @if ($product->stock > 5)
+                                        In stock
+                                    @elseif ($product->stock > 0)
+                                        Only {{ $product->stock }} left
                                     @else
                                         Out of stock
                                     @endif
-                                        </span>
+                                </span>
                             </div>
 
                             <div class="tile-actions">
