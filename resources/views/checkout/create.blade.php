@@ -20,7 +20,7 @@
     <section class="section-panel stack">
         <div>
             <h1 class="page-title">Review delivery details</h1>
-            <p class="muted-copy">Checkout creates an order snapshot and reserves the requested stock immediately.</p>
+            <p class="muted-copy">Review your delivery information before placing the order.</p>
         </div>
 
         @if ($errors->any())
@@ -34,49 +34,63 @@
                 <label class="field-label">
                     Full name
                     <input class="field" type="text" name="customer_name"
-                           value="{{ old('customer_name', auth()->user()->name) }}" required>
+                           value="{{ old('customer_name', auth()->user()->name) }}"
+                           placeholder="Enter the full name for delivery"
+                           required>
                 </label>
 
                 <label class="field-label">
                     Email
                     <input class="field" type="email" name="customer_email"
-                           value="{{ old('customer_email', auth()->user()->email) }}" required>
+                           value="{{ old('customer_email', auth()->user()->email) }}"
+                           placeholder="Enter the email for order updates"
+                           required>
                 </label>
             </div>
 
             <label class="field-label">
                 Address line 1
                 <input class="field" type="text" name="shipping_address_line_1"
-                       value="{{ old('shipping_address_line_1') }}" required>
+                       value="{{ old('shipping_address_line_1') }}"
+                       placeholder="Street address, house number, or apartment"
+                       required>
             </label>
 
             <label class="field-label">
-                Address line 2
+                Address line 2 <span class="muted-copy">(optional)</span>
                 <input class="field" type="text" name="shipping_address_line_2"
-                       value="{{ old('shipping_address_line_2') }}">
+                       value="{{ old('shipping_address_line_2') }}"
+                       placeholder="Apartment, suite, building, or floor">
             </label>
 
             <div class="form-grid-3">
                 <label class="field-label">
                     City
-                    <input class="field" type="text" name="shipping_city" value="{{ old('shipping_city') }}" required>
+                    <input class="field" type="text" name="shipping_city"
+                           value="{{ old('shipping_city') }}"
+                           placeholder="Enter the city"
+                           required>
                 </label>
 
                 <label class="field-label">
-                    County
-                    <input class="field" type="text" name="shipping_county" value="{{ old('shipping_county') }}">
+                    <span style="white-space: nowrap;">County <span class="muted-copy">(optional)</span></span>
+                    <input class="field" type="text" name="shipping_county"
+                           value="{{ old('shipping_county') }}"
+                           placeholder="Enter the county">
                 </label>
 
                 <label class="field-label">
                     Postal code
                     <input class="field" type="text" name="shipping_postal_code"
-                           value="{{ old('shipping_postal_code') }}" required>
+                           value="{{ old('shipping_postal_code') }}"
+                           placeholder="Enter the postal code"
+                           required>
                 </label>
             </div>
 
             <label class="field-label">
-                Delivery notes
-                <textarea class="field-area" name="notes">{{ old('notes') }}</textarea>
+                Delivery notes <span class="muted-copy">(optional)</span>
+                <textarea class="field-area" name="notes" placeholder="Add any delivery instructions or notes for this order">{{ old('notes') }}</textarea>
             </label>
 
             <div class="tile-actions">
@@ -89,7 +103,7 @@
     <aside class="summary-panel stack">
         <div>
             <h2>{{ $itemCount }} item{{ $itemCount === 1 ? '' : 's' }}</h2>
-            <p>Review the exact products and quantities that will be captured in the order snapshot.</p>
+            <p>Review the products and quantities included in this order.</p>
         </div>
 
         <section class="mini-list">
