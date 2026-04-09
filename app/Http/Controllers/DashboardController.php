@@ -31,6 +31,7 @@ class DashboardController extends Controller
             'orders' => $orders,
             'cartItemCount' => Cart::itemCount($cartItems),
             'cartSubtotal' => Cart::subtotal($cartItems),
+            'favoritesCount' => $request->user()->favoriteProducts()->count(),
         ]);
     }
 
