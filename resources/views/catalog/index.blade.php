@@ -179,7 +179,30 @@
             </section>
         @else
             <section class="catalog-grid">
+                @php
+                    $previousCategory = null;
+                    $previousSubcategory = null;
+                @endphp
                 @foreach ($products as $product)
+                    @if ($category === '' && $previousCategory !== $product->category)
+                        <div style="grid-column: 1 / -1; margin: 6px 0 2px;">
+                            <h2 style="margin: 0; font-size: 1.35rem; color: var(--ink);">{{ $product->category }}</h2>
+                        </div>
+                        @php
+                            $previousCategory = $product->category;
+                            $previousSubcategory = null;
+                        @endphp
+                    @endif
+
+                    @if ($category !== '' && $subcategory === '' && $previousSubcategory !== $product->subcategory)
+                        <div style="grid-column: 1 / -1; margin: 6px 0 2px;">
+                            <h2 style="margin: 0; font-size: 1.1rem; color: var(--muted);">{{ $product->subcategory }}</h2>
+                        </div>
+                        @php
+                            $previousSubcategory = $product->subcategory;
+                        @endphp
+                    @endif
+
                     <article class="product-card" id="product-card-{{ $product->id }}">
                         <a class="product-title-link" href="{{ route('catalog.show', $product) }}">
                             <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
