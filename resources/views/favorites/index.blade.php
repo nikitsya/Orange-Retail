@@ -50,13 +50,15 @@
         <section class="catalog-grid">
             @foreach ($products as $product)
                 <article class="product-card">
-                    <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
-                        @if ($product->image_url)
-                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-                        @else
-                            <img src="{{ $fallbackProductImage }}" alt="{{ $product->name }}">
-                        @endif
-                    </div>
+                    <a class="product-title-link" href="{{ route('catalog.show', $product) }}">
+                        <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
+                            @if ($product->image_url)
+                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                            @else
+                                <img src="{{ $fallbackProductImage }}" alt="{{ $product->name }}">
+                            @endif
+                        </div>
+                    </a>
 
                     <h3>
                         <a class="product-title-link"

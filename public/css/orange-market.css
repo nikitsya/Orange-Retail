@@ -987,10 +987,16 @@ textarea {
     margin: 0;
 }
 
-.price-row {
+.catalog-status-slot {
+    min-height: 58px;
     display: flex;
+    align-items: flex-start;
+}
+
+.price-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    justify-content: space-between;
     gap: 12px;
     margin-top: auto;
     padding-top: 16px;
@@ -1005,6 +1011,35 @@ textarea {
 
 .tile-actions {
     margin-left: auto;
+}
+
+.catalog-card-actions {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.catalog-card-actions form {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+.favorite-toggle-button {
+    min-height: 42px;
+    min-width: 42px;
+    padding: 0 10px;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.compact-cart-button {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 0.88rem;
+    white-space: nowrap;
 }
 
 .modal-form-actions,
@@ -1039,6 +1074,7 @@ textarea {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    min-width: 0;
 }
 
 .price-block strong {
@@ -1052,6 +1088,7 @@ textarea {
     margin-top: 4px;
     color: var(--muted);
     font-size: 0.82rem;
+    word-break: normal;
 }
 
 .detail-layout {

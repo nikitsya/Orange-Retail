@@ -181,13 +181,15 @@
             <section class="catalog-grid">
                 @foreach ($products as $product)
                     <article class="product-card" id="product-card-{{ $product->id }}">
-                        <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
-                            @if ($product->image_url)
-                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-                            @else
-                                <img src="{{ $fallbackProductImage }}" alt="{{ $product->name }}">
-                            @endif
-                        </div>
+                        <a class="product-title-link" href="{{ route('catalog.show', $product) }}">
+                            <div class="product-media @if (! $product->image_url) has-fallback-image @endif">
+                                @if ($product->image_url)
+                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                                @else
+                                    <img src="{{ $fallbackProductImage }}" alt="{{ $product->name }}">
+                                @endif
+                            </div>
+                        </a>
 
                         <h3>
                             <a class="product-title-link"
@@ -195,11 +197,13 @@
                         </h3>
                         <div class="product-meta">{{ $product->brand }} | {{ $product->subcategory }}</div>
 
-                        @if (($cartQuantities[$product->id] ?? 0) > 0)
-                            <div class="tile-actions" style="margin-top: 10px;">
-                                <span class="button-secondary">In cart: {{ $cartQuantities[$product->id] }}</span>
-                            </div>
-                        @endif
+                        <div class="catalog-status-slot">
+                            @if (($cartQuantities[$product->id] ?? 0) > 0)
+                                <div class="tile-actions" style="margin-top: 10px;">
+                                    <span class="button-secondary">In cart: {{ $cartQuantities[$product->id] }}</span>
+                                </div>
+                            @endif
+                        </div>
 
                         <div class="price-row">
                             <div class="price-block">
@@ -226,19 +230,19 @@
                                 </span>
                             </div>
 
-                            <div class="tile-actions">
+                            <div class="tile-actions catalog-card-actions">
                                 @auth
                                     @if (auth()->user()->role !== 'admin')
                                         @if ($favoriteProductIds->contains($product->id))
                                             <form method="POST" action="{{ route('favorites.destroy', $product) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="button-secondary" type="submit" aria-label="Remove from favourites">&#9829;</button>
+                                                <button class="button-secondary favorite-toggle-button" type="submit" aria-label="Remove from favourites">&#9829;</button>
                                             </form>
                                         @else
                                             <form method="POST" action="{{ route('favorites.store', $product) }}">
                                                 @csrf
-                                                <button class="button-secondary" type="submit" aria-label="Add to favourites">&#9825;</button>
+                                                <button class="button-secondary favorite-toggle-button" type="submit" aria-label="Add to favourites">&#9825;</button>
                                             </form>
                                         @endif
 
@@ -246,7 +250,7 @@
                                             <form method="POST" action="{{ route('cart.store', $product) }}">
                                                 @csrf
                                                 <input type="hidden" name="redirect_to" value="{{ request()->getRequestUri() }}#product-card-{{ $product->id }}">
-                                                <button class="button-primary" type="submit">Add to cart</button>
+                                                <button class="button-primary compact-cart-button" type="submit">Add</button>
                                             </form>
                                         @else
                                             <span class="button-secondary" aria-disabled="true">Out of stock</span>

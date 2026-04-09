@@ -81,16 +81,16 @@ class CatalogController extends Controller
         ]);
     }
 
-    public function show(Product $product): View
+    public function show(Request $request, Product $product): View
     {
-        if (!$product->is_active && request()->user()?->role !== 'admin') {
+        if (!$product->is_active && $request->user()?->role !== 'admin') {
             abort(404);
         }
 
         return view('catalog.show', [
             'product' => $product,
-            'isFavorite' => $request()->user()?->role === 'user'
-                ? $request()->user()->favoriteProducts()->whereKey($product->id)->exists()
+            'isFavorite' => $request->user()?->role === 'user'
+                ? $request->user()->favoriteProducts()->whereKey($product->id)->exists()
                 : false,
         ]);
     }
