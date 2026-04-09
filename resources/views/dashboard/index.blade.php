@@ -56,6 +56,7 @@
 
         <div class="hero-actions">
             <a class="button-primary" href="{{ route('catalog.index') }}">Browse catalog</a>
+            <a class="button-secondary" href="{{ route('favorites.index') }}">Favourites</a>
             <a class="button-secondary" href="{{ route('orders.index') }}">Order history</a>
             <a class="button-secondary" href="{{ route('cart.index') }}">Open cart</a>
         </div>
@@ -68,6 +69,10 @@
             <div class="summary-stat">
                 <strong>{{ $orders->count() }}</strong>
                 <span>Recent orders</span>
+            </div>
+            <div class="summary-stat">
+                <strong>{{ $favoritesCount }}</strong>
+                <span>Favourite items</span>
             </div>
             <div class="summary-stat">
                 <strong>€{{ number_format($cartSubtotal, 2) }}</strong>

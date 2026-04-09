@@ -13,6 +13,7 @@
         $isAuthenticated => [
             ['label' => 'Catalog', 'route' => route('catalog.index')],
             ['label' => 'Dashboard', 'route' => route('dashboard')],
+            ['label' => 'Favourites', 'route' => route('favorites.index')],
             ['label' => 'Orders', 'route' => route('orders.index')],
             ['label' => 'Cart', 'route' => route('cart.index')],
         ],
