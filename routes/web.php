@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ManagerSessionController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
@@ -22,6 +23,9 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/{product}', [FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/favorites/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
 
     Route::get('/cart', [CatalogController::class, 'cart'])->name('cart.index');
     Route::post('/cart/{product}', [CatalogController::class, 'addToCart'])->name('cart.store');
