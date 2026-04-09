@@ -167,6 +167,71 @@ class ProductCatalogTest extends TestCase
             ->assertDontSee('Breakfast Tea');
     }
 
+    public function test_regular_user_can_add_product_to_favourites(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'FAV-BAR-001',
+            'barcode' => '5391234567010',
+            'name' => 'Berry Bars',
+            'brand' => 'Organix',
+            'category' => 'Treats & Snacks',
+            'subcategory' => 'Bars',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '5 bars',
+            'price_value' => 3.30,
+            'unit_price_display' => '€0.66/bar',
+            'stock' => 12,
+            'minimum_stock_level' => 3,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->post("/favorites/{$product->id}")
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('favorite_products', [
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+        ]);
+    }
+
+    public function test_regular_user_can_view_favourites_page(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'FAV-CRISP-001',
+            'barcode' => '5391234567011',
+            'name' => 'Veggie Crisps',
+            'brand' => 'Kiddylicious',
+            'category' => 'Baby & Toddler',
+            'subcategory' => 'Snacks',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '4 packs',
+            'price_value' => 2.85,
+            'unit_price_display' => '€0.71/pack',
+            'stock' => 9,
+            'minimum_stock_level' => 2,
+            'is_active' => true,
+        ]);
+
+        $user->favoriteProducts()->attach($product->id);
+
+        $this->actingAs($user)
+            ->get('/favorites')
+            ->assertOk()
+            ->assertSee('Your favourites')
+            ->assertSee('Veggie Crisps');
+    }
+
     public function test_catalog_is_paginated_by_twenty_products_per_page(): void
     {
         $user = User::factory()->create([

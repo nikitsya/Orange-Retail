@@ -106,6 +106,19 @@
 
                 @auth
                     @if (auth()->user()->role !== 'admin')
+                        @if ($isFavorite)
+                            <form method="POST" action="{{ route('favorites.destroy', $product) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="button-secondary" type="submit">Remove favourite</button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('favorites.store', $product) }}">
+                                @csrf
+                                <button class="button-secondary" type="submit">Save favourite</button>
+                            </form>
+                        @endif
+
                         @if ($product->stock > 0)
                             <form method="POST" action="{{ route('cart.store', $product) }}">
                                 @csrf

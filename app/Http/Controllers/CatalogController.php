@@ -61,6 +61,14 @@ class CatalogController extends Controller
                 (int) $productId => (int) ($item['quantity'] ?? 1),
             ]);
 
+        $favoriteProductIds = collect();
+
+        if ($request->user()?->role === 'user') {
+            $favoriteProductIds = $request->user()
+                ->favoriteProducts()
+                ->pluck('products.id');
+        }
+
         return view('catalog.index', [
             'products' => $products,
             'search' => $search,
@@ -69,6 +77,7 @@ class CatalogController extends Controller
             'categories' => $categories,
             'subcategoryOptions' => $subcategoryOptions,
             'cartQuantities' => $cartQuantities,
+            'favoriteProductIds' => $favoriteProductIds,
         ]);
     }
 
@@ -80,6 +89,9 @@ class CatalogController extends Controller
 
         return view('catalog.show', [
             'product' => $product,
+            'isFavorite' => $request()->user()?->role === 'user'
+                ? $request()->user()->favoriteProducts()->whereKey($product->id)->exists()
+                : false,
         ]);
     }
 

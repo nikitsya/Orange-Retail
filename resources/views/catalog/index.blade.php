@@ -229,6 +229,19 @@
                             <div class="tile-actions">
                                 @auth
                                     @if (auth()->user()->role !== 'admin')
+                                        @if ($favoriteProductIds->contains($product->id))
+                                            <form method="POST" action="{{ route('favorites.destroy', $product) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="button-secondary" type="submit" aria-label="Remove from favourites">&#9829;</button>
+                                            </form>
+                                        @else
+                                            <form method="POST" action="{{ route('favorites.store', $product) }}">
+                                                @csrf
+                                                <button class="button-secondary" type="submit" aria-label="Add to favourites">&#9825;</button>
+                                            </form>
+                                        @endif
+
                                         @if ($product->stock > 0)
                                             <form method="POST" action="{{ route('cart.store', $product) }}">
                                                 @csrf
