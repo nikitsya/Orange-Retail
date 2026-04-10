@@ -156,7 +156,7 @@ npm run dev
 
 ## Video Demonstration
 
-YouTube screencast: `ADD_YOUR_VIDEO_LINK_HERE`
+YouTube screencast: https://youtu.be/JYDVXrErAWk
 
 ## Validation and Security
 
