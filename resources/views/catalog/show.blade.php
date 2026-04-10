@@ -82,7 +82,17 @@
 
         <aside class="summary-panel">
             <h2>{{ $product->brand }}</h2>
-            <p>Review the key product details before adding this item to your cart.</p>
+            <p>
+                @auth
+                    @if (auth()->user()->role === 'admin')
+                        Review the full product record before updating stock or inventory details.
+                    @else
+                        Review the key product details before adding this item to your cart.
+                    @endif
+                @else
+                    Review the key product details before adding this item to your cart.
+                @endauth
+            </p>
 
             <div class="summary-stats">
                 <div class="summary-stat">
@@ -137,6 +147,37 @@
                 <a class="button-secondary" href="{{ route('catalog.index', ['category' => $product->category]) }}">More
                     in {{ $product->category }}</a>
             </div>
+
+            @auth
+                @if (auth()->user()->role === 'admin')
+                    <div class="detail-info-grid" style="margin-top: 18px;">
+                        <div class="detail-info-card">
+                            <strong>SKU</strong>
+                            <span>{{ $product->sku ?: 'Not specified' }}</span>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Barcode</strong>
+                            <span>{{ $product->barcode ?: 'Not specified' }}</span>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Unit type</strong>
+                            <span>{{ $product->unit_type ?: 'Not specified' }}</span>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Pack size</strong>
+                            <span>{{ $product->pack_size ?: 'Not specified' }}</span>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Category line</strong>
+                            <span>{{ $product->category }} / {{ $product->subcategory ?: 'Not specified' }}</span>
+                        </div>
+                        <div class="detail-info-card">
+                            <strong>Stock</strong>
+                            <span>{{ $product->stock }} available</span>
+                        </div>
+                    </div>
+                @endif
+            @endauth
         </aside>
     </section>
 </main>
