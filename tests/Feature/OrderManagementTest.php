@@ -86,6 +86,57 @@ class OrderManagementTest extends TestCase
             ->assertSee('Order history');
     }
 
+    public function test_checkout_requires_delivery_address_fields(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'CHECKOUT-ADDRESS-001',
+            'barcode' => '5391000000099',
+            'name' => 'Address Test Product',
+            'brand' => 'Orange Retail',
+            'category' => 'Fresh Food',
+            'subcategory' => 'Fruit',
+            'image_url' => null,
+            'unit_type' => 'pack',
+            'pack_size' => '4 pack',
+            'price_value' => 2.75,
+            'unit_price_display' => 'â‚¬0.69/each',
+            'stock' => 6,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->post("/cart/{$product->id}");
+
+        $this->actingAs($user)
+            ->from('/checkout')
+            ->post('/checkout', [
+                'customer_name' => 'Store User',
+                'customer_email' => 'user@example.com',
+                'shipping_address_line_1' => '   ',
+                'shipping_address_line_2' => '',
+                'shipping_city' => '',
+                'shipping_county' => '',
+                'shipping_postal_code' => '   ',
+                'notes' => '',
+            ])
+            ->assertRedirect('/checkout')
+            ->assertSessionHasErrors([
+                'shipping_address_line_1',
+                'shipping_city',
+                'shipping_postal_code',
+            ]);
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'stock' => 6,
+        ]);
+    }
+
     public function test_admin_can_cancel_an_order_and_restore_stock(): void
     {
         $admin = User::factory()->create([

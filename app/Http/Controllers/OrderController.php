@@ -19,6 +19,7 @@ class OrderController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $this->ensureCustomer($request);
+        $this->trimCheckoutInput($request);
 
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
@@ -132,6 +133,30 @@ class OrderController extends Controller
         return redirect()
             ->route('orders.show', $order)
             ->with('status', 'Order placed successfully.');
+    }
+
+    protected function trimCheckoutInput(Request $request): void
+    {
+        $fields = [
+            'customer_name',
+            'customer_email',
+            'shipping_address_line_1',
+            'shipping_address_line_2',
+            'shipping_city',
+            'shipping_county',
+            'shipping_postal_code',
+            'notes',
+        ];
+
+        $request->merge(
+            collect($fields)
+                ->mapWithKeys(fn (string $field): array => [
+                    $field => is_string($request->input($field))
+                        ? trim($request->input($field))
+                        : $request->input($field),
+                ])
+                ->all()
+        );
     }
 
     protected function ensureCustomer(Request $request): void
