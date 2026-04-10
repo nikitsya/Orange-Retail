@@ -1688,6 +1688,29 @@ body.modal-open {
     border-radius: 0;
 }
 
+.admin-orders-page .order-card-actions {
+    margin-left: 0;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 12px 14px;
+}
+
+.admin-orders-page .inline-form {
+    gap: 12px;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+}
+
+.admin-orders-page .inline-form .field-select {
+    min-width: 230px;
+}
+
+.admin-orders-page .inline-form .button-primary,
+.admin-orders-page .order-card-actions > .button-secondary {
+    min-width: 126px;
+    justify-content: center;
+}
+
 @media (max-width: 1100px) {
     .checkout-layout,
     .stock-layout,
@@ -1707,6 +1730,14 @@ body.modal-open {
     .inline-form {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .admin-orders-page .order-card-actions {
+        align-items: stretch;
+    }
+
+    .admin-orders-page .inline-form {
+        flex-wrap: wrap;
     }
 
     .summary-stats-wide {
