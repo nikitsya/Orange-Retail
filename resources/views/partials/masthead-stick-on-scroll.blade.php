@@ -69,9 +69,9 @@
                         const card = form.closest('.product-card');
                         const slot = card?.querySelector('.catalog-status-slot');
                         if (slot) {
-                            const existing = slot.querySelector('.button-secondary');
-                            const n = existing ? parseInt(existing.textContent.replace(/\D/g,'')) + 1 : 1;
-                            slot.innerHTML = `<div class="tile-actions" style="margin-top:10px"><span class="button-secondary">In cart: ${n}</span></div>`;
+                            const existing = slot.querySelector('.cart-badge');
+                            const n = existing ? parseInt(existing.textContent) + 1 : 1;
+                            slot.innerHTML = `<span class="cart-badge">${n} in cart</span>`;
                         }
                         setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 900);
 

@@ -219,9 +219,7 @@
 
                         <div class="catalog-status-slot">
                             @if (($cartQuantities[$product->id] ?? 0) > 0)
-                                <div class="tile-actions" style="margin-top: 10px;">
-                                    <span class="button-secondary">In cart: {{ $cartQuantities[$product->id] }}</span>
-                                </div>
+                                <span class="cart-badge">{{ $cartQuantities[$product->id] }} in cart</span>
                             @endif
                         </div>
 
