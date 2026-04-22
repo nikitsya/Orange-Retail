@@ -33,6 +33,7 @@
 html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    max-width: 100%;
 }
 
 body {
@@ -42,6 +43,7 @@ body {
     background: var(--bg);
     color: var(--ink);
     overflow-x: hidden;
+    max-width: 100%;
 }
 
 .sr-only {
@@ -484,6 +486,7 @@ textarea {
     border-top: 1px solid rgba(201, 75, 0, 0.08);
     border-bottom: 1px solid rgba(201, 75, 0, 0.12);
     background: #fdf3e8;
+    overflow: hidden;
 }
 
 .subcategory-filter-shell {
@@ -1753,6 +1756,25 @@ body.modal-open {
 
     .catalog-nav-scroll {
         padding: 0 10px;
+    }
+
+    /* ── Compact nav chips on mobile ── */
+    .nav-chip {
+        flex: 0 0 96px;
+        min-height: 96px;
+        padding: 8px;
+    }
+
+    /* ── Prevent fixed bars from overflowing viewport ── */
+    .masthead.is-fixed,
+    .utility-bar.is-fixed {
+        max-width: 100vw;
+        overflow: hidden;
+    }
+
+    /* ── Utility bar clips its scrollable content ── */
+    .utility-bar {
+        overflow: hidden;
     }
 }
 
