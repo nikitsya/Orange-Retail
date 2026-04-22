@@ -112,13 +112,12 @@
                                         <a class="button-secondary"
                                            href="{{ route('catalog.show', ['product' => $item['product'], 'from' => 'cart']) }}">View product</a>
 
-                                        <form method="POST" action="{{ route('cart.update', $item['product']) }}">
+                                        <form class="cart-qty-form" method="POST" action="{{ route('cart.update', $item['product']) }}" data-product-id="{{ $item['product']->id }}">
                                             @csrf
                                             @method('PUT')
-                                            <input class="field" style="min-height: 44px; width: 96px;" type="number"
+                                            <input class="field cart-qty-input" style="min-height: 44px; width: 96px;" type="number"
                                                    min="1" max="{{ $item['product']->stock }}" name="quantity"
                                                    value="{{ $item['quantity'] }}">
-                                            <button class="button-secondary" type="submit">Update</button>
                                         </form>
 
                                         <form method="POST" action="{{ route('cart.destroy', $item['product']) }}">

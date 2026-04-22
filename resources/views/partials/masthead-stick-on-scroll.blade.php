@@ -41,6 +41,35 @@
             });
         });
 
+        // AJAX: auto-update cart quantity on input change (no Update button)
+        document.addEventListener('change', async (e) => {
+            const input = e.target;
+            if (!input.classList.contains('cart-qty-input')) return;
+            const form = input.closest('.cart-qty-form');
+            if (!form) return;
+
+            // Capture FormData BEFORE disabling the input
+            const body = new FormData(form);
+            input.style.opacity = '0.5';
+
+            try {
+                await fetch(form.action, {
+                    method: 'POST',
+                    body,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                const res = await fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const html = await res.text();
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const newMain = doc.querySelector('main');
+                const curMain = document.querySelector('main');
+                if (newMain && curMain) curMain.replaceWith(newMain);
+            } catch (_) {
+                input.style.opacity = '';
+                form.submit();
+            }
+        });
+
         // AJAX: intercept cart + favorite form submits without page reload
         document.addEventListener('submit', async (e) => {
             const form = e.target;
