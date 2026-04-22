@@ -10,6 +10,10 @@
 <body>
 @php
     $fallbackProductImage = asset('images/products/picture.png');
+    $inventoryEditUrl = route('products.index', [
+        'search' => $product->sku,
+        'edit' => $product->id,
+    ]);
 @endphp
 
 <header class="masthead">
@@ -135,7 +139,8 @@
                             <span class="button-secondary" aria-disabled="true">Out of stock</span>
                         @endif
                     @else
-                        <a class="button-primary" href="{{ route('admin.stock.index') }}">Manage stock</a>
+                        <a class="button-primary" href="{{ $inventoryEditUrl }}">Edit in inventory</a>
+                        <a class="button-secondary" href="{{ route('admin.stock.index', ['search' => $product->sku]) }}">Manage stock</a>
                     @endif
                 @else
                     <a class="button-primary" href="{{ route('login') }}">Add</a>

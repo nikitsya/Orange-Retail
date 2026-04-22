@@ -16,6 +16,7 @@ class ProductController extends Controller
         $search = trim($request->string('search')->toString());
         $category = trim($request->string('category')->toString());
         $subcategory = trim($request->string('subcategory')->toString());
+        $openProductId = $request->integer('edit');
 
         $categories = Product::query()
             ->select('category')
@@ -73,6 +74,7 @@ class ProductController extends Controller
             'search' => $search,
             'category' => $category,
             'subcategory' => $subcategory,
+            'openProductId' => $openProductId > 0 ? $openProductId : null,
             'categories' => $categories,
             'categoryOptions' => Product::categories(),
             'subcategoryOptionsByCategory' => $subcategoryOptionsByCategory,

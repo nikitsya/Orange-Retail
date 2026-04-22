@@ -200,4 +200,45 @@ class ManagerAuthenticationTest extends TestCase
             ->assertSee('Tesco Bakery Bread')
             ->assertDontSee('Tesco Gala Apples 6 Pack');
     }
+
+    public function test_admin_can_open_inventory_modal_for_a_product_from_the_catalog_link(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+        ]);
+
+        $product = Product::query()->create([
+            'sku' => 'TES-MOZZ-001',
+            'barcode' => '5391234567012',
+            'name' => 'Creamfields Mozzarella 210G',
+            'brand' => 'Creamfields',
+            'category' => 'Fresh Food',
+            'subcategory' => 'Cheese',
+            'image_url' => 'https://example.com/images/mozzarella.jpg',
+            'unit_type' => 'weight',
+            'pack_size' => '210G',
+            'price_value' => 0.75,
+            'unit_price_display' => '€6.00/kg DR.WT',
+            'stock' => 125,
+            'minimum_stock_level' => 10,
+            'is_active' => true,
+        ]);
+
+        $inventoryEditUrl = route('products.index', [
+            'search' => $product->sku,
+            'edit' => $product->id,
+        ]);
+
+        $this->actingAs($admin)
+            ->get("/catalog/{$product->id}")
+            ->assertOk()
+            ->assertSee($inventoryEditUrl);
+
+        $this->actingAs($admin)
+            ->get($inventoryEditUrl)
+            ->assertOk()
+            ->assertSee('class="modal is-open"', false)
+            ->assertSee("id=\"product-modal-{$product->id}\"", false)
+            ->assertSee('Creamfields Mozzarella 210G');
+    }
 }

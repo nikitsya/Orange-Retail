@@ -183,7 +183,7 @@
                         </article>
 
                         <div
-                            class="modal @if ((string) old('modal_product_id') === (string) $product->id) is-open @endif"
+                            class="modal @if ((string) old('modal_product_id') === (string) $product->id || (string) $openProductId === (string) $product->id) is-open @endif"
                             id="product-modal-{{ $product->id }}"
                             data-modal
                         >
