@@ -1,13 +1,43 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Auto-submit live search forms with debounce
+        // Live search via fetch — updates page content without full reload
         document.querySelectorAll('form[data-live-search]').forEach((form) => {
             const input = form.querySelector('input[type="search"]');
             if (!input) return;
+
             let timer = null;
+
+            const doSearch = async () => {
+                const params = new URLSearchParams(new FormData(form));
+                const url = form.action + '?' + params.toString();
+
+                try {
+                    const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                    const html = await res.text();
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+                    // Replace <main> content
+                    const newMain = doc.querySelector('main');
+                    const curMain = document.querySelector('main');
+                    if (newMain && curMain) curMain.replaceWith(newMain);
+
+                    // Replace catalog/inventory nav shell if present
+                    const newNav = doc.querySelector('.catalog-nav-shell');
+                    const curNav = document.querySelector('.catalog-nav-shell');
+                    if (newNav && curNav) curNav.replaceWith(newNav);
+
+                    history.pushState(null, '', url);
+                } catch (_) {
+                    form.requestSubmit();
+                }
+
+                input.focus();
+                const v = input.value; input.value = ''; input.value = v;
+            };
+
             input.addEventListener('input', () => {
                 clearTimeout(timer);
-                timer = setTimeout(() => form.requestSubmit(), 380);
+                timer = setTimeout(doSearch, 450);
             });
         });
 
