@@ -1,43 +1,45 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const utilityBar = document.querySelector('.utility-bar');
         const masthead = document.querySelector('.masthead');
+        const utilityBar = document.querySelector('.utility-bar');
         const mobileViewport = window.matchMedia('(max-width: 920px)');
 
-        if (!utilityBar || !masthead) {
+        if (!masthead || !utilityBar) {
             return;
         }
 
         const spacer = document.createElement('div');
         spacer.className = 'masthead-spacer';
-        masthead.insertAdjacentElement('afterend', spacer);
+        utilityBar.insertAdjacentElement('afterend', spacer);
 
-        const syncMasthead = () => {
+        const sync = () => {
             if (mobileViewport.matches) {
                 masthead.classList.remove('is-fixed');
                 masthead.style.top = '';
+                utilityBar.classList.remove('is-fixed');
+                utilityBar.style.top = '';
                 spacer.style.height = '0px';
                 return;
             }
 
-            const utilityHeight = utilityBar.offsetHeight;
-            const utilityBottom = Math.max(0, utilityBar.getBoundingClientRect().bottom);
-            const shouldFix = utilityBottom < utilityHeight;
-
+            const shouldFix = masthead.getBoundingClientRect().top <= 0;
             masthead.classList.toggle('is-fixed', shouldFix);
+            utilityBar.classList.toggle('is-fixed', shouldFix);
 
-            if (!shouldFix) {
+            if (shouldFix) {
+                const mh = masthead.offsetHeight;
+                masthead.style.top = '0px';
+                utilityBar.style.top = mh + 'px';
+                spacer.style.height = (mh + utilityBar.offsetHeight) + 'px';
+            } else {
                 masthead.style.top = '';
+                utilityBar.style.top = '';
                 spacer.style.height = '0px';
-                return;
             }
-
-            masthead.style.top = `${utilityBottom}px`;
-            spacer.style.height = `${masthead.offsetHeight}px`;
         };
 
-        syncMasthead();
-        window.addEventListener('scroll', syncMasthead, {passive: true});
-        window.addEventListener('resize', syncMasthead);
+        sync();
+        window.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
     });
 </script>
