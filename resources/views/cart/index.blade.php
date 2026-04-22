@@ -12,14 +12,6 @@
     $fallbackProductImage = asset('images/products/picture.png');
 @endphp
 
-<div class="utility-bar">
-    <div class="page-shell utility-bar-inner">
-        @include('partials.app-nav')
-
-        @include('partials.utility-actions')
-    </div>
-</div>
-
 <header class="masthead">
     <div class="page-shell">
         <div class="masthead-main">
@@ -46,6 +38,14 @@
         </div>
     </div>
 </header>
+
+<div class="utility-bar">
+    <div class="page-shell utility-bar-inner">
+        @include('partials.app-nav')
+
+        @include('partials.utility-actions')
+    </div>
+</div>
 
 <main class="page-shell page-main stack">
     @if (session('status'))

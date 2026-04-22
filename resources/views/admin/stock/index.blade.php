@@ -17,14 +17,6 @@
     $pageEnd = min($lastPage, $pageStart + $windowSize - 1);
     $pageStart = max(1, $pageEnd - $windowSize + 1);
 @endphp
-<div class="utility-bar">
-    <div class="page-shell utility-bar-inner">
-        @include('partials.app-nav')
-
-        @include('partials.utility-actions')
-    </div>
-</div>
-
 <header class="masthead">
     <div class="page-shell">
         <div class="masthead-main stock-masthead-main">
@@ -66,6 +58,14 @@
         </div>
     </div>
 </header>
+
+<div class="utility-bar">
+    <div class="page-shell utility-bar-inner">
+        @include('partials.app-nav')
+
+        @include('partials.utility-actions')
+    </div>
+</div>
 
 <main class="page-shell page-main stock-layout">
     <div class="stock-primary stack">
