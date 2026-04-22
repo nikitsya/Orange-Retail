@@ -19,17 +19,14 @@
                 @include('partials.brand-name', ['class' => 'brand-title'])
             </a>
 
-            <form class="search-shell" method="GET" action="{{ route('catalog.index') }}">
+            <form class="search-shell" method="GET" action="{{ route('catalog.index') }}" data-live-search>
                 <input
                     type="search"
                     name="search"
                     placeholder="Search for another product"
                     aria-label="Search products"
                 >
-                <button class="search-image-button" type="submit" aria-label="Search">
-                    <img src="{{ asset('images/ui/search.png') }}" alt="">
-                    <span class="sr-only">Search</span>
-                </button>
+                <span class="search-icon" aria-hidden="true"><img src="{{ asset('images/ui/search.png') }}" alt=""></span>
             </form>
 
             <div class="masthead-actions">

@@ -52,7 +52,7 @@
                 @include('partials.brand-name', ['class' => 'brand-title'])
             </a>
 
-            <form class="search-shell" method="GET" action="{{ route('products.index') }}">
+            <form class="search-shell" method="GET" action="{{ route('products.index') }}" data-live-search>
                 @if ($category !== '')
                     <input type="hidden" name="category" value="{{ $category }}">
                 @endif
@@ -67,10 +67,7 @@
                     placeholder="Search by name, brand, SKU, or barcode"
                     aria-label="Search inventory"
                 >
-                <button class="search-image-button" type="submit" aria-label="Search">
-                    <img src="{{ asset('images/ui/search.png') }}" alt="">
-                    <span class="sr-only">Search</span>
-                </button>
+                <span class="search-icon" aria-hidden="true"><img src="{{ asset('images/ui/search.png') }}" alt=""></span>
             </form>
 
             <div class="masthead-actions">

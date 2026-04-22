@@ -34,10 +34,7 @@
                         aria-label="Search stock products"
                         data-auto-filter-search
                     >
-                    <button class="search-image-button" type="submit" aria-label="Search stock center">
-                        <img src="{{ asset('images/ui/search.png') }}" alt="">
-                        <span class="sr-only">Search</span>
-                    </button>
+                    <span class="search-icon" aria-hidden="true"><img src="{{ asset('images/ui/search.png') }}" alt=""></span>
                 </div>
 
                 <select class="field-select" name="category" aria-label="Filter by category" data-auto-filter-select>

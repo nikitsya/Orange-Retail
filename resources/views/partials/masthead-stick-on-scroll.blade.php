@@ -1,5 +1,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Auto-submit live search forms with debounce
+        document.querySelectorAll('form[data-live-search]').forEach((form) => {
+            const input = form.querySelector('input[type="search"]');
+            if (!input) return;
+            let timer = null;
+            input.addEventListener('input', () => {
+                clearTimeout(timer);
+                timer = setTimeout(() => form.requestSubmit(), 380);
+            });
+        });
+
         const masthead = document.querySelector('.masthead');
         const utilityBar = document.querySelector('.utility-bar');
         const mobileViewport = window.matchMedia('(max-width: 920px)');
