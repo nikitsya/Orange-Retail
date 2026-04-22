@@ -41,6 +41,65 @@
             });
         });
 
+        // AJAX: intercept cart + favorite form submits without page reload
+        document.addEventListener('submit', async (e) => {
+            const form = e.target;
+            const cartBtn = form.querySelector('.compact-cart-button');
+            const favBtn  = form.querySelector('.favorite-toggle-button');
+            if (!cartBtn && !favBtn) return;
+
+            e.preventDefault();
+            const btn = cartBtn || favBtn;
+            if (btn.disabled) return;
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+
+                if (res.ok || res.redirected) {
+                    if (cartBtn) {
+                        // Flash "✓ Added" then restore
+                        const orig = btn.textContent;
+                        btn.textContent = '✓';
+                        // Bump "In cart: X" counter on the card
+                        const card = form.closest('.product-card');
+                        const slot = card?.querySelector('.catalog-status-slot');
+                        if (slot) {
+                            const existing = slot.querySelector('.button-secondary');
+                            const n = existing ? parseInt(existing.textContent.replace(/\D/g,'')) + 1 : 1;
+                            slot.innerHTML = `<div class="tile-actions" style="margin-top:10px"><span class="button-secondary">In cart: ${n}</span></div>`;
+                        }
+                        setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 900);
+
+                    } else {
+                        // Toggle heart icon + _method field
+                        const isFav = btn.getAttribute('aria-label') === 'Remove from favourites';
+                        if (isFav) {
+                            btn.innerHTML = '&#9825;';
+                            btn.setAttribute('aria-label', 'Add to favourites');
+                            form.querySelector('[name="_method"]')?.remove();
+                        } else {
+                            btn.innerHTML = '&#9829;';
+                            btn.setAttribute('aria-label', 'Remove from favourites');
+                            const m = document.createElement('input');
+                            m.type = 'hidden'; m.name = '_method'; m.value = 'DELETE';
+                            form.appendChild(m);
+                        }
+                        btn.disabled = false;
+                    }
+                } else {
+                    btn.disabled = false;
+                }
+            } catch (_) {
+                btn.disabled = false;
+                form.submit(); // fallback
+            }
+        });
+
         const masthead = document.querySelector('.masthead');
         const utilityBar = document.querySelector('.utility-bar');
         const mobileViewport = window.matchMedia('(max-width: 920px)');
