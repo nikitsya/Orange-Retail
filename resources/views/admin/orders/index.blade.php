@@ -62,16 +62,16 @@
             </div>
         </div>
 
-        <form class="form-grid-3" method="GET" action="{{ route('admin.orders.index') }}">
+        <form class="form-grid-3" method="GET" action="{{ route('admin.orders.index') }}" id="orders-filter-form">
             <label class="field-label">
                 Search
                 <input class="field" type="search" name="search" value="{{ $search }}"
-                       placeholder="Order number, customer, email">
+                       placeholder="Order number, customer, email" id="orders-search-input">
             </label>
 
             <label class="field-label">
                 Status
-                <select class="field-select" name="status">
+                <select class="field-select" name="status" id="orders-status-select">
                     <option value="">All statuses</option>
                     @foreach ($statuses as $orderStatus)
                         <option
@@ -79,11 +79,28 @@
                     @endforeach
                 </select>
             </label>
-
-            <div class="tile-actions">
-                <button class="button-primary" type="submit">Apply filters</button>
-            </div>
         </form>
+
+        <script>
+            (function () {
+                const form = document.getElementById('orders-filter-form');
+                const searchInput = document.getElementById('orders-search-input');
+                const statusSelect = document.getElementById('orders-status-select');
+
+                let debounceTimer;
+
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(function () {
+                        form.submit();
+                    }, 400);
+                });
+
+                statusSelect.addEventListener('change', function () {
+                    form.submit();
+                });
+            })();
+        </script>
 
         <section class="order-list">
             @forelse ($orders as $order)

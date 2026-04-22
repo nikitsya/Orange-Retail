@@ -1580,34 +1580,118 @@ body.modal-open {
         width: min(calc(100% - 20px), var(--page-width));
     }
 
-    .utility-bar-inner,
+    /* ── Masthead: logo+actions on row 1, search on row 2 ── */
+    .masthead-main {
+        grid-template-columns: 1fr auto !important;
+        grid-template-rows: auto auto;
+        min-height: unset;
+        gap: 8px 12px;
+        padding: 10px 0;
+    }
+
+    .masthead-main .brand-lockup {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    .masthead-main .search-shell {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
+
+    .masthead-main .masthead-actions {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: flex-end;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+
+    .masthead .search-shell input {
+        min-height: 42px;
+    }
+
+    /* ── Utility bar: horizontal scroll, never stack ── */
+    .utility-bar-inner {
+        flex-direction: row !important;
+        align-items: center !important;
+        overflow-x: auto;
+        scrollbar-width: none;
+        gap: 12px;
+        min-height: 36px;
+        padding-right: 12px;
+    }
+
+    .utility-bar-inner::-webkit-scrollbar { display: none; }
+
+    .utility-links {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+    }
+
+    .utility-actions {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* ── Product grid: 2 columns on mobile ── */
+    .catalog-grid,
+    .tile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .circle-strip {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    /* ── Product cards: tighter padding ── */
+    .product-card {
+        padding: 12px;
+    }
+
+    .product-card h3 {
+        font-size: 0.88rem;
+        margin: 6px 0 4px;
+    }
+
+    .product-meta {
+        font-size: 0.78rem;
+    }
+
+    /* ── Price row buttons: keep horizontal in cards ── */
+    .price-row .tile-actions,
+    .price-row .tile-actions form,
+    .catalog-card-actions,
+    .fav-card-actions {
+        flex-direction: row !important;
+        align-items: center !important;
+        flex-wrap: nowrap;
+    }
+
+    .price-block strong {
+        font-size: 1rem;
+    }
+
+    .price-block span {
+        font-size: 0.75rem;
+    }
+
+    /* ── Sections ── */
     .section-actions,
     .hero-actions,
     .detail-actions,
     .summary-actions,
-    .toolbar,
-    .tile-actions,
     .auth-footer-actions {
         align-items: stretch;
         flex-direction: column;
     }
 
-    .catalog-grid,
-    .tile-grid,
-    .circle-strip {
-        grid-template-columns: 1fr;
-    }
-
-    .search-shell,
-    .toolbar-search {
-        grid-template-columns: 1fr;
-    }
-
-    .search-image-button {
-        width: 24px;
-        min-width: 24px;
-        height: 24px;
-        justify-self: start;
+    .tile-actions {
+        flex-wrap: wrap;
     }
 
     .hero-panel,
@@ -1620,12 +1704,12 @@ body.modal-open {
     .admin-hero,
     .admin-surface,
     .modal-dialog {
-        padding: 22px;
+        padding: 16px;
     }
 
     .cart-page-hero {
         gap: 16px;
-        padding: 20px 22px;
+        padding: 16px;
     }
 
     .hero-panel h1,
@@ -1633,11 +1717,42 @@ body.modal-open {
     .auth-panel h1,
     .detail-heading,
     .admin-hero h1 {
-        font-size: 2.4rem;
+        font-size: 1.9rem;
     }
 
     .cart-line {
         grid-template-columns: 1fr;
+    }
+
+    /* ── Buttons: don't full-stretch in masthead actions ── */
+    .masthead .button-primary,
+    .masthead .button-secondary {
+        padding: 0.5rem 0.85rem;
+        font-size: 0.85rem;
+        min-height: 38px;
+    }
+
+    .account-pill {
+        padding: 6px 10px;
+    }
+
+    .account-pill span {
+        display: none;
+    }
+
+    /* ── Brand title ── */
+    .brand-title {
+        font-size: 1.3rem !important;
+    }
+
+    /* ── Nav chips (category bar) ── */
+    .catalog-nav-shell .page-shell {
+        width: 100%;
+        padding: 0;
+    }
+
+    .catalog-nav-scroll {
+        padding: 0 10px;
     }
 }
 

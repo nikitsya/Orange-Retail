@@ -133,8 +133,6 @@
 
         const masthead = document.querySelector('.masthead');
         const utilityBar = document.querySelector('.utility-bar');
-        const mobileViewport = window.matchMedia('(max-width: 920px)');
-
         if (!masthead || !utilityBar) {
             return;
         }
@@ -144,15 +142,6 @@
         utilityBar.insertAdjacentElement('afterend', spacer);
 
         const sync = () => {
-            if (mobileViewport.matches) {
-                masthead.classList.remove('is-fixed');
-                masthead.style.top = '';
-                utilityBar.classList.remove('is-fixed');
-                utilityBar.style.top = '';
-                spacer.style.height = '0px';
-                return;
-            }
-
             const shouldFix = masthead.getBoundingClientRect().top <= 0;
             masthead.classList.toggle('is-fixed', shouldFix);
             utilityBar.classList.toggle('is-fixed', shouldFix);
