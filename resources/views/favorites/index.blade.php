@@ -121,17 +121,17 @@
                             </span>
                         </div>
 
-                        <div class="tile-actions">
+                        <div class="tile-actions catalog-card-actions">
                             <form method="POST" action="{{ route('favorites.destroy', $product) }}">
                                 @csrf
                                 @method('DELETE')
-                                <button class="button-secondary" type="submit" aria-label="Remove from favourites">&#9829;</button>
+                                <button class="button-secondary favorite-toggle-button" type="submit" aria-label="Remove from favourites">&#9829;</button>
                             </form>
 
                             @if ($product->stock > 0)
                                 <form method="POST" action="{{ route('cart.store', $product) }}">
                                     @csrf
-                                    <button class="button-primary" type="submit">Add to cart</button>
+                                    <button class="button-primary compact-cart-button" type="submit">Add</button>
                                 </form>
                             @else
                                 <span class="button-secondary" aria-disabled="true">Out of stock</span>

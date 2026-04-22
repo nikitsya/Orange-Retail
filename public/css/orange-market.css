@@ -1063,6 +1063,23 @@ textarea {
     margin-left: auto;
 }
 
+.fav-price-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fav-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.fav-card-actions form {
+    display: flex;
+}
+
 .catalog-card-actions {
     display: inline-flex;
     flex-wrap: nowrap;
