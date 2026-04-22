@@ -200,14 +200,21 @@ class OrderController extends Controller
             return redirect()->route('admin.orders.index');
         }
 
+        $search = trim($request->string('search')->toString());
+
         $orders = $request->user()
             ->orders()
             ->withCount('items')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('order_number', 'like', "%{$search}%");
+            })
             ->latest('placed_at')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('orders.index', [
             'orders' => $orders,
+            'search' => $search,
         ]);
     }
 

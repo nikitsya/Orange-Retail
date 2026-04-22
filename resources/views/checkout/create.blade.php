@@ -8,6 +8,33 @@
     <link rel="stylesheet" href="{{ asset('css/orange-market.css') }}">
 </head>
 <body>
+<header class="masthead">
+    <div class="page-shell">
+        <div class="masthead-main">
+            <a class="brand-lockup" href="{{ route('catalog.index') }}">
+                @include('partials.brand-name', ['class' => 'brand-title'])
+            </a>
+
+            <form class="search-shell" method="GET" action="{{ route('catalog.index') }}">
+                <input
+                    type="search"
+                    name="search"
+                    placeholder="Search groceries or brands"
+                    aria-label="Search catalog"
+                >
+                <button class="search-image-button" type="submit" aria-label="Search">
+                    <img src="{{ asset('images/ui/search.png') }}" alt="">
+                    <span class="sr-only">Search</span>
+                </button>
+            </form>
+
+            <div class="masthead-actions">
+                <a class="button-secondary" href="{{ route('cart.index') }}">Back to cart</a>
+            </div>
+        </div>
+    </div>
+</header>
+
 <div class="utility-bar">
     <div class="page-shell utility-bar-inner">
         @include('partials.app-nav')
@@ -122,5 +149,7 @@
         </div>
     </aside>
 </main>
+
+@include('partials.masthead-stick-on-scroll')
 </body>
 </html>
