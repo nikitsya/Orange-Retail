@@ -302,39 +302,84 @@
                                     </div>
 
                                     <div
-                                        class="product-inline-preview-layout"
+                                        class="product-preview-stack"
                                         data-image-preview-scope
                                         data-product-name="{{ $modalProductName }}"
                                     >
-                                        <div class="product-inline-preview-fields">
+                                        <label class="field-label product-preview-stack-image-url">
+                                            Image URL
+                                            <input
+                                                class="field"
+                                                type="url"
+                                                name="image_url"
+                                                value="{{ $modalImageUrl }}"
+                                                data-image-url-input
+                                            >
+                                        </label>
+
+                                        <div class="form-grid-2 product-preview-stack-price">
                                             <label class="field-label">
-                                                Image URL
-                                                <input
-                                                    class="field"
-                                                    type="url"
-                                                    name="image_url"
-                                                    value="{{ $modalImageUrl }}"
-                                                    data-image-url-input
-                                                >
+                                                Price value
+                                                <input class="field" type="number" step="0.01" min="0.01" name="price_value"
+                                                       value="{{ old('modal_product_id') == $product->id ? old('price_value', $product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') : ($product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') }}"
+                                                       required>
                                             </label>
 
-                                            <div class="form-grid-2">
-                                                <label class="field-label">
-                                                    Price value
-                                                    <input class="field" type="number" step="0.01" min="0.01" name="price_value"
-                                                           value="{{ old('modal_product_id') == $product->id ? old('price_value', $product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') : ($product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') }}"
-                                                           required>
-                                                </label>
-
-                                                <label class="field-label">
-                                                    Unit price display
-                                                    <input class="field" type="text" name="unit_price_display"
-                                                           value="{{ old('modal_product_id') == $product->id ? old('unit_price_display', $product->unit_price_display) : $product->unit_price_display }}">
-                                                </label>
-                                            </div>
+                                            <label class="field-label">
+                                                Unit price display
+                                                <input class="field" type="text" name="unit_price_display"
+                                                       value="{{ old('modal_product_id') == $product->id ? old('unit_price_display', $product->unit_price_display) : $product->unit_price_display }}">
+                                            </label>
                                         </div>
 
-                                        <aside class="product-inline-preview" aria-label="Product photo preview">
+                                        <div class="form-grid-2 product-preview-stack-units">
+                                            <label class="field-label">
+                                                Unit type
+                                                <select class="field-select" name="unit_type" required>
+                                                    @foreach ($unitTypes as $unitType)
+                                                        <option
+                                                            value="{{ $unitType }}"
+                                                            @selected((old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type) === $unitType)
+                                                        >
+                                                            {{ ucfirst($unitType) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+
+                                            <label class="field-label">
+                                                Pack size
+                                                <input class="field" type="text" name="pack_size"
+                                                       value="{{ old('modal_product_id') == $product->id ? old('pack_size', $product->pack_size) : $product->pack_size }}">
+                                            </label>
+                                        </div>
+
+                                        <div class="form-grid-2 product-preview-stack-stock">
+                                            <label class="field-label">
+                                                Stock
+                                                <input class="field" type="number" min="0" name="stock"
+                                                       value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
+                                                       readonly
+                                                       aria-readonly="true"
+                                                       required>
+                                                <span class="field-help">
+                                                    Stock is managed in <a href="{{ route('admin.stock.index') }}">Stock Center</a>.
+                                                </span>
+                                            </label>
+
+                                            <label class="field-label">
+                                                Minimum stock level
+                                                <input class="field" type="number" min="0" name="minimum_stock_level"
+                                                       value="{{ old('modal_product_id') == $product->id ? old('minimum_stock_level', $product->minimum_stock_level) : $product->minimum_stock_level }}">
+                                                @if (old('modal_product_id') == $product->id)
+                                                    @error('minimum_stock_level')
+                                                    <span class="field-error">{{ $message }}</span>
+                                                    @enderror
+                                                @endif
+                                            </label>
+                                        </div>
+
+                                        <aside class="product-inline-preview product-preview-stack-media" aria-label="Product photo preview">
                                             <div class="product-preview-media">
                                                 <img
                                                     class="product-preview-image"
@@ -353,53 +398,6 @@
                                                 </div>
                                             </div>
                                         </aside>
-                                    </div>
-
-                                    <div class="form-grid-2">
-                                        <label class="field-label">
-                                            Unit type
-                                            <select class="field-select" name="unit_type" required>
-                                                @foreach ($unitTypes as $unitType)
-                                                    <option
-                                                        value="{{ $unitType }}"
-                                                        @selected((old('modal_product_id') == $product->id ? old('unit_type', $product->unit_type) : $product->unit_type) === $unitType)
-                                                    >
-                                                        {{ ucfirst($unitType) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </label>
-
-                                        <label class="field-label">
-                                            Pack size
-                                            <input class="field" type="text" name="pack_size"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('pack_size', $product->pack_size) : $product->pack_size }}">
-                                        </label>
-                                    </div>
-
-                                    <div class="form-grid-2">
-                                        <label class="field-label">
-                                            Stock
-                                            <input class="field" type="number" min="0" name="stock"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('stock', $product->stock) : $product->stock }}"
-                                                   readonly
-                                                   aria-readonly="true"
-                                                   required>
-                                            <span class="field-help">
-                                                Stock is managed in <a href="{{ route('admin.stock.index') }}">Stock Center</a>.
-                                            </span>
-                                        </label>
-
-                                        <label class="field-label">
-                                            Minimum stock level
-                                            <input class="field" type="number" min="0" name="minimum_stock_level"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('minimum_stock_level', $product->minimum_stock_level) : $product->minimum_stock_level }}">
-                                            @if (old('modal_product_id') == $product->id)
-                                                @error('minimum_stock_level')
-                                                <span class="field-error">{{ $message }}</span>
-                                                @enderror
-                                            @endif
-                                        </label>
                                     </div>
 
                                     <label class="remember-row">
@@ -741,6 +739,7 @@
         const imageUrlInput = scope.querySelector('[data-image-url-input]');
         const previewImage = scope.querySelector('[data-image-preview-img]');
         const previewPlaceholder = scope.querySelector('[data-image-preview-placeholder]');
+        const previewEnd = scope.querySelector('.product-preview-stack-stock .field-label:last-child');
 
         if (!imageUrlInput || !previewImage || !previewPlaceholder) {
             return;
@@ -750,6 +749,39 @@
         const placeholderCopy = previewPlaceholder.querySelector('[data-image-preview-copy]');
         const productName = scope.dataset.productName || 'Product';
         let previewTimer = null;
+        let previewSizeFrame = null;
+
+        const syncPreviewSize = () => {
+            if (!previewEnd) {
+                return;
+            }
+
+            if (window.innerWidth <= 920) {
+                scope.style.removeProperty('--product-preview-offset-top');
+                scope.style.removeProperty('--product-preview-size');
+                return;
+            }
+
+            const scopeRect = scope.getBoundingClientRect();
+            const startRect = imageUrlInput.getBoundingClientRect();
+            const endRect = previewEnd.getBoundingClientRect();
+            const nextOffsetTop = Math.max(0, Math.round(startRect.top - scopeRect.top));
+            const nextSize = Math.max(180, Math.round(endRect.bottom - startRect.top));
+
+            scope.style.setProperty('--product-preview-offset-top', `${nextOffsetTop}px`);
+            scope.style.setProperty('--product-preview-size', `${nextSize}px`);
+        };
+
+        const schedulePreviewSizeSync = () => {
+            if (previewSizeFrame !== null) {
+                window.cancelAnimationFrame(previewSizeFrame);
+            }
+
+            previewSizeFrame = window.requestAnimationFrame(() => {
+                previewSizeFrame = null;
+                syncPreviewSize();
+            });
+        };
 
         const showPlaceholder = (title, copy) => {
             if (placeholderTitle) {
@@ -812,6 +844,19 @@
             renderPreview();
         });
 
+        const previewLayoutObserver = new ResizeObserver(() => {
+            schedulePreviewSizeSync();
+        });
+
+        [imageUrlInput, previewEnd].forEach((element) => {
+            if (element) {
+                previewLayoutObserver.observe(element);
+            }
+        });
+
+        window.addEventListener('resize', schedulePreviewSizeSync);
+
+        schedulePreviewSizeSync();
         renderPreview();
     };
 
