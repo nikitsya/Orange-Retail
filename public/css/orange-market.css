@@ -1930,6 +1930,24 @@ body.modal-open {
     display: grid;
 }
 
+.dashboard-confirm-dialog {
+    width: min(100%, 520px);
+}
+
+.dashboard-confirm-head {
+    justify-content: flex-start;
+}
+
+.dashboard-confirm-copy {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.7;
+}
+
+.dashboard-confirm-copy strong {
+    color: var(--ink);
+}
+
 .order-card,
 .stock-card {
     padding: 24px;

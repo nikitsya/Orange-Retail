@@ -151,11 +151,18 @@
                             <span>SKU: {{ $product->sku }} | Pack: {{ $product->pack_size ?: ucfirst($product->unit_type) }}</span>
                         </div>
 
-                        <form method="POST" action="{{ route('products.activate', $product) }}">
+                        <form method="POST" action="{{ route('products.activate', $product) }}" data-activate-product-form>
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="current_panel" value="inactive-products">
-                            <button class="button-primary dashboard-product-card-button" type="submit">Make active</button>
+                            <button
+                                class="button-primary dashboard-product-card-button"
+                                type="button"
+                                data-open-activate-modal
+                                data-product-name="{{ $product->name }}"
+                            >
+                                Make active
+                            </button>
                         </form>
                     </article>
                 @empty
@@ -192,11 +199,39 @@
     </section>
 </main>
 
+<div class="modal" id="activate-product-modal" data-activate-modal aria-hidden="true">
+    <div class="modal-dialog dashboard-confirm-dialog">
+        <div class="modal-head dashboard-confirm-head">
+            <div>
+                <h2>Activate product</h2>
+                <p class="muted-copy">This product will become visible in the customer catalog again.</p>
+            </div>
+        </div>
+
+        <div class="stack">
+            <p class="dashboard-confirm-copy">
+                Are you sure you want to make
+                <strong data-activate-product-name>this product</strong>
+                active?
+            </p>
+
+            <div class="modal-form-actions">
+                <button class="button-primary" type="button" data-confirm-activate-product>Yes, make active</button>
+                <button class="button-secondary" type="button" data-close-activate-modal>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const dashboardPanelTriggers = document.querySelectorAll('[data-dashboard-panel-trigger]');
     const dashboardPanelHeads = document.querySelectorAll('[data-dashboard-panel-head]');
     const dashboardPanelActions = document.querySelectorAll('[data-dashboard-panel-action]');
     const dashboardPanelContents = document.querySelectorAll('[data-dashboard-panel-content]');
+    const activateModal = document.querySelector('[data-activate-modal]');
+    const activateModalProductName = document.querySelector('[data-activate-product-name]');
+    const activateModalConfirmButton = document.querySelector('[data-confirm-activate-product]');
+    let activateProductForm = null;
 
     const setDashboardPanel = (panelName) => {
         dashboardPanelTriggers.forEach((trigger) => {
@@ -226,6 +261,78 @@
         trigger.addEventListener('click', () => {
             setDashboardPanel(trigger.dataset.dashboardPanelTrigger);
         });
+    });
+
+    const openActivateModal = (form, productName) => {
+        if (!activateModal || !activateModalProductName) {
+            return;
+        }
+
+        activateProductForm = form;
+        activateModalProductName.textContent = productName;
+        activateModal.classList.add('is-open');
+        activateModal.setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('modal-open');
+        document.body.classList.add('modal-open');
+    };
+
+    const closeActivateModal = () => {
+        if (!activateModal) {
+            return;
+        }
+
+        activateProductForm = null;
+        activateModal.classList.remove('is-open');
+        activateModal.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('modal-open');
+        document.body.classList.remove('modal-open');
+    };
+
+    document.querySelectorAll('[data-open-activate-modal]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const form = button.closest('[data-activate-product-form]');
+
+            if (!form) {
+                return;
+            }
+
+            openActivateModal(form, button.dataset.productName || 'this product');
+        });
+    });
+
+    document.querySelectorAll('[data-close-activate-modal]').forEach((button) => {
+        button.addEventListener('click', () => {
+            closeActivateModal();
+        });
+    });
+
+    if (activateModalConfirmButton) {
+        activateModalConfirmButton.addEventListener('click', () => {
+            if (!activateProductForm) {
+                closeActivateModal();
+                return;
+            }
+
+            activateProductForm.submit();
+        });
+    }
+
+    if (activateModal) {
+        activateModal.addEventListener('click', (event) => {
+            if (event.target !== activateModal) {
+                return;
+            }
+
+            closeActivateModal();
+        });
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || !activateModal?.classList.contains('is-open')) {
+            return;
+        }
+
+        closeActivateModal();
     });
 
     setDashboardPanel(@json($selectedPanel));
