@@ -96,8 +96,8 @@
                 <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'pending-orders') is-active @endif" href="{{ route('admin.orders.index') }}" data-dashboard-panel-action="pending-orders" @if ($selectedPanel !== 'pending-orders') hidden @endif>
                     Open full order queue
                 </a>
-                <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'low-stock') is-active @endif" href="{{ route('products.index') }}" data-dashboard-panel-action="low-stock" @if ($selectedPanel !== 'low-stock') hidden @endif>
-                    Open inventory
+                <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'low-stock') is-active @endif" href="{{ route('admin.stock.index') }}" data-dashboard-panel-action="low-stock" @if ($selectedPanel !== 'low-stock') hidden @endif>
+                    Open Stock Center
                 </a>
                 <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'inactive-products') is-active @endif" href="{{ route('products.index') }}" data-dashboard-panel-action="inactive-products" @if ($selectedPanel !== 'inactive-products') hidden @endif>
                     Open inventory
