@@ -150,6 +150,12 @@ class ManagerAuthenticationTest extends TestCase
             'stock' => 18,
         ]);
 
+        $this->get('/products')
+            ->assertOk()
+            ->assertSee('data-open-delete-modal', false)
+            ->assertSee('id="delete-product-modal"', false)
+            ->assertSee('Yes, delete product');
+
         $this->delete("/products/{$product->id}")
             ->assertRedirect('/products');
 

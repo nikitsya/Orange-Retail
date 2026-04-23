@@ -413,13 +413,20 @@
                                         Update product
                                     </button>
 
-                                    <form method="POST" action="{{ route('products.destroy', $product) }}">
+                                    <form method="POST" action="{{ route('products.destroy', $product) }}" data-delete-product-form>
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="current_search" value="{{ $search }}">
                                         <input type="hidden" name="current_category" value="{{ $category }}">
                                         <input type="hidden" name="current_subcategory" value="{{ $subcategory }}">
-                                        <button class="button-danger" type="submit">Delete product</button>
+                                        <button
+                                            class="button-danger"
+                                            type="button"
+                                            data-open-delete-modal
+                                            data-product-name="{{ $product->name }}"
+                                        >
+                                            Delete product
+                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -654,8 +661,37 @@
     </div>
 </div>
 
+<div class="modal" id="delete-product-modal" data-delete-modal data-modal aria-hidden="true">
+    <div class="modal-dialog dashboard-confirm-dialog">
+        <div class="modal-head dashboard-confirm-head">
+            <div>
+                <h2>Delete product</h2>
+                <p class="muted-copy">This product will be removed from the inventory list.</p>
+            </div>
+
+            <button class="modal-close" type="button" data-close-delete-modal aria-label="Close modal">×</button>
+        </div>
+
+        <div class="stack">
+            <p class="dashboard-confirm-copy">
+                Are you sure you want to delete
+                <strong data-delete-product-name>this product</strong>?
+            </p>
+
+            <div class="modal-form-actions">
+                <button class="button-danger" type="button" data-confirm-delete-product>Yes, delete product</button>
+                <button class="button-secondary" type="button" data-close-delete-modal>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const subcategoryOptionsByCategory = @json($subcategoryOptionsByCategory);
+    const deleteModal = document.querySelector('[data-delete-modal]');
+    const deleteModalProductName = document.querySelector('[data-delete-product-name]');
+    const deleteModalConfirmButton = document.querySelector('[data-confirm-delete-product]');
+    let deleteProductForm = null;
     let lockedScrollY = 0;
 
     const populateSubcategoryOptions = (categorySelect, subcategorySelect, preferredValue = '') => {
@@ -908,6 +944,58 @@
         unlockBodyScroll();
     };
 
+    const openDeleteModal = (form, productName) => {
+        if (!deleteModal || !deleteModalProductName) {
+            return;
+        }
+
+        deleteProductForm = form;
+        deleteModalProductName.textContent = productName;
+        deleteModal.classList.add('is-open');
+        deleteModal.setAttribute('aria-hidden', 'false');
+        toggleBodyScroll();
+    };
+
+    const closeDeleteModal = () => {
+        if (!deleteModal) {
+            return;
+        }
+
+        deleteProductForm = null;
+        deleteModal.classList.remove('is-open');
+        deleteModal.setAttribute('aria-hidden', 'true');
+        toggleBodyScroll();
+    };
+
+    document.querySelectorAll('[data-open-delete-modal]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const form = button.closest('[data-delete-product-form]');
+
+            if (!form) {
+                return;
+            }
+
+            openDeleteModal(form, button.dataset.productName || 'this product');
+        });
+    });
+
+    document.querySelectorAll('[data-close-delete-modal]').forEach((button) => {
+        button.addEventListener('click', () => {
+            closeDeleteModal();
+        });
+    });
+
+    if (deleteModalConfirmButton) {
+        deleteModalConfirmButton.addEventListener('click', () => {
+            if (!deleteProductForm) {
+                closeDeleteModal();
+                return;
+            }
+
+            deleteProductForm.submit();
+        });
+    }
+
     document.querySelectorAll('[data-open-modal]').forEach((button) => {
         button.addEventListener('click', () => {
             const modal = document.getElementById(button.dataset.openModal);
@@ -917,6 +1005,7 @@
             }
 
             modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
             toggleBodyScroll();
         });
     });
@@ -930,6 +1019,10 @@
             }
 
             modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            if (modal.matches('[data-delete-modal]')) {
+                deleteProductForm = null;
+            }
             toggleBodyScroll();
         });
     });
@@ -941,6 +1034,7 @@
             }
 
             modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
             toggleBodyScroll();
         });
     });
@@ -952,8 +1046,10 @@
 
         document.querySelectorAll('.modal.is-open').forEach((modal) => {
             modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
         });
 
+        deleteProductForm = null;
         toggleBodyScroll();
     });
 
