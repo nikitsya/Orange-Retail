@@ -10,21 +10,6 @@ use Illuminate\View\View;
 
 class CatalogController extends Controller
 {
-    /**
-     * @var list<string>
-     */
-    protected const CATEGORY_DISPLAY_ORDER = [
-        'Fresh Food',
-        'Drinks',
-        'Food Cupboard',
-        'Treats & Snacks',
-        'Household',
-        'Pets',
-        'Health & Beauty',
-        'Baby & Toddler',
-        'Home & Furniture',
-    ];
-
     public function index(Request $request): View
     {
         $search = trim($request->string('search')->toString());
@@ -65,17 +50,8 @@ class CatalogController extends Controller
                         ->orWhere('brand', 'like', "%{$search}%");
                 });
             })
-            ->orderByRaw(
-                'case ' .
-                collect(self::CATEGORY_DISPLAY_ORDER)
-                    ->values()
-                    ->map(fn (string $categoryName, int $index): string => "when category = ? then {$index}")
-                    ->implode(' ') .
-                ' else ' . count(self::CATEGORY_DISPLAY_ORDER) . ' end',
-                self::CATEGORY_DISPLAY_ORDER,
-            )
-            ->orderBy('subcategory')
             ->orderBy('name')
+            ->orderBy('brand')
             ->paginate(20)
             ->withQueryString();
 
