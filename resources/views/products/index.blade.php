@@ -472,7 +472,7 @@
     id="add-product-modal"
     data-modal
 >
-    <div class="modal-dialog">
+    <div class="modal-dialog product-modal-dialog">
         <div class="modal-head">
             <div>
                 <h2>Add product</h2>
@@ -505,18 +505,6 @@
                     <span class="field-error">{{ $message }}</span>
                     @enderror
                 </label>
-            </div>
-
-            <div class="form-grid-2">
-                <label class="field-label" for="price_value">
-                    Price value
-                    <input class="field" id="price_value" type="number" step="0.01" min="0.01" name="price_value"
-                           value="{{ old('price_value') }}" required>
-                    @error('price_value')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
-
             </div>
 
             <div class="form-grid-2">
@@ -585,65 +573,109 @@
                 </label>
             </div>
 
-            <label class="field-label" for="image_url">
-                Image URL
-                <input class="field" id="image_url" type="url" name="image_url" value="{{ old('image_url') }}">
-                @error('image_url')
-                <span class="field-error">{{ $message }}</span>
-                @enderror
-            </label>
-
-            <div class="form-grid-2">
-                <label class="field-label" for="unit_price_display">
-                    Unit price display
-                    <input class="field" id="unit_price_display" type="text" name="unit_price_display"
-                           value="{{ old('unit_price_display') }}">
-                    @error('unit_price_display')
+            <div
+                class="product-preview-stack"
+                data-image-preview-scope
+                data-product-name="{{ old('name', 'New product') }}"
+            >
+                <label class="field-label product-preview-stack-image-url" for="image_url">
+                    Image URL
+                    <input
+                        class="field"
+                        id="image_url"
+                        type="url"
+                        name="image_url"
+                        value="{{ old('image_url') }}"
+                        data-image-url-input
+                    >
+                    @error('image_url')
                     <span class="field-error">{{ $message }}</span>
                     @enderror
                 </label>
 
-                <label class="field-label" for="unit_type">
-                    Unit type
-                    <select class="field-select" id="unit_type" name="unit_type" required>
-                        @foreach ($unitTypes as $unitType)
-                            <option value="{{ $unitType }}" @selected(old('unit_type') === $unitType)>
-                                {{ ucfirst($unitType) }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('unit_type')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
+                <div class="form-grid-2 product-preview-stack-price">
+                    <label class="field-label" for="price_value">
+                        Price value
+                        <input class="field" id="price_value" type="number" step="0.01" min="0.01" name="price_value"
+                               value="{{ old('price_value') }}" required>
+                        @error('price_value')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                <label class="field-label" for="pack_size">
-                    Pack size
-                    <input class="field" id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}">
-                    @error('pack_size')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
-            </div>
+                    <label class="field-label" for="unit_price_display">
+                        Unit price display
+                        <input class="field" id="unit_price_display" type="text" name="unit_price_display"
+                               value="{{ old('unit_price_display') }}">
+                        @error('unit_price_display')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+                </div>
 
-            <div class="form-grid-2">
-                <label class="field-label" for="stock">
-                    Stock
-                    <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}"
-                           required>
-                    @error('stock')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
+                <div class="form-grid-2 product-preview-stack-units">
+                    <label class="field-label" for="unit_type">
+                        Unit type
+                        <select class="field-select" id="unit_type" name="unit_type" required>
+                            @foreach ($unitTypes as $unitType)
+                                <option value="{{ $unitType }}" @selected(old('unit_type') === $unitType)>
+                                    {{ ucfirst($unitType) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('unit_type')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
 
-                <label class="field-label" for="minimum_stock_level">
-                    Minimum stock level
-                    <input class="field" id="minimum_stock_level" type="number" min="0" name="minimum_stock_level"
-                           value="{{ old('minimum_stock_level', 5) }}">
-                    @error('minimum_stock_level')
-                    <span class="field-error">{{ $message }}</span>
-                    @enderror
-                </label>
+                    <label class="field-label" for="pack_size">
+                        Pack size
+                        <input class="field" id="pack_size" type="text" name="pack_size" value="{{ old('pack_size') }}">
+                        @error('pack_size')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+                </div>
+
+                <div class="form-grid-2 product-preview-stack-stock">
+                    <label class="field-label" for="stock">
+                        Stock
+                        <input class="field" id="stock" type="number" min="0" name="stock" value="{{ old('stock', 0) }}"
+                               required>
+                        @error('stock')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+
+                    <label class="field-label" for="minimum_stock_level">
+                        Minimum stock level
+                        <input class="field" id="minimum_stock_level" type="number" min="0" name="minimum_stock_level"
+                               value="{{ old('minimum_stock_level', 5) }}">
+                        @error('minimum_stock_level')
+                        <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </label>
+                </div>
+
+                <aside class="product-inline-preview product-preview-stack-media" aria-label="Product photo preview">
+                    <div class="product-preview-media">
+                        <img
+                            class="product-preview-image"
+                            alt="{{ old('name', 'New product') }} preview"
+                            referrerpolicy="no-referrer"
+                            data-image-preview-img
+                            @if (old('image_url'))
+                                src="{{ old('image_url') }}"
+                            @endif
+                            @if (!old('image_url')) hidden @endif
+                        >
+
+                        <div class="product-preview-placeholder" data-image-preview-placeholder @if (old('image_url')) hidden @endif>
+                            <strong data-image-preview-title>No preview yet</strong>
+                            <span data-image-preview-copy>Add an image URL to show the product photo here.</span>
+                        </div>
+                    </div>
+                </aside>
             </div>
 
             <label class="remember-row" for="is_active">
