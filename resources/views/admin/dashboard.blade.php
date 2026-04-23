@@ -62,15 +62,15 @@
                 <strong>{{ $productCount }}</strong>
                 <span>Total products</span>
             </div>
-            <button class="summary-stat summary-stat-button is-active" type="button" data-dashboard-panel-trigger="pending-orders">
+            <button class="summary-stat summary-stat-button @if ($selectedPanel === 'pending-orders') is-active @endif" type="button" data-dashboard-panel-trigger="pending-orders">
                 <strong>{{ $pendingOrders }}</strong>
                 <span>Orders waiting for action</span>
             </button>
-            <button class="summary-stat summary-stat-button summary-stat-button-warning" type="button" data-dashboard-panel-trigger="low-stock">
+            <button class="summary-stat summary-stat-button summary-stat-button-warning @if ($selectedPanel === 'low-stock') is-active @endif" type="button" data-dashboard-panel-trigger="low-stock">
                 <strong>{{ $lowStockProducts }}</strong>
                 <span>Low-stock SKUs</span>
             </button>
-            <button class="summary-stat summary-stat-button summary-stat-button-danger" type="button" data-dashboard-panel-trigger="inactive-products">
+            <button class="summary-stat summary-stat-button summary-stat-button-danger @if ($selectedPanel === 'inactive-products') is-active @endif" type="button" data-dashboard-panel-trigger="inactive-products">
                 <strong>{{ $inactiveProducts }}</strong>
                 <span>Inactive products</span>
             </button>
@@ -80,31 +80,31 @@
     <section class="dashboard-layout">
         <section class="section-panel stack" data-dashboard-panels>
             <div class="section-actions" style="justify-content: space-between;">
-                <div class="dashboard-panel-head is-active" data-dashboard-panel-head="pending-orders">
+                <div class="dashboard-panel-head @if ($selectedPanel === 'pending-orders') is-active @endif" data-dashboard-panel-head="pending-orders" @if ($selectedPanel !== 'pending-orders') hidden @endif>
                     <h2>Orders waiting for action</h2>
                     <p class="muted-copy">New pending orders that still need admin attention.</p>
                 </div>
-                <div class="dashboard-panel-head" data-dashboard-panel-head="low-stock" hidden>
+                <div class="dashboard-panel-head @if ($selectedPanel === 'low-stock') is-active @endif" data-dashboard-panel-head="low-stock" @if ($selectedPanel !== 'low-stock') hidden @endif>
                     <h2>Low-stock SKUs</h2>
                     <p class="muted-copy">Products that have reached or dropped below the saved minimum stock level.</p>
                 </div>
-                <div class="dashboard-panel-head" data-dashboard-panel-head="inactive-products" hidden>
+                <div class="dashboard-panel-head @if ($selectedPanel === 'inactive-products') is-active @endif" data-dashboard-panel-head="inactive-products" @if ($selectedPanel !== 'inactive-products') hidden @endif>
                     <h2>Inactive products</h2>
                     <p class="muted-copy">Products that are hidden from the customer catalog right now.</p>
                 </div>
 
-                <a class="button-secondary dashboard-panel-action is-active" href="{{ route('admin.orders.index') }}" data-dashboard-panel-action="pending-orders">
+                <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'pending-orders') is-active @endif" href="{{ route('admin.orders.index') }}" data-dashboard-panel-action="pending-orders" @if ($selectedPanel !== 'pending-orders') hidden @endif>
                     Open full order queue
                 </a>
-                <a class="button-secondary dashboard-panel-action" href="{{ route('products.index') }}" data-dashboard-panel-action="low-stock" hidden>
+                <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'low-stock') is-active @endif" href="{{ route('products.index') }}" data-dashboard-panel-action="low-stock" @if ($selectedPanel !== 'low-stock') hidden @endif>
                     Open inventory
                 </a>
-                <a class="button-secondary dashboard-panel-action" href="{{ route('products.index') }}" data-dashboard-panel-action="inactive-products" hidden>
+                <a class="button-secondary dashboard-panel-action @if ($selectedPanel === 'inactive-products') is-active @endif" href="{{ route('products.index') }}" data-dashboard-panel-action="inactive-products" @if ($selectedPanel !== 'inactive-products') hidden @endif>
                     Open inventory
                 </a>
             </div>
 
-            <section class="order-list dashboard-panel-content is-active" data-dashboard-panel-content="pending-orders">
+            <section class="order-list dashboard-panel-content @if ($selectedPanel === 'pending-orders') is-active @endif" data-dashboard-panel-content="pending-orders" @if ($selectedPanel !== 'pending-orders') hidden @endif>
                 @forelse ($pendingOrderItems as $order)
                     <article class="summary-panel order-card">
                         <div class="order-card-head">
@@ -127,7 +127,7 @@
                 @endforelse
             </section>
 
-            <section class="mini-list dashboard-panel-content" data-dashboard-panel-content="low-stock" hidden>
+            <section class="mini-list dashboard-panel-content @if ($selectedPanel === 'low-stock') is-active @endif" data-dashboard-panel-content="low-stock" @if ($selectedPanel !== 'low-stock') hidden @endif>
                 @forelse ($lowStockItems as $product)
                     <article class="mini-list-item is-warning">
                         <strong>{{ $product->name }}</strong>
@@ -142,12 +142,21 @@
                 @endforelse
             </section>
 
-            <section class="mini-list dashboard-panel-content" data-dashboard-panel-content="inactive-products" hidden>
+            <section class="mini-list dashboard-panel-content @if ($selectedPanel === 'inactive-products') is-active @endif" data-dashboard-panel-content="inactive-products" @if ($selectedPanel !== 'inactive-products') hidden @endif>
                 @forelse ($inactiveProductItems as $product)
-                    <article class="mini-list-item is-danger">
-                        <strong>{{ $product->name }}</strong>
-                        <span>{{ $product->brand }} | {{ $product->category }} | {{ $product->subcategory }}</span>
-                        <span>SKU: {{ $product->sku }} | Pack: {{ $product->pack_size ?: ucfirst($product->unit_type) }}</span>
+                    <article class="mini-list-item is-danger dashboard-product-card">
+                        <div class="dashboard-product-card-copy">
+                            <strong>{{ $product->name }}</strong>
+                            <span>{{ $product->brand }} | {{ $product->category }} | {{ $product->subcategory }}</span>
+                            <span>SKU: {{ $product->sku }} | Pack: {{ $product->pack_size ?: ucfirst($product->unit_type) }}</span>
+                        </div>
+
+                        <form method="POST" action="{{ route('products.activate', $product) }}">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="current_panel" value="inactive-products">
+                            <button class="button-primary dashboard-product-card-button" type="submit">Make active</button>
+                        </form>
                     </article>
                 @empty
                     <section class="empty-panel">
@@ -219,7 +228,7 @@
         });
     });
 
-    setDashboardPanel('pending-orders');
+    setDashboardPanel(@json($selectedPanel));
 </script>
 
 @include('partials.masthead-stick-on-scroll')

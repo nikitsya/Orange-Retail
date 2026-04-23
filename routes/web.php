@@ -46,6 +46,7 @@ Route::middleware(['auth', EnsureAdmin::class])->group(function (): void {
     Route::patch('/admin/stock/{product}', [StockController::class, 'update'])->name('admin.stock.update');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::patch('/products/{product}/activate', [ProductController::class, 'activate'])->name('products.activate');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });

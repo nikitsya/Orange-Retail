@@ -1965,6 +1965,28 @@ body.modal-open {
     gap: 4px;
 }
 
+.dashboard-product-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+}
+
+.dashboard-product-card-copy {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+}
+
+.dashboard-product-card form {
+    display: flex;
+}
+
+.dashboard-product-card-button {
+    min-width: 132px;
+    justify-content: center;
+    white-space: nowrap;
+}
+
 .mini-list-item.is-warning {
     background: var(--surface-muted);
     border-color: rgba(240, 210, 182, 0.86);
@@ -2087,5 +2109,15 @@ body.modal-open {
 
     .summary-stats-wide {
         grid-template-columns: 1fr;
+    }
+
+    .dashboard-product-card {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .dashboard-product-card form,
+    .dashboard-product-card-button {
+        width: 100%;
     }
 }

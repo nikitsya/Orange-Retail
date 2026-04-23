@@ -8,6 +8,7 @@ use App\Models\StockMovement;
 use App\Support\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -37,6 +38,12 @@ class DashboardController extends Controller
 
     public function admin(): View
     {
+        $selectedPanel = Arr::first(
+            ['pending-orders', 'low-stock', 'inactive-products'],
+            fn (string $panel) => request()->string('panel')->toString() === $panel,
+            'pending-orders',
+        );
+
         $pendingOrders = Order::query()
             ->with('user')
             ->where('status', Order::STATUS_PENDING)
@@ -74,6 +81,7 @@ class DashboardController extends Controller
                 ->latest('occurred_at')
                 ->limit(6)
                 ->get(),
+            'selectedPanel' => $selectedPanel,
         ]);
     }
 }

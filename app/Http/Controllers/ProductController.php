@@ -177,6 +177,21 @@ class ProductController extends Controller
             ->with('status', 'Product updated successfully.');
     }
 
+    public function activate(Request $request, Product $product): RedirectResponse
+    {
+        if (! $product->is_active) {
+            $product->update(['is_active' => true]);
+        }
+
+        $panel = trim($request->string('current_panel')->toString());
+
+        return redirect()
+            ->route('admin.dashboard', array_filter([
+                'panel' => $panel !== '' ? $panel : 'inactive-products',
+            ]))
+            ->with('status', 'Product activated successfully.');
+    }
+
     public function destroy(Request $request, Product $product): RedirectResponse
     {
         $product->delete();
