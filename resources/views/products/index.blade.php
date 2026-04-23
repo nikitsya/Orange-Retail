@@ -171,6 +171,14 @@
             @else
                 <section class="inventory-list">
                     @foreach ($products as $product)
+                        @php
+                            $modalImageUrl = old('modal_product_id') == $product->id
+                                ? old('image_url', $product->image_url)
+                                : $product->image_url;
+                            $modalProductName = old('modal_product_id') == $product->id
+                                ? old('name', $product->name)
+                                : $product->name;
+                        @endphp
                         <article>
                             <button
                                 class="inventory-row"
@@ -187,7 +195,7 @@
                             id="product-modal-{{ $product->id }}"
                             data-modal
                         >
-                            <div class="modal-dialog">
+                            <div class="modal-dialog product-modal-dialog">
                                 <div class="modal-head">
                                     <div>
                                         <h2>{{ $product->name }}</h2>
@@ -199,13 +207,6 @@
                                         ×
                                     </button>
                                 </div>
-
-                                @if ($product->image_url)
-                                    <div class="tile-actions">
-                                        <a class="button-secondary" href="{{ $product->image_url }}" target="_blank"
-                                           rel="noreferrer">Open product image</a>
-                                    </div>
-                                @endif
 
                                 <form
                                     id="update-product-form-{{ $product->id }}"
@@ -300,25 +301,58 @@
                                         </label>
                                     </div>
 
-                                    <label class="field-label">
-                                        Image URL
-                                        <input class="field" type="url" name="image_url"
-                                               value="{{ old('modal_product_id') == $product->id ? old('image_url', $product->image_url) : $product->image_url }}">
-                                    </label>
+                                    <div
+                                        class="product-inline-preview-layout"
+                                        data-image-preview-scope
+                                        data-product-name="{{ $modalProductName }}"
+                                    >
+                                        <div class="product-inline-preview-fields">
+                                            <label class="field-label">
+                                                Image URL
+                                                <input
+                                                    class="field"
+                                                    type="url"
+                                                    name="image_url"
+                                                    value="{{ $modalImageUrl }}"
+                                                    data-image-url-input
+                                                >
+                                            </label>
 
-                                    <div class="form-grid-3">
-                                        <label class="field-label">
-                                            Price value
-                                            <input class="field" type="number" step="0.01" min="0.01" name="price_value"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('price_value', $product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') : ($product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') }}"
-                                                   required>
-                                        </label>
+                                            <div class="form-grid-2">
+                                                <label class="field-label">
+                                                    Price value
+                                                    <input class="field" type="number" step="0.01" min="0.01" name="price_value"
+                                                           value="{{ old('modal_product_id') == $product->id ? old('price_value', $product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') : ($product->price_value !== null ? number_format((float) $product->price_value, 2, '.', '') : '') }}"
+                                                           required>
+                                                </label>
 
-                                        <label class="field-label">
-                                            Unit price display
-                                            <input class="field" type="text" name="unit_price_display"
-                                                   value="{{ old('modal_product_id') == $product->id ? old('unit_price_display', $product->unit_price_display) : $product->unit_price_display }}">
-                                        </label>
+                                                <label class="field-label">
+                                                    Unit price display
+                                                    <input class="field" type="text" name="unit_price_display"
+                                                           value="{{ old('modal_product_id') == $product->id ? old('unit_price_display', $product->unit_price_display) : $product->unit_price_display }}">
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <aside class="product-inline-preview" aria-label="Product photo preview">
+                                            <div class="product-preview-media">
+                                                <img
+                                                    class="product-preview-image"
+                                                    alt="{{ $modalProductName }} preview"
+                                                    referrerpolicy="no-referrer"
+                                                    data-image-preview-img
+                                                    @if ($modalImageUrl)
+                                                        src="{{ $modalImageUrl }}"
+                                                    @endif
+                                                    @if (!$modalImageUrl) hidden @endif
+                                                >
+
+                                                <div class="product-preview-placeholder" data-image-preview-placeholder @if ($modalImageUrl) hidden @endif>
+                                                    <strong data-image-preview-title>No preview yet</strong>
+                                                    <span data-image-preview-copy>Add an image URL to show the product photo here.</span>
+                                                </div>
+                                            </div>
+                                        </aside>
                                     </div>
 
                                     <div class="form-grid-2">
@@ -374,7 +408,6 @@
                                                value="1" @checked((old('modal_product_id') == $product->id ? old('is_active', $product->is_active ? '1' : '0') : ($product->is_active ? '1' : '0')) == '1')>
                                         Visible in the customer catalog
                                     </label>
-
                                 </form>
 
                                 <div class="modal-form-actions">
@@ -704,8 +737,90 @@
         });
     };
 
+    const syncImagePreview = (scope) => {
+        const imageUrlInput = scope.querySelector('[data-image-url-input]');
+        const previewImage = scope.querySelector('[data-image-preview-img]');
+        const previewPlaceholder = scope.querySelector('[data-image-preview-placeholder]');
+
+        if (!imageUrlInput || !previewImage || !previewPlaceholder) {
+            return;
+        }
+
+        const placeholderTitle = previewPlaceholder.querySelector('[data-image-preview-title]');
+        const placeholderCopy = previewPlaceholder.querySelector('[data-image-preview-copy]');
+        const productName = scope.dataset.productName || 'Product';
+        let previewTimer = null;
+
+        const showPlaceholder = (title, copy) => {
+            if (placeholderTitle) {
+                placeholderTitle.textContent = title;
+            }
+
+            if (placeholderCopy) {
+                placeholderCopy.textContent = copy;
+            }
+
+            previewPlaceholder.hidden = false;
+            previewImage.hidden = true;
+        };
+
+        const renderPreview = () => {
+            const imageUrl = imageUrlInput.value.trim();
+
+            if (imageUrl === '') {
+                previewImage.removeAttribute('src');
+                showPlaceholder(
+                    'No preview yet',
+                    'Paste a valid image URL to display the product photo here.',
+                );
+                return;
+            }
+
+            showPlaceholder(
+                'Loading preview...',
+                'The preview appears automatically as soon as the image becomes available.',
+            );
+            previewImage.alt = `${productName} preview`;
+            previewImage.src = imageUrl;
+
+            if (previewImage.complete && previewImage.naturalWidth > 0) {
+                previewPlaceholder.hidden = true;
+                previewImage.hidden = false;
+            }
+        };
+
+        previewImage.addEventListener('load', () => {
+            previewPlaceholder.hidden = true;
+            previewImage.hidden = false;
+        });
+
+        previewImage.addEventListener('error', () => {
+            previewImage.hidden = true;
+            showPlaceholder(
+                'Preview unavailable',
+                'This image could not be loaded inside the preview box.',
+            );
+        });
+
+        imageUrlInput.addEventListener('input', () => {
+            window.clearTimeout(previewTimer);
+            previewTimer = window.setTimeout(renderPreview, 250);
+        });
+
+        imageUrlInput.addEventListener('change', () => {
+            window.clearTimeout(previewTimer);
+            renderPreview();
+        });
+
+        renderPreview();
+    };
+
     document.querySelectorAll('form').forEach((form) => {
         syncSubcategoryControls(form);
+    });
+
+    document.querySelectorAll('[data-image-preview-scope]').forEach((scope) => {
+        syncImagePreview(scope);
     });
 
     const lockBodyScroll = () => {
