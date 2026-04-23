@@ -1412,8 +1412,24 @@ textarea {
 }
 
 .dashboard-layout {
-    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    grid-template-columns: minmax(0, 1.22fr) minmax(300px, 0.78fr);
     align-items: start;
+}
+
+.admin-dashboard-page .section-actions {
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+}
+
+.admin-dashboard-page .dashboard-panel-head {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.admin-dashboard-page .dashboard-panel-action.is-active {
+    margin-left: auto;
+    flex: 0 0 auto;
 }
 
 .tile-grid {
