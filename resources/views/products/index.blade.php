@@ -668,8 +668,6 @@
                 <h2>Delete product</h2>
                 <p class="muted-copy">This product will be removed from the inventory list.</p>
             </div>
-
-            <button class="modal-close" type="button" data-close-delete-modal aria-label="Close modal">×</button>
         </div>
 
         <div class="stack">
