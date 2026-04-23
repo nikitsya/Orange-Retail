@@ -934,6 +934,17 @@
         });
     });
 
+    document.querySelectorAll('[data-modal]').forEach((modal) => {
+        modal.addEventListener('click', (event) => {
+            if (event.target !== modal) {
+                return;
+            }
+
+            modal.classList.remove('is-open');
+            toggleBodyScroll();
+        });
+    });
+
     document.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') {
             return;
