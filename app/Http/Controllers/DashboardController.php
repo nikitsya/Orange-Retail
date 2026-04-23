@@ -37,22 +37,38 @@ class DashboardController extends Controller
 
     public function admin(): View
     {
-        $recentOrders = Order::query()
+        $pendingOrders = Order::query()
             ->with('user')
+            ->where('status', Order::STATUS_PENDING)
             ->latest('placed_at')
-            ->limit(6)
+            ->limit(12)
+            ->get();
+
+        $lowStockItems = Product::query()
+            ->atOrBelowMinimumStock()
+            ->orderBy('stock')
+            ->orderBy('name')
+            ->limit(12)
+            ->get();
+
+        $inactiveProductItems = Product::query()
+            ->where('is_active', false)
+            ->orderBy('name')
+            ->limit(12)
             ->get();
 
         return view('admin.dashboard', [
             'productCount' => Product::query()->count(),
             'inactiveProducts' => Product::query()->where('is_active', false)->count(),
-            'lowStockProducts' => Product::query()->where('stock', '<=', 5)->count(),
+            'lowStockProducts' => Product::query()->atOrBelowMinimumStock()->count(),
             'pendingOrders' => Order::query()->where('status', Order::STATUS_PENDING)->count(),
             'incomingDeliveries' => Product::query()
                 ->whereNotNull('next_delivery_due_at')
                 ->whereBetween('next_delivery_due_at', [now(), now()->addDays(7)])
                 ->count(),
-            'recentOrders' => $recentOrders,
+            'pendingOrderItems' => $pendingOrders,
+            'lowStockItems' => $lowStockItems,
+            'inactiveProductItems' => $inactiveProductItems,
             'recentMovements' => StockMovement::query()
                 ->with('product')
                 ->latest('occurred_at')

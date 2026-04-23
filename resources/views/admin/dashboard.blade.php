@@ -62,32 +62,50 @@
                 <strong>{{ $productCount }}</strong>
                 <span>Total products</span>
             </div>
-            <div class="summary-stat">
+            <button class="summary-stat summary-stat-button is-active" type="button" data-dashboard-panel-trigger="pending-orders">
                 <strong>{{ $pendingOrders }}</strong>
                 <span>Orders waiting for action</span>
-            </div>
-            <div class="summary-stat">
+            </button>
+            <button class="summary-stat summary-stat-button summary-stat-button-warning" type="button" data-dashboard-panel-trigger="low-stock">
                 <strong>{{ $lowStockProducts }}</strong>
                 <span>Low-stock SKUs</span>
-            </div>
-            <div class="summary-stat">
+            </button>
+            <button class="summary-stat summary-stat-button summary-stat-button-danger" type="button" data-dashboard-panel-trigger="inactive-products">
                 <strong>{{ $inactiveProducts }}</strong>
                 <span>Inactive products</span>
-            </div>
+            </button>
         </div>
     </section>
 
     <section class="dashboard-layout">
-        <section class="section-panel stack">
+        <section class="section-panel stack" data-dashboard-panels>
             <div class="section-actions" style="justify-content: space-between;">
-                <div>
-                    <h2>Recent orders</h2>
+                <div class="dashboard-panel-head is-active" data-dashboard-panel-head="pending-orders">
+                    <h2>Orders waiting for action</h2>
+                    <p class="muted-copy">New pending orders that still need admin attention.</p>
                 </div>
-                <a class="button-secondary" href="{{ route('admin.orders.index') }}">Open full order queue</a>
+                <div class="dashboard-panel-head" data-dashboard-panel-head="low-stock" hidden>
+                    <h2>Low-stock SKUs</h2>
+                    <p class="muted-copy">Products that have reached or dropped below the saved minimum stock level.</p>
+                </div>
+                <div class="dashboard-panel-head" data-dashboard-panel-head="inactive-products" hidden>
+                    <h2>Inactive products</h2>
+                    <p class="muted-copy">Products that are hidden from the customer catalog right now.</p>
+                </div>
+
+                <a class="button-secondary dashboard-panel-action is-active" href="{{ route('admin.orders.index') }}" data-dashboard-panel-action="pending-orders">
+                    Open full order queue
+                </a>
+                <a class="button-secondary dashboard-panel-action" href="{{ route('products.index') }}" data-dashboard-panel-action="low-stock" hidden>
+                    Open inventory
+                </a>
+                <a class="button-secondary dashboard-panel-action" href="{{ route('products.index') }}" data-dashboard-panel-action="inactive-products" hidden>
+                    Open inventory
+                </a>
             </div>
 
-            <section class="order-list">
-                @forelse ($recentOrders as $order)
+            <section class="order-list dashboard-panel-content is-active" data-dashboard-panel-content="pending-orders">
+                @forelse ($pendingOrderItems as $order)
                     <article class="summary-panel order-card">
                         <div class="order-card-head">
                             <div>
@@ -103,8 +121,38 @@
                     </article>
                 @empty
                     <section class="empty-panel">
-                        <h2 class="section-heading">No orders yet</h2>
-                        <p class="muted-copy">Completed checkouts will appear here for admin review.</p>
+                        <h2 class="section-heading">No orders waiting for action</h2>
+                        <p class="muted-copy">New pending orders will appear here automatically.</p>
+                    </section>
+                @endforelse
+            </section>
+
+            <section class="mini-list dashboard-panel-content" data-dashboard-panel-content="low-stock" hidden>
+                @forelse ($lowStockItems as $product)
+                    <article class="mini-list-item is-warning">
+                        <strong>{{ $product->name }}</strong>
+                        <span>{{ $product->brand }} | {{ $product->subcategory }}</span>
+                        <span>SKU: {{ $product->sku }} | Stock: {{ $product->stock }} | Min: {{ $product->minimum_stock_level }}</span>
+                    </article>
+                @empty
+                    <section class="empty-panel">
+                        <h2 class="section-heading">No low-stock SKUs</h2>
+                        <p class="muted-copy">All tracked products are above their minimum stock level.</p>
+                    </section>
+                @endforelse
+            </section>
+
+            <section class="mini-list dashboard-panel-content" data-dashboard-panel-content="inactive-products" hidden>
+                @forelse ($inactiveProductItems as $product)
+                    <article class="mini-list-item is-danger">
+                        <strong>{{ $product->name }}</strong>
+                        <span>{{ $product->brand }} | {{ $product->category }} | {{ $product->subcategory }}</span>
+                        <span>SKU: {{ $product->sku }} | Pack: {{ $product->pack_size ?: ucfirst($product->unit_type) }}</span>
+                    </article>
+                @empty
+                    <section class="empty-panel">
+                        <h2 class="section-heading">No inactive products</h2>
+                        <p class="muted-copy">All products are currently visible in the customer catalog.</p>
                     </section>
                 @endforelse
             </section>
@@ -134,6 +182,45 @@
         </aside>
     </section>
 </main>
+
+<script>
+    const dashboardPanelTriggers = document.querySelectorAll('[data-dashboard-panel-trigger]');
+    const dashboardPanelHeads = document.querySelectorAll('[data-dashboard-panel-head]');
+    const dashboardPanelActions = document.querySelectorAll('[data-dashboard-panel-action]');
+    const dashboardPanelContents = document.querySelectorAll('[data-dashboard-panel-content]');
+
+    const setDashboardPanel = (panelName) => {
+        dashboardPanelTriggers.forEach((trigger) => {
+            trigger.classList.toggle('is-active', trigger.dataset.dashboardPanelTrigger === panelName);
+        });
+
+        dashboardPanelHeads.forEach((head) => {
+            const isActive = head.dataset.dashboardPanelHead === panelName;
+            head.hidden = !isActive;
+            head.classList.toggle('is-active', isActive);
+        });
+
+        dashboardPanelActions.forEach((action) => {
+            const isActive = action.dataset.dashboardPanelAction === panelName;
+            action.hidden = !isActive;
+            action.classList.toggle('is-active', isActive);
+        });
+
+        dashboardPanelContents.forEach((content) => {
+            const isActive = content.dataset.dashboardPanelContent === panelName;
+            content.hidden = !isActive;
+            content.classList.toggle('is-active', isActive);
+        });
+    };
+
+    dashboardPanelTriggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            setDashboardPanel(trigger.dataset.dashboardPanelTrigger);
+        });
+    });
+
+    setDashboardPanel('pending-orders');
+</script>
 
 @include('partials.masthead-stick-on-scroll')
 </body>
