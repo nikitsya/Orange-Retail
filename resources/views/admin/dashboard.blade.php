@@ -15,24 +15,6 @@
                 @include('partials.brand-name', ['class' => 'brand-title'])
             </a>
 
-            <form class="search-shell" method="GET" action="{{ route('admin.orders.index') }}" data-live-search>
-                <input
-                    type="search"
-                    name="search"
-                    placeholder="Search orders"
-                    aria-label="Search orders"
-                >
-                <span class="search-icon" aria-hidden="true"><img src="{{ asset('images/ui/search.png') }}" alt=""></span>
-            </form>
-
-            <div class="masthead-actions">
-                <a class="account-pill" href="{{ route('admin.orders.index') }}">
-                    <div>
-                        <strong>Order Queue</strong>
-                        <span>View all orders</span>
-                    </div>
-                </a>
-            </div>
         </div>
     </div>
 </header>
