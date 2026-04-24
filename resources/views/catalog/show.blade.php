@@ -74,11 +74,6 @@
                 @endif
             </div>
 
-            @if ($product->image_url)
-                <p class="muted-copy">
-                    <a href="{{ $product->image_url }}" target="_blank" rel="noreferrer">Open image in a new tab</a>
-                </p>
-            @endif
         </article>
 
         <aside class="summary-panel">

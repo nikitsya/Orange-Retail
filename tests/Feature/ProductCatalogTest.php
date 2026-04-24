@@ -102,7 +102,7 @@ class ProductCatalogTest extends TestCase
             ->assertOk()
             ->assertSee('Italian Pasta')
             ->assertSee('Barilla')
-            ->assertSee('Open image in a new tab');
+            ->assertDontSee('target="_blank"', false);
     }
 
     public function test_regular_user_can_add_product_to_cart(): void
