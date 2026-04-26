@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class ManagerAuthenticationTest extends TestCase
@@ -98,6 +99,140 @@ class ManagerAuthenticationTest extends TestCase
             'name' => 'New Customer',
             'email' => 'customer@example.com',
             'role' => 'user',
+        ]);
+    }
+
+    public function test_google_redirect_route_starts_the_oauth_flow(): void
+    {
+        config()->set('services.google.client_id', 'google-client-id');
+        config()->set('services.google.client_secret', 'google-client-secret');
+        config()->set('services.google.redirect', 'http://localhost/auth/google/callback');
+
+        $response = $this->get('/auth/google/redirect');
+
+        $response->assertRedirect();
+        $this->assertStringStartsWith(
+            'https://accounts.google.com/o/oauth2/v2/auth?',
+            $response->headers->get('Location'),
+        );
+        $this->assertNotEmpty(session('google_oauth_state'));
+    }
+
+    public function test_google_callback_creates_a_regular_user_and_logs_them_in(): void
+    {
+        config()->set('services.google.client_id', 'google-client-id');
+        config()->set('services.google.client_secret', 'google-client-secret');
+        config()->set('services.google.redirect', 'http://localhost/auth/google/callback');
+
+        Http::fake([
+            'https://oauth2.googleapis.com/token' => Http::response([
+                'access_token' => 'google-access-token',
+                'token_type' => 'Bearer',
+            ]),
+            'https://openidconnect.googleapis.com/v1/userinfo' => Http::response([
+                'sub' => 'google-user-123',
+                'name' => 'Google Customer',
+                'email' => 'google.customer@example.com',
+                'email_verified' => true,
+                'picture' => 'https://example.com/google-avatar.png',
+            ]),
+        ]);
+
+        $response = $this->withSession([
+            'google_oauth_state' => 'known-state',
+        ])->get('/auth/google/callback?state=known-state&code=oauth-code');
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('users', [
+            'name' => 'Google Customer',
+            'email' => 'google.customer@example.com',
+            'role' => 'user',
+            'google_id' => 'google-user-123',
+        ]);
+    }
+
+    public function test_google_callback_links_an_existing_regular_user_by_email(): void
+    {
+        config()->set('services.google.client_id', 'google-client-id');
+        config()->set('services.google.client_secret', 'google-client-secret');
+        config()->set('services.google.redirect', 'http://localhost/auth/google/callback');
+
+        $user = User::factory()->create([
+            'name' => 'Existing Customer',
+            'email' => 'existing@example.com',
+            'role' => 'user',
+            'google_id' => null,
+        ]);
+
+        Http::fake([
+            'https://oauth2.googleapis.com/token' => Http::response([
+                'access_token' => 'google-access-token',
+                'token_type' => 'Bearer',
+            ]),
+            'https://openidconnect.googleapis.com/v1/userinfo' => Http::response([
+                'sub' => 'google-user-456',
+                'name' => 'Existing Customer',
+                'email' => 'existing@example.com',
+                'email_verified' => true,
+                'picture' => 'https://example.com/google-avatar-2.png',
+            ]),
+        ]);
+
+        $response = $this->withSession([
+            'google_oauth_state' => 'known-state',
+        ])->get('/auth/google/callback?state=known-state&code=oauth-code');
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticatedAs($user->fresh());
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'email' => 'existing@example.com',
+            'role' => 'user',
+            'google_id' => 'google-user-456',
+        ]);
+    }
+
+    public function test_google_callback_rejects_admin_accounts(): void
+    {
+        config()->set('services.google.client_id', 'google-client-id');
+        config()->set('services.google.client_secret', 'google-client-secret');
+        config()->set('services.google.redirect', 'http://localhost/auth/google/callback');
+
+        $admin = User::factory()->create([
+            'name' => 'Store Admin',
+            'email' => 'admin@example.com',
+            'role' => 'admin',
+        ]);
+
+        Http::fake([
+            'https://oauth2.googleapis.com/token' => Http::response([
+                'access_token' => 'google-access-token',
+                'token_type' => 'Bearer',
+            ]),
+            'https://openidconnect.googleapis.com/v1/userinfo' => Http::response([
+                'sub' => 'google-admin-123',
+                'name' => 'Store Admin',
+                'email' => 'admin@example.com',
+                'email_verified' => true,
+                'picture' => 'https://example.com/admin-avatar.png',
+            ]),
+        ]);
+
+        $response = $this->withSession([
+            'google_oauth_state' => 'known-state',
+        ])->get('/auth/google/callback?state=known-state&code=oauth-code');
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $admin->id,
+            'email' => 'admin@example.com',
+            'role' => 'admin',
         ]);
     }
 

@@ -21,6 +21,14 @@
                 <div class="error-message">{{ $errors->first() }}</div>
             @endif
 
+            <div class="auth-social-stack">
+                <a class="auth-google-button" href="{{ route('auth.google.redirect') }}">
+                    <span class="auth-google-mark" aria-hidden="true">G</span>
+                    <span>Continue with Google</span>
+                </a>
+                <p class="auth-divider"><span>or use your email</span></p>
+            </div>
+
             <form class="auth-form" method="POST" action="{{ route('login.store') }}">
                 @csrf
 
