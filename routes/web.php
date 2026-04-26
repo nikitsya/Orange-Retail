@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ManagerSessionController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\DashboardController;
@@ -19,6 +20,8 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/login', [ManagerSessionController::class, 'store'])->name('login.store');
     Route::get('/register', [ManagerSessionController::class, 'createRegistration'])->name('register');
     Route::post('/register', [ManagerSessionController::class, 'storeRegistration'])->name('register.store');
+    Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 });
 
 Route::middleware('auth')->group(function (): void {
