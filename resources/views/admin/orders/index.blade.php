@@ -75,7 +75,7 @@
                     <option value="">All statuses</option>
                     @foreach ($statuses as $orderStatus)
                         <option
-                            value="{{ $orderStatus }}" @selected($orderStatus === $status)>{{ ucfirst($orderStatus) }}</option>
+                            value="{{ $orderStatus }}" @selected($orderStatus === $status)>{{ ucfirst(str_replace('_', ' ', $orderStatus)) }}</option>
                     @endforeach
                 </select>
             </label>
@@ -107,7 +107,7 @@
                 <article class="summary-panel order-card">
                     <div class="order-card-head">
                         <div>
-                            <span class="inventory-tag">{{ strtoupper($order->status) }}</span>
+                            <span class="inventory-tag">{{ strtoupper(str_replace('_', ' ', $order->status)) }}</span>
                             <h2>{{ $order->order_number }}</h2>
                             <p>{{ $order->customer_name }} | {{ $order->customer_email }}
                                 | {{ $order->placed_at?->format('d M Y H:i') }}</p>
@@ -122,7 +122,7 @@
                             <select class="field-select" name="status">
                                 @foreach ($statuses as $orderStatus)
                                     <option
-                                        value="{{ $orderStatus }}" @selected($orderStatus === $order->status)>{{ ucfirst($orderStatus) }}</option>
+                                        value="{{ $orderStatus }}" @selected($orderStatus === $order->status)>{{ ucfirst(str_replace('_', ' ', $orderStatus)) }}</option>
                                 @endforeach
                             </select>
                             <button class="button-primary" type="submit">Update</button>

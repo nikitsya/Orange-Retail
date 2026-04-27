@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\StockMovement;
+use App\Services\OrderPaymentService;
+use App\Services\StripeCheckoutService;
 use App\Support\Cart;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,9 +15,16 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use RuntimeException;
+use Throwable;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        private StripeCheckoutService $stripeCheckoutService,
+        private OrderPaymentService $orderPaymentService
+    ) {}
+
     public function store(Request $request): RedirectResponse
     {
         $this->ensureCustomer($request);
@@ -40,99 +49,135 @@ class OrderController extends Controller
                 ->withErrors(['cart' => 'Your cart is empty.']);
         }
 
-        $order = DB::transaction(function () use ($validated, $items, $request): Order {
-            $lockedProducts = Product::query()
-                ->whereIn('id', $items->pluck('product.id'))
-                ->lockForUpdate()
-                ->get()
-                ->keyBy('id');
+        $order = null;
 
-            $preparedItems = $items->map(function (array $item) use ($lockedProducts): array {
-                /** @var \App\Models\Product|null $product */
-                $product = $lockedProducts->get($item['product']->id);
-                $quantity = (int)$item['quantity'];
+        try {
+            $order = DB::transaction(function () use ($validated, $items, $request): Order {
+                $lockedProducts = Product::query()
+                    ->whereIn('id', $items->pluck('product.id'))
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
-                if (!$product || !$product->is_active) {
-                    throw ValidationException::withMessages([
-                        'cart' => 'One or more products are no longer available.',
-                    ]);
-                }
+                $preparedItems = $items->map(function (array $item) use ($lockedProducts): array {
+                    /** @var \App\Models\Product|null $product */
+                    $product = $lockedProducts->get($item['product']->id);
+                    $quantity = (int) $item['quantity'];
 
-                if ($product->stock < $quantity) {
-                    throw ValidationException::withMessages([
-                        'cart' => "{$product->name} only has {$product->stock} item(s) left in stock.",
-                    ]);
-                }
+                    if (! $product || ! $product->is_active) {
+                        throw ValidationException::withMessages([
+                            'cart' => 'One or more products are no longer available.',
+                        ]);
+                    }
 
-                $unitPrice = round((float)($product->price_value ?? 0), 2);
-                $lineTotal = round($unitPrice * $quantity, 2);
+                    if ($product->stock < $quantity) {
+                        throw ValidationException::withMessages([
+                            'cart' => "{$product->name} only has {$product->stock} item(s) left in stock.",
+                        ]);
+                    }
 
-                return [
-                    'product' => $product,
-                    'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
-                    'line_total' => $lineTotal,
-                ];
-            });
+                    $unitPrice = round((float) ($product->price_value ?? 0), 2);
+                    $lineTotal = round($unitPrice * $quantity, 2);
 
-            $subtotal = round((float)$preparedItems->sum('line_total'), 2);
+                    return [
+                        'product' => $product,
+                        'quantity' => $quantity,
+                        'unit_price' => $unitPrice,
+                        'line_total' => $lineTotal,
+                    ];
+                });
 
-            $order = Order::query()->create([
-                'user_id' => $request->user()->id,
-                'order_number' => $this->generateOrderNumber(),
-                'status' => Order::STATUS_PENDING,
-                'customer_name' => $validated['customer_name'],
-                'customer_email' => $validated['customer_email'],
-                'shipping_address_line_1' => $validated['shipping_address_line_1'],
-                'shipping_address_line_2' => $validated['shipping_address_line_2'] ?: null,
-                'shipping_city' => $validated['shipping_city'],
-                'shipping_county' => $validated['shipping_county'] ?: null,
-                'shipping_postal_code' => $validated['shipping_postal_code'],
-                'notes' => $validated['notes'] ?: null,
-                'item_count' => (int)$preparedItems->sum('quantity'),
-                'subtotal' => $subtotal,
-                'total' => $subtotal,
-                'placed_at' => now(),
-            ]);
+                $subtotal = round((float) $preparedItems->sum('line_total'), 2);
 
-            $order->items()->createMany($preparedItems->map(function (array $item): array {
-                /** @var \App\Models\Product $product */
-                $product = $item['product'];
-
-                return [
-                    'product_id' => $product->id,
-                    'product_name' => $product->name,
-                    'product_sku' => $product->sku,
-                    'product_brand' => $product->brand,
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['unit_price'],
-                    'line_total' => $item['line_total'],
-                ];
-            })->all());
-
-            $preparedItems->each(function (array $item) use ($request): void {
-                /** @var \App\Models\Product $product */
-                $product = $item['product'];
-
-                $product->decrement('stock', $item['quantity']);
-                StockMovement::query()->create([
-                    'product_id' => $product->id,
-                    'user_id' => $request->user()?->id,
-                    'type' => 'sale',
-                    'quantity_change' => $item['quantity'] * -1,
-                    'note' => 'Reserved by customer order checkout.',
-                    'occurred_at' => now(),
+                $order = Order::query()->create([
+                    'user_id' => $request->user()->id,
+                    'order_number' => $this->generateOrderNumber(),
+                    'status' => Order::STATUS_AWAITING_PAYMENT,
+                    'payment_status' => Order::PAYMENT_STATUS_UNPAID,
+                    'payment_provider' => 'stripe',
+                    'customer_name' => $validated['customer_name'],
+                    'customer_email' => $validated['customer_email'],
+                    'shipping_address_line_1' => $validated['shipping_address_line_1'],
+                    'shipping_address_line_2' => ($validated['shipping_address_line_2'] ?? '') ?: null,
+                    'shipping_city' => $validated['shipping_city'],
+                    'shipping_county' => ($validated['shipping_county'] ?? '') ?: null,
+                    'shipping_postal_code' => $validated['shipping_postal_code'],
+                    'notes' => ($validated['notes'] ?? '') ?: null,
+                    'item_count' => (int) $preparedItems->sum('quantity'),
+                    'subtotal' => $subtotal,
+                    'total' => $subtotal,
+                    'placed_at' => now(),
                 ]);
+
+                $order->items()->createMany($preparedItems->map(function (array $item): array {
+                    /** @var \App\Models\Product $product */
+                    $product = $item['product'];
+
+                    return [
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'product_sku' => $product->sku,
+                        'product_brand' => $product->brand,
+                        'quantity' => $item['quantity'],
+                        'unit_price' => $item['unit_price'],
+                        'line_total' => $item['line_total'],
+                    ];
+                })->all());
+
+                $preparedItems->each(function (array $item) use ($request): void {
+                    /** @var \App\Models\Product $product */
+                    $product = $item['product'];
+
+                    $product->decrement('stock', $item['quantity']);
+                    StockMovement::query()->create([
+                        'product_id' => $product->id,
+                        'user_id' => $request->user()?->id,
+                        'type' => 'order_reservation',
+                        'quantity_change' => $item['quantity'] * -1,
+                        'note' => 'Reserved for Stripe payment checkout.',
+                        'occurred_at' => now(),
+                    ]);
+                });
+
+                return $order->load('items');
             });
 
-            return $order->load('items');
-        });
+            $stripeSession = $this->stripeCheckoutService->createSession($order);
+
+            if (! $stripeSession['client_secret']) {
+                throw new RuntimeException('Stripe did not return a Checkout Session client secret.');
+            }
+
+            $order->update([
+                'stripe_checkout_session_id' => $stripeSession['id'],
+                'stripe_payment_intent_id' => $stripeSession['payment_intent'],
+                'stripe_client_secret' => $stripeSession['client_secret'],
+                'stripe_checkout_session_expires_at' => $stripeSession['expires_at'],
+            ]);
+        } catch (ValidationException $exception) {
+            throw $exception;
+        } catch (Throwable $exception) {
+            report($exception);
+
+            if ($order) {
+                DB::transaction(fn (): Order => $this->orderPaymentService->cancelOrderAndRestoreStock(
+                    $order,
+                    $request->user()?->id,
+                    Order::PAYMENT_STATUS_FAILED,
+                    "Stock returned because Stripe checkout could not start for order {$order->order_number}."
+                ));
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors(['payment' => 'Stripe checkout could not be started. Check the Stripe test keys and try again.']);
+        }
 
         $request->session()->forget('cart');
 
         return redirect()
-            ->route('orders.show', $order)
-            ->with('status', 'Order placed successfully.');
+            ->route('checkout.payment', $order)
+            ->with('status', 'Order reserved. Complete the Stripe test payment to place it in the order queue.');
     }
 
     protected function trimCheckoutInput(Request $request): void
@@ -185,13 +230,111 @@ class OrderController extends Controller
         ]);
     }
 
+    public function payment(Request $request, Order $order): View|RedirectResponse
+    {
+        $this->ensureCustomer($request);
+        $this->ensureOrderOwner($request, $order);
+
+        if ($order->payment_status === Order::PAYMENT_STATUS_PAID) {
+            return redirect()
+                ->route('orders.show', $order)
+                ->with('status', 'Payment has already been received for this order.');
+        }
+
+        if ($order->status === Order::STATUS_CANCELLED) {
+            return redirect()
+                ->route('orders.show', $order)
+                ->withErrors(['payment' => 'This order can no longer be paid because it has been cancelled.']);
+        }
+
+        if (! config('services.stripe.publishable_key') || ! $order->stripe_client_secret) {
+            return redirect()
+                ->route('orders.show', $order)
+                ->withErrors(['payment' => 'Stripe payment details are not available for this order.']);
+        }
+
+        $order->load('items');
+
+        return view('checkout.payment', [
+            'order' => $order,
+            'stripePublishableKey' => config('services.stripe.publishable_key'),
+            'stripeClientSecret' => $order->stripe_client_secret,
+        ]);
+    }
+
+    public function handleStripeReturn(Request $request, Order $order): RedirectResponse
+    {
+        $this->ensureCustomer($request);
+        $this->ensureOrderOwner($request, $order);
+
+        $sessionId = trim($request->string('session_id')->toString());
+
+        if ($sessionId === '' || $sessionId !== $order->stripe_checkout_session_id) {
+            return redirect()
+                ->route('orders.show', $order)
+                ->withErrors(['payment' => 'Stripe returned an unknown payment session.']);
+        }
+
+        try {
+            $session = $this->stripeCheckoutService->retrieveSession($sessionId);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return redirect()
+                ->route('checkout.payment', $order)
+                ->withErrors(['payment' => 'Stripe payment status could not be checked. Please try again.']);
+        }
+
+        if (($session['status'] ?? null) === 'complete' && ($session['payment_status'] ?? null) === 'paid') {
+            $paidOrder = $this->orderPaymentService->markStripeSessionPaid(
+                $sessionId,
+                $session['payment_intent'] ?? null
+            );
+
+            return redirect()
+                ->route('orders.show', $paidOrder ?: $order)
+                ->with('status', 'Payment received. Your order is now in the queue.');
+        }
+
+        if (($session['status'] ?? null) === 'complete') {
+            $this->orderPaymentService->markStripeSessionProcessing(
+                $sessionId,
+                $session['payment_intent'] ?? null
+            );
+
+            return redirect()
+                ->route('orders.show', $order)
+                ->with('status', 'Payment is still processing. The order will update when Stripe confirms it.');
+        }
+
+        if (($session['status'] ?? null) === 'expired') {
+            $expiredOrder = $this->orderPaymentService->cancelStripeSessionOrder(
+                $sessionId,
+                Order::PAYMENT_STATUS_EXPIRED
+            );
+
+            return redirect()
+                ->route('orders.show', $expiredOrder ?: $order)
+                ->withErrors(['payment' => 'The Stripe payment session expired. The reserved stock was returned.']);
+        }
+
+        return redirect()
+            ->route('checkout.payment', $order)
+            ->withErrors(['payment' => 'Payment was not completed. You can try again.']);
+    }
+
     protected function generateOrderNumber(): string
     {
         do {
-            $orderNumber = 'ORD-' . now()->format('Ymd') . '-' . Str::upper(Str::random(6));
+            $orderNumber = 'ORD-'.now()->format('Ymd').'-'.Str::upper(Str::random(6));
         } while (Order::query()->where('order_number', $orderNumber)->exists());
 
         return $orderNumber;
+    }
+
+    protected function ensureOrderOwner(Request $request, Order $order): void
+    {
+        abort_unless($order->user_id === $request->user()?->id, 403);
     }
 
     public function index(Request $request): View|RedirectResponse
@@ -285,35 +428,10 @@ class OrderController extends Controller
         }
 
         DB::transaction(function () use ($order, $newStatus, $request): void {
-            $order->load('items.product');
-
             if ($newStatus === Order::STATUS_CANCELLED && $order->status !== Order::STATUS_CANCELLED) {
-                $productIds = $order->items
-                    ->pluck('product_id')
-                    ->filter()
-                    ->all();
+                $this->orderPaymentService->cancelOrderAndRestoreStock($order, $request->user()?->id);
 
-                $products = Product::query()
-                    ->whereIn('id', $productIds)
-                    ->lockForUpdate()
-                    ->get()
-                    ->keyBy('id');
-
-                $order->items->each(function ($item) use ($products, $request, $order): void {
-                    $product = $products->get($item->product_id);
-
-                    if ($product) {
-                        $product->increment('stock', $item->quantity);
-                        StockMovement::query()->create([
-                            'product_id' => $product->id,
-                            'user_id' => $request->user()?->id,
-                            'type' => 'order_cancel_return',
-                            'quantity_change' => $item->quantity,
-                            'note' => "Stock returned after order {$order->order_number} was cancelled.",
-                            'occurred_at' => now(),
-                        ]);
-                    }
-                });
+                return;
             }
 
             $order->update([

@@ -77,7 +77,7 @@ connected product, stock, and order workflows.
 - product details page
 - favourites / saved products
 - shopping cart
-- checkout with delivery form validation
+- checkout with delivery form validation and Stripe Payment Element test payments
 - order history
 - customer order details
 
@@ -97,6 +97,7 @@ connected product, stock, and order workflows.
 - server-side validation
 - client-side validation through browser form constraints
 - stock-aware cart and checkout rules
+- Stripe webhook verification for payment status updates
 
 ## Main Database Entities
 
@@ -117,6 +118,7 @@ The final application uses the following main entities:
 - Eloquent ORM
 - SQLite
 - Vite
+- Stripe Checkout Sessions and Payment Element
 - HTML / CSS / JavaScript
 
 ## Setup and Installation
@@ -126,9 +128,10 @@ The final application uses the following main entities:
 3. Install frontend dependencies.
 4. Copy `.env.example` to `.env`.
 5. Configure the database connection.
-6. Run migrations and seeders.
-7. Start the Laravel development server.
-8. Start Vite.
+6. Configure Stripe test keys.
+7. Run migrations and seeders.
+8. Start the Laravel development server.
+9. Start Vite.
 
 Example commands:
 
@@ -141,6 +144,29 @@ C:\php84\php.exe artisan migrate --seed
 C:\php84\php.exe artisan serve
 npm run dev
 ```
+
+### Stripe Test Payments
+
+The checkout flow uses Stripe Checkout Sessions with `ui_mode=custom` and renders the Stripe Payment Element inside the
+Laravel checkout experience.
+
+Add your Stripe test keys to `.env`:
+
+```dotenv
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_CURRENCY=eur
+```
+
+For local webhook testing, install the Stripe CLI and forward events to Laravel:
+
+```bash
+stripe listen --forward-to http://127.0.0.1:8000/stripe/webhook
+```
+
+Use the webhook signing secret printed by the CLI as `STRIPE_WEBHOOK_SECRET`. In test mode, Stripe's standard test card
+`4242 4242 4242 4242` can be used with any future expiry date, any CVC, and any postcode.
 
 ## Demo Accounts
 
@@ -178,11 +204,11 @@ Examples include:
 
 - the project is run in a local development environment
 - users access the system through a modern web browser
-- payment is simulated and not connected to a real payment provider
+- Stripe is configured with test-mode keys before checkout payments are attempted
 
 ### Limitations
 
-- the project does not include a real payment gateway
+- the Stripe integration is configured for test payments first
 - the project does not include delivery route optimisation
 - the imported dataset does not include real product images for all products
 - placeholder images are used where no image is available

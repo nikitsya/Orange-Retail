@@ -6,7 +6,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\StripeCheckoutService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Stripe\Event;
 use Tests\TestCase;
 
 class OrderManagementTest extends TestCase
@@ -15,6 +17,8 @@ class OrderManagementTest extends TestCase
 
     public function test_customer_can_checkout_and_view_order_history(): void
     {
+        $this->fakeStripeCheckoutService();
+
         $user = User::factory()->create([
             'role' => 'user',
         ]);
@@ -53,12 +57,14 @@ class OrderManagementTest extends TestCase
 
         $order = Order::query()->firstOrFail();
 
-        $response->assertRedirect("/orders/{$order->id}");
+        $response->assertRedirect("/checkout/payment/{$order->id}");
 
         $this->assertDatabaseHas('orders', [
             'id' => $order->id,
             'user_id' => $user->id,
-            'status' => Order::STATUS_PENDING,
+            'status' => Order::STATUS_AWAITING_PAYMENT,
+            'payment_status' => Order::PAYMENT_STATUS_UNPAID,
+            'stripe_checkout_session_id' => "cs_test_{$order->id}",
             'item_count' => 1,
         ]);
 
@@ -75,8 +81,24 @@ class OrderManagementTest extends TestCase
 
         $this->assertDatabaseHas('stock_movements', [
             'product_id' => $product->id,
-            'type' => 'sale',
+            'type' => 'order_reservation',
             'quantity_change' => -1,
+        ]);
+
+        $this->actingAs($user)
+            ->get("/checkout/payment/{$order->id}")
+            ->assertOk()
+            ->assertSee('Payment');
+
+        $this->actingAs($user)
+            ->get("/checkout/return/{$order->id}?session_id=cs_test_{$order->id}")
+            ->assertRedirect("/orders/{$order->id}");
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => Order::STATUS_PENDING,
+            'payment_status' => Order::PAYMENT_STATUS_PAID,
+            'stripe_payment_intent_id' => 'pi_test_paid',
         ]);
 
         $this->actingAs($user)
@@ -330,5 +352,91 @@ class OrderManagementTest extends TestCase
             ->assertSee('Low Stock Apples')
             ->assertSee('Critical Milk')
             ->assertDontSee('Healthy Stock Juice');
+    }
+
+    public function test_stripe_webhook_marks_order_as_paid(): void
+    {
+        $customer = User::factory()->create([
+            'role' => 'user',
+        ]);
+
+        $order = Order::query()->create([
+            'user_id' => $customer->id,
+            'order_number' => 'ORD-STRIPE-100001',
+            'status' => Order::STATUS_AWAITING_PAYMENT,
+            'payment_status' => Order::PAYMENT_STATUS_UNPAID,
+            'payment_provider' => 'stripe',
+            'stripe_checkout_session_id' => 'cs_test_webhook',
+            'stripe_client_secret' => 'cs_test_webhook_secret',
+            'customer_name' => 'Customer',
+            'customer_email' => 'customer@example.com',
+            'shipping_address_line_1' => '1 Market Road',
+            'shipping_address_line_2' => null,
+            'shipping_city' => 'Cork',
+            'shipping_county' => 'Cork',
+            'shipping_postal_code' => 'T12AB12',
+            'notes' => null,
+            'item_count' => 1,
+            'subtotal' => 4.50,
+            'total' => 4.50,
+            'placed_at' => now(),
+        ]);
+
+        $this->postJson('/stripe/webhook', [
+            'id' => 'evt_test_paid',
+            'type' => 'checkout.session.completed',
+            'data' => [
+                'object' => [
+                    'id' => 'cs_test_webhook',
+                    'object' => 'checkout.session',
+                    'payment_status' => 'paid',
+                    'payment_intent' => 'pi_test_webhook',
+                ],
+            ],
+        ])->assertNoContent();
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => Order::STATUS_PENDING,
+            'payment_status' => Order::PAYMENT_STATUS_PAID,
+            'stripe_payment_intent_id' => 'pi_test_webhook',
+        ]);
+    }
+
+    private function fakeStripeCheckoutService(): void
+    {
+        config()->set('services.stripe.publishable_key', 'pk_test_fake');
+
+        $this->instance(StripeCheckoutService::class, new class extends StripeCheckoutService
+        {
+            public function createSession(Order $order): array
+            {
+                return [
+                    'id' => "cs_test_{$order->id}",
+                    'client_secret' => "cs_test_{$order->id}_secret",
+                    'payment_intent' => null,
+                    'expires_at' => now()->addDay(),
+                    'status' => 'open',
+                    'payment_status' => 'unpaid',
+                ];
+            }
+
+            public function retrieveSession(string $sessionId): array
+            {
+                return [
+                    'id' => $sessionId,
+                    'client_secret' => null,
+                    'payment_intent' => 'pi_test_paid',
+                    'expires_at' => now()->addDay(),
+                    'status' => 'complete',
+                    'payment_status' => 'paid',
+                ];
+            }
+
+            public function constructWebhookEvent(string $payload, ?string $signature): Event
+            {
+                return Event::constructFrom(json_decode($payload, true) ?: []);
+            }
+        });
     }
 }

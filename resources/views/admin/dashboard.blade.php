@@ -91,7 +91,7 @@
                     <article class="summary-panel order-card">
                         <div class="order-card-head">
                             <div>
-                                <span class="inventory-tag">{{ strtoupper($order->status) }}</span>
+                                <span class="inventory-tag">{{ strtoupper(str_replace('_', ' ', $order->status)) }}</span>
                                 <h2>{{ $order->order_number }}</h2>
                                 <p>{{ $order->customer_name }} | {{ $order->placed_at?->format('d M Y H:i') }}</p>
                             </div>
