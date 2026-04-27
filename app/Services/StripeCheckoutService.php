@@ -21,7 +21,7 @@ class StripeCheckoutService
 
         $session = $this->client()->checkout->sessions->create([
             'mode' => 'payment',
-            'ui_mode' => 'custom',
+            'ui_mode' => 'elements',
             'customer_email' => $order->customer_email,
             'line_items' => $order->items
                 ->map(fn ($item): array => [

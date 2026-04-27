@@ -147,7 +147,7 @@ npm run dev
 
 ### Stripe Test Payments
 
-The checkout flow uses Stripe Checkout Sessions with `ui_mode=custom` and renders the Stripe Payment Element inside the
+The checkout flow uses Stripe Checkout Sessions with `ui_mode=elements` and renders the Stripe Payment Element inside the
 Laravel checkout experience.
 
 Add your Stripe test keys to `.env`:
