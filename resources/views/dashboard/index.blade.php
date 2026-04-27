@@ -102,7 +102,7 @@
                 <span>Latest order</span>
             </div>
             <div class="summary-stat">
-                <strong>{{ $orders->first()?->status ? strtoupper($orders->first()->status) : 'Ready to shop' }}</strong>
+                <strong>{{ $orders->first()?->status ? strtoupper(str_replace('_', ' ', $orders->first()->status)) : 'Ready to shop' }}</strong>
                 <span>Current status</span>
             </div>
             <div class="summary-stat">
@@ -132,7 +132,7 @@
                     <article class="summary-panel order-card">
                         <div class="order-card-head">
                             <div>
-                                <span class="inventory-tag">{{ strtoupper($order->status) }}</span>
+                                <span class="inventory-tag">{{ strtoupper(str_replace('_', ' ', $order->status)) }}</span>
                                 <h2>{{ $order->order_number }}</h2>
                                 <p>{{ $order->placed_at?->format('d M Y H:i') }} | {{ $order->items_count }} line
                                     item{{ $order->items_count === 1 ? '' : 's' }}</p>

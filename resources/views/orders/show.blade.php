@@ -46,6 +46,10 @@
             <div class="flash-message">{{ session('status') }}</div>
         @endif
 
+        @if ($errors->any())
+            <div class="error-message">{{ $errors->first() }}</div>
+        @endif
+
         <div>
             <h1 class="detail-heading">{{ $order->order_number }}</h1>
             <p class="lede">Placed on {{ $order->placed_at?->format('d M Y H:i') }} by {{ $order->customer_name }}.</p>
@@ -113,9 +117,18 @@
 
     <aside class="summary-panel stack">
         <div>
-            <h2>{{ ucfirst($order->status) }}</h2>
+            <h2>{{ ucfirst(str_replace('_', ' ', $order->status)) }}</h2>
             <p>Track the current state of the order lifecycle from placement through completion.</p>
         </div>
+
+        <div class="summary-stat">
+            <strong>{{ ucfirst(str_replace('_', ' ', $order->payment_status ?? 'unpaid')) }}</strong>
+            <span>Payment status</span>
+        </div>
+
+        @if (! $isAdmin && $order->status === \App\Models\Order::STATUS_AWAITING_PAYMENT && $order->payment_status !== \App\Models\Order::PAYMENT_STATUS_PAID && $order->stripe_client_secret)
+            <a class="button-primary" href="{{ route('checkout.payment', $order) }}">Complete payment</a>
+        @endif
 
         @if ($isAdmin)
             <form class="stack" method="POST" action="{{ route('admin.orders.update', $order) }}">
@@ -126,7 +139,7 @@
                     <select class="field-select" name="status">
                         @foreach ($statuses as $status)
                             <option
-                                value="{{ $status }}" @selected($status === $order->status)>{{ ucfirst($status) }}</option>
+                                value="{{ $status }}" @selected($status === $order->status)>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>
                         @endforeach
                     </select>
                 </label>

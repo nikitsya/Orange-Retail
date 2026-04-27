@@ -8,12 +8,14 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\Webhooks\StripeWebhookController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CatalogController::class, 'index'])->name('home');
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/catalog/{product}', [CatalogController::class, 'show'])->name('catalog.show');
+Route::post('/stripe/webhook', StripeWebhookController::class)->name('stripe.webhook');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [ManagerSessionController::class, 'create'])->name('login');
@@ -36,6 +38,8 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/cart/{product}', [CatalogController::class, 'removeFromCart'])->name('cart.destroy');
     Route::get('/checkout', [OrderController::class, 'create'])->name('checkout.create');
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/payment/{order}', [OrderController::class, 'payment'])->name('checkout.payment');
+    Route::get('/checkout/return/{order}', [OrderController::class, 'handleStripeReturn'])->name('checkout.return');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/logout', [ManagerSessionController::class, 'destroy'])->name('logout');

@@ -2104,6 +2104,23 @@ body.modal-open {
     align-items: start;
 }
 
+.stripe-payment-form {
+    gap: 18px;
+}
+
+.stripe-payment-element {
+    min-height: 210px;
+    padding: 18px;
+    border: 1px solid rgba(240, 210, 182, 0.86);
+    border-radius: 10px;
+    background: #fffaf5;
+}
+
+.stripe-payment-form .button-primary:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
 .stock-pill {
     display: inline-flex;
     align-items: center;

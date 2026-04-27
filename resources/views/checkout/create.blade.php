@@ -44,7 +44,7 @@
     <section class="section-panel stack">
         <div>
             <h1 class="page-title">Review delivery details</h1>
-            <p class="muted-copy">Review your delivery information before placing the order.</p>
+            <p class="muted-copy">Review your delivery information before continuing to payment.</p>
         </div>
 
         @if ($errors->any())
@@ -118,7 +118,7 @@
             </label>
 
             <div class="tile-actions">
-                <button class="button-primary" type="submit">Place order</button>
+                <button class="button-primary" type="submit">Continue to payment</button>
                 <a class="button-secondary" href="{{ route('cart.index') }}">Back to cart</a>
             </div>
         </form>
