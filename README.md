@@ -388,3 +388,84 @@ The application follows the Laravel MVC pattern:
 - **Controllers** handle requests, validation, business logic, and responses.
 
 This structure keeps the project organised, maintainable, and easier to explain during the project defence.
+
+## Optional: Technical Excellence (20 marks)
+
+This component is entirely optional. Students who complete only the base requirements can achieve 30/50 in Stage 4. This
+component is for students seeking to demonstrate advanced architectural understanding.
+
+### Objective
+
+Design and implement a generic service abstraction layer that allows the server to handle multiple service types
+polymorphically.
+
+### Requirements
+
+#### Service Abstraction
+
+Define a service interface or abstract class that establishes the contract for all services.
+
+The abstraction must include methods for:
+
+- service execution
+- validation
+- result handling
+
+The design must be extensible, so adding a new service type should not require modifying existing code.
+
+#### Multiple Concrete Service Implementations
+
+Implement at least two distinct service types, such as:
+
+- `FileUploadService` and `TaskProcessingService`
+- `FileUploadService` and `ReportGenerationService`
+- `FileUploadService` and any other domain-relevant service
+
+Each service must be fully functional and tested. Services must encapsulate their own logic and data requirements.
+
+#### Polymorphic Service Routing
+
+The server must accept a service request, identify the service type, instantiate the appropriate concrete service, and
+execute it polymorphically.
+
+The client specifies the service type in the request, for example:
+
+```json
+{
+  "serviceType": "FILE_UPLOAD"
+}
+```
+
+or:
+
+```json
+{
+  "serviceType": "TASK_PROCESS"
+}
+```
+
+The server must use polymorphism, not conditional branching, to execute the service.
+
+#### Design Pattern Application
+
+Apply at least one advanced pattern appropriately:
+
+- **Strategy Pattern:** encapsulate service algorithms as interchangeable strategies.
+- **Factory Pattern:** instantiate the correct service type based on the client request.
+- **Template Method:** define the service execution skeleton in an abstract class with concrete steps in subclasses.
+- **Command Pattern:** encapsulate service requests as command objects.
+
+The pattern choice must be justified in the README and explained during the demo.
+
+#### Testing and Documentation
+
+Both services must be tested in the JUnit suite.
+
+The README must include a dedicated section explaining the service architecture, pattern choices, and design rationale.
+
+The architecture diagram must be updated to show the service abstraction layer.
+
+### Assessment
+
+See the component rubric in Appendix A.2. Students will be assessed on design quality, pattern application, polymorphic
+implementation, functionality, and ability to explain architectural decisions during the demo.
