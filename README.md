@@ -4,6 +4,12 @@ Orange Retail is a Laravel MVC supermarket web application with customer-facing 
 management area. The project supports product browsing, account access, favourites, cart management, Stripe test
 payments, order tracking, stock control, and administrator product management.
 
+## Overview
+
+The overview below shows the main Orange Retail shopping and management experience.
+
+![Orange Retail overview](docs/media/orange-retail-overview.gif)
+
 ## Live Deployment
 
 Public Azure URL: `https://your-app-name.azurewebsites.net`
