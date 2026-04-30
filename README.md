@@ -12,9 +12,8 @@ The overview below shows the main Orange Retail shopping and management experien
 
 ## Live Deployment
 
-Public Azure URL: `https://your-app-name.azurewebsites.net`
+Public Azure URL: `https://lavarel-supermarket-management-abgbdxf3cchfcdbu.polandcentral-01.azurewebsites.ne`
 
-> Replace this placeholder with the final Microsoft Azure App Service URL before submission.
 
 ## CA3 Project Summary
 
