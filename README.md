@@ -12,7 +12,7 @@ The overview below shows the main Orange Retail shopping and management experien
 
 ## Live Deployment
 
-Public Azure URL: `https://lavarel-supermarket-management-abgbdxf3cchfcdbu.polandcentral-01.azurewebsites.ne`
+Public Azure URL: `https://lavarel-supermarket-management-abgbdxf3cchfcdbu.polandcentral-01.azurewebsites.net`
 
 
 ## CA3 Project Summary
