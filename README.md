@@ -15,6 +15,8 @@ The overview below shows the main Orange Retail shopping and management experien
 Orange Retail runs on Microsoft Azure App Service with Azure Database for MySQL. The deployed application uses the
 production `APP_URL` value configured in the Azure environment.
 
+Public Azure URL: [Open the live site](https://lavarel-supermarket-management-abgbdxf3cchfcdbu.polandcentral-01.azurewebsites.net)
+
 ## CA3 Project Summary
 
 This version of Orange Retail was completed for CA3: Laravel Deployment, Feedback Implementation and Professional
