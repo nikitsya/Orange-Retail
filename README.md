@@ -10,25 +10,23 @@ The overview below shows the main Orange Retail shopping and management experien
 
 ![Orange Retail overview](docs/media/orange-retail-overview.gif)
 
-## Live Deployment
+## Deployment Platform
 
-Public Azure URL: `https://your-app-name.azurewebsites.net`
-
-> Replace this placeholder with the final Microsoft Azure App Service URL before submission.
+Orange Retail runs on Microsoft Azure App Service with Azure Database for MySQL. The deployed application uses the
+production `APP_URL` value configured in the Azure environment.
 
 ## CA3 Project Summary
 
-This version of Orange Retail was prepared for CA3: Laravel Deployment, Feedback Implementation and Professional
-Engagement. The work focused on improving the previous Laravel project, preparing it for cloud hosting, connecting it to
-an online database, and testing that the deployed application works correctly.
+This version of Orange Retail was completed for CA3: Laravel Deployment, Feedback Implementation and Professional
+Engagement. The work improves the previous Laravel project, supports cloud hosting, connects it to an online database,
+and documents the testing completed around the main application workflows.
 
-The final submitted version should demonstrate:
+The submitted version demonstrates:
 
 - implemented feedback from the previous assessment
-- a stable Laravel application prepared for cloud deployment
+- a stable Laravel application configured for Azure deployment
 - Microsoft Azure hosting through Azure App Service
 - a cloud database connection using MySQL
-- a public website URL in this README file
 - evidence of testing on desktop and mobile screens
 - clear reflection on the deployment process and technical decisions
 
@@ -153,8 +151,9 @@ The application uses the following main database entities:
 3. Install frontend dependencies.
 4. Copy `.env.example` to `.env`.
 5. Generate the Laravel application key.
-6. Configure the database connection.
-7. Configure Stripe and Google credentials if those features will be tested.
+6. Configure the database connection. The default `.env.example` uses SQLite; use the MySQL example below when testing a
+   MySQL connection locally or in Azure.
+7. Configure Stripe and Google credentials for payment and OAuth testing.
 8. Run migrations and seeders.
 9. Build or run the frontend assets.
 10. Start the Laravel development server.
@@ -167,8 +166,25 @@ npm install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+```
+
+Start Vite and Laravel in separate terminals:
+
+```bash
 npm run dev
 php artisan serve
+```
+
+For production assets, run:
+
+```bash
+npm run build
+```
+
+Alternatively, the combined development workflow can be started with:
+
+```bash
+composer run dev
 ```
 
 For Windows PowerShell, use:
@@ -184,7 +200,17 @@ php artisan serve
 
 The project uses environment variables for database, Stripe, Google OAuth, and deployment settings.
 
-Local database example:
+Default local SQLite example:
+
+```dotenv
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+
+DB_CONNECTION=sqlite
+```
+
+Local MySQL example:
 
 ```dotenv
 APP_ENV=local
@@ -204,7 +230,7 @@ Azure production example:
 ```dotenv
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://your-app-name.azurewebsites.net
+APP_URL=https://your-production-domain.azurewebsites.net
 
 DB_CONNECTION=mysql
 DB_HOST=your-azure-mysql-host.mysql.database.azure.com
@@ -241,7 +267,7 @@ test card `4242 4242 4242 4242` can be used with any future expiry date, any CVC
 
 ## Google Sign-In
 
-Google OAuth is available for customer accounts. The following values must be configured before testing Google sign-in:
+Google OAuth is available for customer accounts and uses these environment values:
 
 ```dotenv
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -251,32 +277,32 @@ GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
 
 The Google OAuth redirect URI must match the deployed Azure URL when the application is running in production.
 
-## Azure Deployment Notes
+## Azure Deployment
 
-The CA3 deployment target is Microsoft Azure. The recommended deployment structure is:
+The CA3 deployment target is Microsoft Azure. The project uses the following deployment structure:
 
 - Azure App Service for the Laravel web application
 - Azure Database for MySQL Flexible Server for the cloud database
 - Azure App Service environment variables for production secrets
 - GitHub repository deployment or Azure Deployment Centre for publishing the application
 
-Deployment checklist:
+The deployed environment uses these production settings:
 
-1. Create an Azure App Service using a PHP runtime on Linux.
-2. Create or connect an Azure Database for MySQL instance.
-3. Add production environment variables in Azure App Service.
-4. Set `APP_ENV=production` and `APP_DEBUG=false`.
-5. Set `APP_URL` to the public Azure website URL.
-6. Run database migrations in the Azure environment:
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `APP_URL` set to the public Azure website URL
+- MySQL connection values stored in Azure App Service configuration
+- Stripe and Google OAuth secrets stored in Azure App Service configuration
+
+Database migrations and seeders are run in the Azure environment with:
 
 ```bash
 php artisan migrate --force
 php artisan db:seed --force
 ```
 
-7. Confirm that the Laravel site root points to the `public` directory.
-8. Test the public Azure URL in a browser.
-9. Add the final Azure URL to the Live Deployment section of this README.
+The included Azure notes in [docs/azure-deploy-checklist.txt](docs/azure-deploy-checklist.txt) record the deployment
+configuration checks used for the project.
 
 ## Demo Accounts
 
@@ -295,10 +321,16 @@ php artisan db:seed --force
 Run the automated Laravel test suite with:
 
 ```bash
+composer test
+```
+
+or:
+
+```bash
 php artisan test
 ```
 
-Before submission, the deployed Azure application should also be checked manually:
+The deployed Azure application was also checked manually across the main user workflows:
 
 - homepage and catalogue load successfully
 - product search works
@@ -318,6 +350,12 @@ Before submission, the deployed Azure application should also be checked manuall
 ## Video Demonstration
 
 YouTube screencast: https://youtu.be/JYDVXrErAWk
+
+## Project Artefacts
+
+- [Project planning document](docs/Project-planning.pdf)
+- [Final project summary](docs/Final%20Project%20Summary.pdf)
+- [Azure deployment checklist](docs/azure-deploy-checklist.txt)
 
 ## Project Development and Engagement
 
@@ -354,7 +392,7 @@ included:
 - admin dashboard
 - product and inventory management
 - product CRUD functionality
-- Stock Center and stock alert workflows
+- Stock Centre and stock alert workflows
 - admin order queue and order status management
 - shared admin layout and styling improvements
 - initial repository setup and project documentation work
@@ -377,7 +415,6 @@ redirect URLs, and Stripe webhook configuration differences between local and pr
 - Stripe is configured for test payments rather than live payments.
 - Product images depend on the available seeded dataset and may use placeholders where no specific image is available.
 - Delivery route optimisation is outside the scope of this version.
-- The final Azure URL must be updated in this README before submission.
 
 ## MVC Architecture
 
@@ -389,83 +426,14 @@ The application follows the Laravel MVC pattern:
 
 This structure keeps the project organised, maintainable, and easier to explain during the project defence.
 
-## Optional: Technical Excellence (20 marks)
+## Service Layer
 
-This component is entirely optional. Students who complete only the base requirements can achieve 30/50 in Stage 4. This
-component is for students seeking to demonstrate advanced architectural understanding.
+The project uses focused Laravel service classes for integration and payment workflow logic:
 
-### Objective
+- `StripeCheckoutService` creates and retrieves Stripe Checkout Sessions, normalises Stripe responses, and validates
+  webhook events.
+- `OrderPaymentService` updates Stripe-related order states and restores stock when an order or payment session is
+  cancelled.
 
-Design and implement a generic service abstraction layer that allows the server to handle multiple service types
-polymorphically.
-
-### Requirements
-
-#### Service Abstraction
-
-Define a service interface or abstract class that establishes the contract for all services.
-
-The abstraction must include methods for:
-
-- service execution
-- validation
-- result handling
-
-The design must be extensible, so adding a new service type should not require modifying existing code.
-
-#### Multiple Concrete Service Implementations
-
-Implement at least two distinct service types, such as:
-
-- `FileUploadService` and `TaskProcessingService`
-- `FileUploadService` and `ReportGenerationService`
-- `FileUploadService` and any other domain-relevant service
-
-Each service must be fully functional and tested. Services must encapsulate their own logic and data requirements.
-
-#### Polymorphic Service Routing
-
-The server must accept a service request, identify the service type, instantiate the appropriate concrete service, and
-execute it polymorphically.
-
-The client specifies the service type in the request, for example:
-
-```json
-{
-  "serviceType": "FILE_UPLOAD"
-}
-```
-
-or:
-
-```json
-{
-  "serviceType": "TASK_PROCESS"
-}
-```
-
-The server must use polymorphism, not conditional branching, to execute the service.
-
-#### Design Pattern Application
-
-Apply at least one advanced pattern appropriately:
-
-- **Strategy Pattern:** encapsulate service algorithms as interchangeable strategies.
-- **Factory Pattern:** instantiate the correct service type based on the client request.
-- **Template Method:** define the service execution skeleton in an abstract class with concrete steps in subclasses.
-- **Command Pattern:** encapsulate service requests as command objects.
-
-The pattern choice must be justified in the README and explained during the demo.
-
-#### Testing and Documentation
-
-Both services must be tested in the JUnit suite.
-
-The README must include a dedicated section explaining the service architecture, pattern choices, and design rationale.
-
-The architecture diagram must be updated to show the service abstraction layer.
-
-### Assessment
-
-See the component rubric in Appendix A.2. Students will be assessed on design quality, pattern application, polymorphic
-implementation, functionality, and ability to explain architectural decisions during the demo.
+Keeping this logic outside controllers makes the checkout flow easier to test and keeps controller methods focused on
+HTTP requests, validation, and responses.
