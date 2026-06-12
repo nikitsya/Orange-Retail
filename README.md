@@ -353,52 +353,6 @@ The deployed Azure application was also checked manually across the main user wo
 
 YouTube screencast: https://youtu.be/JYDVXrErAWk
 
-## Project Artefacts
-
-- [Project planning document](docs/Project-planning.pdf)
-- [Final project summary](docs/Final%20Project%20Summary.pdf)
-- [Azure deployment checklist](docs/azure-deploy-checklist.txt)
-
-## Project Development and Engagement
-
-The project was developed collaboratively. Git branches were used to separate and organise development work before
-changes were merged into the main project version. The CA3 work included reviewing tutor feedback, improving the user
-interface, preparing deployment configuration, connecting the application to an online database, and testing the hosted
-application.
-
-This collaborative approach reflects the assignment aim of demonstrating consistent engagement, professional
-development practice, and the ability to respond constructively to feedback.
-
-## Collaboration and Individual Contributions
-
-This project was completed as a pair project, with responsibilities divided between the customer-facing shopping
-experience and the administrator management system.
-
-### Hanna Bokariuk
-
-Hanna focused mainly on the customer-facing side of the application. Her work included:
-
-- customer product catalogue and product details flow
-- shopping cart and checkout experience
-- checkout validation improvements
-- customer order history and customer order details
-- favourites / saved products functionality
-- customer dashboard improvements
-- customer-facing UX refinements across catalogue, cart, checkout, and order views
-
-### Nikita Smiichyk
-
-Nikita focused mainly on the administrator-facing side of the application and the core management features. Her work
-included:
-
-- admin dashboard
-- product and inventory management
-- product CRUD functionality
-- Stock Centre and stock alert workflows
-- admin order queue and order status management
-- shared admin layout and styling improvements
-- initial repository setup and project documentation work
-
 ## Reflection Notes
 
 During the deployment process, the main learning points were:
