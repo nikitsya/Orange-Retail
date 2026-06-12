@@ -8,7 +8,7 @@ payments, order tracking, stock control, and administrator product management.
 
 The overview below shows the main Orange Retail shopping and management experience.
 
-![Orange Retail overview](docs/orange-retail-overview.gif)
+![Orange Retail overview](./docs/orange-retail-overview.gif)
 
 ## Deployment Platform
 
